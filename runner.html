@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Neon Runner 3D — Parkour Infinito</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Endless runner 3D com plataformas procedurais, pulo duplo, dash e recorde local.">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0b0b0c;--bg2:#121316;--text:#E8E8EA;--muted:#A6A6AD;--brand:#8f0000;--brand2:#b31212;--border:#24262b;--card:#1a1a1a}
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,#0b0b0c 0%,#0d0e12 40%,#0b0b0c 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;overflow:hidden}
+  .topbar{position:fixed;inset:0 0 auto 0;z-index:30;background:rgba(11,11,12,.65);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+  .topbar .row{width:min(1200px,calc(100% - 2rem));margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0}
+  .brand{font-weight:800}.brand span{color:var(--brand)}
+  .nav{display:flex;gap:.5rem}
+  .btn{background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%);border:0;border-radius:.6rem;color:#fff;padding:.45rem .7rem;font-weight:700;cursor:pointer}
+  .btn--ghost{background:transparent;border:1px solid var(--border)} .btn--small{font-size:.9rem}
+
+  #game{position:fixed;inset:48px 0 0 0;display:block;background:#000}
+  .hud{position:fixed;inset:48px 0 0 0;pointer-events:none}
+  .panel{position:absolute;left:12px;bottom:12px;background:rgba(16,18,24,.7);border:1px solid var(--border);border-radius:.8rem;padding:.6rem;min-width:260px}
+  .row{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
+  .bar{flex:1;height:10px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#0f1116}
+  .bar>span{display:block;height:100%;background:linear-gradient(135deg,#2db57f,#57d996)}
+  .stat{font-weight:800}.meta{color:var(--muted);font-size:.9rem}
+  .chip{position:absolute;right:12px;top:60px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .5rem}
+  .toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:rgba(0,0,0,.6);border:1px solid var(--border);padding:.5rem .8rem;border-radius:.6rem;display:none}
+
+  .overlay{position:fixed;inset:48px 0 0 0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:20}
+  .overlay.open{display:flex}
+  .modal{width:min(900px,calc(100% - 2rem));background:var(--bg2);border:1px solid var(--border);border-radius:1rem;padding:1rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .input{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:#fff;padding:.6rem .7rem}
+  .mobile{position:fixed;inset:auto 0 12px 0;display:none;justify-content:space-between;padding:0 12px;z-index:25}
+  .btnR{width:68px;height:68px;border-radius:999px;background:rgba(16,18,24,.65);border:1px solid var(--border);display:grid;place-items:center;color:#fff;font-weight:800}
+  .pad{width:120px;height:120px;border-radius:60px;background:rgba(16,18,24,.65);border:1px solid var(--border);position:relative}
+  .stick{position:absolute;width:56px;height:56px;border-radius:28px;background:#222;border:1px solid var(--border);left:32px;top:32px}
+  @media (max-width:900px){.mobile{display:flex}}
+  .help{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.45);border:1px solid var(--border);padding:.25rem .5rem;border-radius:.6rem;font-size:.85rem}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="row">
+      <div class="brand"><a href="index.html" style="color:#fff;text-decoration:none">Flloyd<span>inn</span> Gameplay</a> <span class="meta">/ Neon Runner 3D</span></div>
+      <div class="nav">
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
+        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <div class="hud" aria-hidden="true">
+    <div class="panel">
+      <div class="row"><span class="meta">Distância</span><span class="stat" id="dist">0 m</span> • <span class="meta">Vel</span><span class="stat" id="speed">0</span></div>
+      <div class="row" style="margin:.35rem 0 .15rem"><span class="meta">Energia</span><div class="bar"><span id="energyBar" style="width:60%"></span></div></div>
+      <div class="row"><span class="meta">Moedas</span><span class="stat" id="coins">0</span> • <span class="meta">Combo</span><span class="stat" id="combo">x1</span></div>
+    </div>
+    <div class="chip">Recorde: <strong id="best">—</strong></div>
+    <div class="toast" id="toast">+100</div>
+    <div class="help">WASD/Setas • Mouse • Espaço (duplo) • Shift (dash) • P pausa • R reiniciar</div>
+  </div>
+
+  <div class="overlay" id="pause">
+    <div class="modal">
+      <h2>Pausa</h2>
+      <div class="grid-2">
+        <div>
+          <p class="meta">Corra pelas plataformas neon, salte obstáculos, faça <strong>pulo duplo</strong>, use <strong>dash</strong> e colete moedas para aumentar o combo. Caiu? Fim de jogo.</p>
+          <div class="row" style="margin-top:.6rem">
+            <button id="btnResume" class="btn">Continuar</button>
+            <button id="btnReset" class="btn btn--ghost">Reiniciar</button>
+            <button id="btnClearSave" class="btn btn--ghost">Apagar recorde</button>
+          </div>
+        </div>
+        <div>
+          <label class="meta">Sensibilidade do mouse <input id="sens" class="input" type="range" min="0.2" max="2" step="0.1" value="1"></label>
+          <label class="meta">Volume (efeitos) <input id="vol" class="input" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile" id="mobile">
+    <div class="pad" id="pad"><div class="stick" id="stick"></div></div>
+    <div style="display:flex;gap:10px">
+      <div class="btnR" id="btnJump">⤒</div>
+      <div class="btnR" id="btnDash">⚡</div>
+    </div>
+  </div>
+
+  <!-- Import map para Three.js -->
+  <script type="importmap">
+  {"imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
+  }}
+  </script>
+
+<script type="module">
+import * as THREE from 'three';
+
+const $ = s=>document.querySelector(s);
+const canvas = $('#game');
+const HUD = {dist:$('#dist'), speed:$('#speed'), energy:$('#energyBar'), coins:$('#coins'), combo:$('#combo'), toast:$('#toast'), best:$('#best')};
+const sensInput=$('#sens'), volInput=$('#vol');
+const overlay=$('#pause'), btnHelp=$('#btnHelp'), btnResume=$('#btnResume'), btnReset=$('#btnReset'), btnClear=$('#btnClearSave');
+
+// Renderer/Scene/Camera
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x08090f);
+const camera = new THREE.PerspectiveCamera(75,1,0.1,1000);
+camera.position.set(0,2.6,6);
+function onResize(){ const w=innerWidth,h=innerHeight-48; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+onResize(); addEventListener('resize', onResize);
+
+// Luz/ambiente
+const amb = new THREE.AmbientLight(0x88aaff,.55); scene.add(amb);
+const dir = new THREE.DirectionalLight(0xffffff,.6); dir.position.set(3,8,5); scene.add(dir);
+
+// Chão “vazio” emissivo (horizonte)
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(2000,2000), new THREE.MeshBasicMaterial({color:0x05060a}));
+floor.rotation.x = -Math.PI/2; floor.position.y=-6; scene.add(floor);
+
+// Material neon helpers
+const neon = (color)=> new THREE.MeshStandardMaterial({color, emissive:color, emissiveIntensity:0.6, roughness:0.4, metalness:0.1});
+
+// Jogador (capsule)
+const player = new THREE.Mesh(new THREE.CapsuleGeometry(0.4,1.0,6,12), neon(0x8f0000));
+player.position.set(0,1,0); scene.add(player);
+
+// Estado
+const state = {
+  vel:new THREE.Vector3(0,0,0), yaw:0, pitch:0,
+  forward:8, // velocidade inicial (m/s)
+  strafe:10,
+  gravity:-18, jump:8, canDouble:true,
+  energy:.6, coins:0, combo:1, comboTimer:0,
+  dist:0, best:Number(localStorage.getItem('runner_best')||0),
+  invul:0, paused:false, alive:true
+};
+HUD.best.textContent = state.best||'—';
+
+// Entrada
+const keys={};
+addEventListener('keydown',e=>{
+  keys[e.code]=true;
+  if(e.code==='KeyP') togglePause();
+  if(e.code==='KeyR') resetGame();
+  if(e.code==='Space') jump();
+  if(e.code==='ShiftLeft'||e.code==='ShiftRight') dash();
+});
+addEventListener('keyup',e=> keys[e.code]=false);
+
+// Mouse look (pointer lock leve)
+let locked=false, aimX=0, aimY=0;
+canvas.addEventListener('click', ()=> canvas.requestPointerLock?.());
+addEventListener('pointerlockchange',()=> locked=!!document.pointerLockElement);
+addEventListener('mousemove',e=>{ if(!locked) return; const s=Number(sensInput.value); aimX += e.movementX*0.002*s; aimY += e.movementY*0.001*s; aimY=Math.max(-0.25,Math.min(0.25,aimY)); });
+
+// Mobile
+const pad=$('#pad'), stick=$('#stick'), btnJump=$('#btnJump'), btnDash=$('#btnDash');
+let touch={ax:0}; if(/Mobi|Android/i.test(navigator.userAgent)){ $('#mobile').style.display='flex'; initPad(); }
+function initPad(){
+  let drag=false,sx=0,sy=0;
+  pad.addEventListener('touchstart',e=>{drag=true; const t=e.touches[0]; sx=t.clientX; sy=t.clientY; e.preventDefault();});
+  pad.addEventListener('touchmove',e=>{
+    if(!drag) return; const t=e.touches[0]; const clamp=v=>Math.max(-45,Math.min(45,v)); const dx=clamp(t.clientX-sx);
+    stick.style.left=(32+dx)+'px'; touch.ax = dx/45;
+  }, {passive:false});
+  const stop=()=>{drag=false; stick.style.left='32px'; touch.ax=0;}; pad.addEventListener('touchend',stop); pad.addEventListener('touchcancel',stop);
+  btnJump.addEventListener('touchstart',()=>jump());
+  btnDash.addEventListener('touchstart',()=>dash());
+}
+
+// Áudio
+const AC = window.AudioContext? new AudioContext(): null;
+function beep(freq=440,dur=0.07,gain=0.12){ if(!AC) return; const o=AC.createOscillator(), g=AC.createGain(); o.type='triangle'; o.frequency.value=freq; g.gain.value=Number(volInput.value)*gain; o.connect(g).connect(AC.destination); o.start(); o.stop(AC.currentTime+dur); }
+
+// Plataforma/obstáculos
+const platformMat = new THREE.MeshStandardMaterial({color:0x111319, roughness:.8, metalness:.1});
+const edgeMat = neon(0x1de9b6);
+const platforms=[], obstacles=[], coins=[];
+function makePlatform(z, w=6, len=16, y=0){
+  const g = new THREE.BoxGeometry(w, .4, len);
+  const m = new THREE.Mesh(g, platformMat);
+  m.position.set(0,y,z); m.userData={w,len};
+  scene.add(m); platforms.push(m);
+  // bordas neon
+  const e = new THREE.Mesh(new THREE.BoxGeometry(w+.2,.08,len+.2), edgeMat);
+  e.position.set(0,y+.24,z); scene.add(e); m.userData.edge=e;
+}
+function makeObstacle(x,z,h=1.2,w=1.2){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,1.2), neon(0xff3d6e)); m.position.set(x, h/2, z); scene.add(m); obstacles.push(m); }
+function makeCoin(x,z){ const m=new THREE.Mesh(new THREE.TorusGeometry(.35,.12,10,24), neon(0xFFD54F)); m.rotation.x=Math.PI/2; m.position.set(x,1,z); scene.add(m); coins.push(m); }
+
+let lastZ=0;
+function seedTrack(){
+  // 5 plataformas iniciais
+  for(let i=0;i<5;i++) makePlatform(i*16, 6, 16, 0);
+  lastZ = 4*16;
+}
+function extendTrack(){
+  while(lastZ - player.position.z < 140){
+    const len = 14 + Math.random()*8;
+    const gap = 2 + Math.random()*3; // pequeno salto
+    const yDelta = (Math.random() < 0.3) ? (Math.random()<0.5?-0.6:0.8) : 0;
+    const width = 5 + Math.random()*2;
+    const y = THREE.MathUtils.clamp((platforms.at(-1)?.position.y||0)+yDelta, -1, 2);
+    lastZ += gap + len;
+    makePlatform(lastZ, width, len, y);
+
+    // obstáculos & moedas
+    const blocks = Math.floor(len/3);
+    for(let b=0;b<blocks;b++){
+      const z = lastZ - len/2 + b*3 + 2;
+      if(Math.random() < 0.35) makeObstacle((Math.random()-0.5)*(width-1.2), z, 1+Math.random()*1.6, 1+Math.random()*1.2);
+      if(Math.random() < 0.45) makeCoin((Math.random()-0.5)*(width-1.5), z);
+    }
+  }
+}
+seedTrack(); extendTrack();
+
+// Colisão AABB simples
+function hitAABB(a,b){ return Math.abs(a.x-b.x) < (a.hw+b.hw) && Math.abs(a.y-b.y) < (a.hh+b.hh) && Math.abs(a.z-b.z) < (a.hd+b.hd); }
+
+// AABB do player
+function playerBox(){ return { x:player.position.x, y:player.position.y, z:player.position.z, hw:.35, hh:.9, hd:.35 }; }
+
+// Pulo / Dash
+function jump(){
+  if(!state.alive||state.paused) return;
+  if(isOnGround()){ state.vel.y = state.jump; state.canDouble=true; beep(740,.05,.12); }
+  else if(state.canDouble){ state.vel.y = state.jump*0.9; state.canDouble=false; beep(880,.05,.12); }
+}
+function dash(){
+  if(!state.alive||state.paused||state.energy<0.2) return;
+  state.energy -= 0.2; state.invul = 0.3; // invencível por um curto tempo
+  player.position.z -= 3; // avança um pouco
+  beep(980,.05,.12);
+}
+
+// Ground check pelo y da plataforma mais próxima sob o player
+function groundYUnder(){
+  let gy = -Infinity;
+  for(const p of platforms){
+    const halfL = p.userData.len/2, halfW = p.userData.w/2;
+    if(Math.abs(player.position.x - p.position.x) <= halfW+0.01 &&
+       Math.abs(player.position.z - p.position.z) <= halfL+0.01){
+      gy = Math.max(gy, p.position.y + .2);
+    }
+  }
+  return gy;
+}
+function isOnGround(){ return player.position.y <= groundYUnder()+0.001; }
+
+// UI
+function setToast(t){ HUD.toast.textContent=t; HUD.toast.style.display='block'; setTimeout(()=> HUD.toast.style.display='none', 700); }
+function updateHUD(){
+  HUD.dist.textContent = `${Math.floor(state.dist)} m`;
+  HUD.speed.textContent = Math.round(state.forward);
+  HUD.energy.style.width = (state.energy*100|0)+'%';
+  HUD.coins.textContent = state.coins;
+  HUD.combo.textContent = 'x'+state.combo;
+}
+
+// Pausa / modal
+function togglePause(){ state.paused=!state.paused; overlay.classList.toggle('open', state.paused); }
+btnHelp.onclick = ()=>{ state.paused=true; overlay.classList.add('open'); };
+btnResume.onclick = ()=> togglePause();
+btnReset.onclick = ()=> resetGame();
+btnClear.onclick = ()=>{ localStorage.removeItem('runner_best'); HUD.best.textContent='—'; }
+
+// Loop
+let lastT = performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  if(state.paused) return;
+
+  const now = performance.now(), dt = Math.min(0.05,(now-lastT)/1000); lastT=now;
+
+  // velocidade aumenta aos poucos
+  state.forward = Math.min(26, state.forward + dt*0.6);
+
+  // input lateral
+  const ax = (keys['KeyA']||keys['ArrowLeft']?-1:0) + (keys['KeyD']||keys['ArrowRight']?1:0) + (touch.ax||0);
+  state.vel.x = THREE.MathUtils.lerp(state.vel.x, ax*state.strafe, 1-Math.exp(-dt*8));
+
+  // mouse look (suave)
+  state.yaw = THREE.MathUtils.lerp(state.yaw, aimX*0.6, 1-Math.exp(-dt*3));
+  camera.position.x = THREE.MathUtils.lerp(camera.position.x, player.position.x + state.yaw*2.0, 1-Math.exp(-dt*4));
+  camera.lookAt(player.position.x, player.position.y+0.6, player.position.z-6);
+
+  // gravidade + chão
+  state.vel.y += state.gravity*dt;
+  let gy = groundYUnder();
+  if(player.position.y + state.vel.y*dt <= gy){
+    player.position.y = gy; state.vel.y = 0;
+  } else {
+    player.position.y += state.vel.y*dt;
+  }
+
+  // avanço para frente
+  player.position.z -= state.forward*dt;
+  state.dist += state.forward*dt;
+
+  // mover lateral
+  player.position.x += state.vel.x*dt;
+
+  // energia recarrega
+  state.energy = Math.min(1, state.energy + dt*0.25);
+  state.invul = Math.max(0, state.invul - dt);
+
+  // rotação estilosa
+  player.rotation.z = -state.vel.x*0.03;
+  player.rotation.x = -state.vel.y*0.02;
+
+  // colisão obstáculos
+  const pb = playerBox();
+  if(state.invul<=0){
+    for(const o of obstacles){
+      const b={x:o.position.x,y:o.position.y,z:o.position.z, hw:o.scale.x*0.6, hh:o.scale.y*0.5, hd:0.6};
+      if(hitAABB(pb,b)){ gameOver(); return; }
+    }
+  }
+
+  // colisão moedas
+  for(let i=coins.length-1;i>=0;i--){
+    const c=coins[i];
+    const b={x:c.position.x,y:c.position.y,z:c.position.z, hw:.4,hh:.4,hd:.4};
+    if(hitAABB(pb,b)){
+      state.coins += 1*state.combo; state.combo = Math.min(10, state.combo+1); state.comboTimer = 2.2;
+      setToast('+1'); beep(880,.05,.12);
+      scene.remove(c); coins.splice(i,1);
+    }
+  }
+  // combo decai
+  state.comboTimer -= dt; if(state.comboTimer<=0) state.combo = Math.max(1, state.combo-1);
+
+  // limpar objetos atrás
+  const zCut = player.position.z - 20;
+  for(let i=platforms.length-1;i>=0;i--){
+    if(platforms[i].position.z < zCut){
+      scene.remove(platforms[i].userData.edge); scene.remove(platforms[i]); platforms.splice(i,1);
+    }
+  }
+  for(let i=obstacles.length-1;i>=0;i--) if(obstacles[i].position.z < zCut){ scene.remove(obstacles[i]); obstacles.splice(i,1); }
+  for(let i=coins.length-1;i>=0;i--) if(coins[i].position.z < zCut){ scene.remove(coins[i]); coins.splice(i,1); }
+
+  extendTrack();
+  updateHUD();
+  renderer.render(scene,camera);
+
+  // caiu do mundo
+  if(player.position.y < -4) gameOver();
+}
+loop();
+
+function gameOver(){
+  if(!state.alive) return;
+  state.alive=false; togglePause();
+  const score = Math.floor(state.dist) + state.coins*10;
+  if(score > state.best){ state.best=score; localStorage.setItem('runner_best', String(score)); HUD.best.textContent=score; }
+  setToast('Game Over');
+}
+
+function resetGame(){
+  // limpar tudo menos player/câmera
+  for(const arr of [platforms, obstacles, coins]){ arr.forEach(m=>{ if(m.userData?.edge) scene.remove(m.userData.edge); scene.remove(m); }); arr.length=0; }
+  player.position.set(0,1,0); state.vel.set(0,0,0);
+  Object.assign(state, {...state, forward:8, strafe:10, gravity:-18, jump:8, canDouble:true, energy:.6, coins:0, combo:1, comboTimer:0, dist:0, invul:0, paused:false, alive:true});
+  seedTrack(); extendTrack();
+  overlay.classList.remove('open');
+}
+
+// helpers UI
+function setToast(t){ HUD.toast.textContent=t; HUD.toast.style.display='block'; setTimeout(()=> HUD.toast.style.display='none', 700); }
+</script>
+</body>
+</html>
