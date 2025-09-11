@@ -1,0 +1,34 @@
+{
+  "posts": [
+    {
+      "slug": "exemplo-primeiro-post",
+      "title": "Primeiras impressões de um indie promissor",
+      "excerpt": "Testamos um roguelike ágil que mistura combate tático com exploração rápida.",
+      "dateISO": "2025-09-10",
+      "readMin": 6,
+      "views": 1200,
+      "category": "Análises",
+      "tags": ["Indie", "Roguelike", "Preview"],
+      "game": "Dungeon Rush",
+      "platform": "PC",
+      "author": "Flloydinn",
+      "cover": "assets/cover-exemplo.jpg",
+      "file": "exemplo-primeiro-post.md"
+    }
+// {
+//   "slug": "meu-artigo",
+//   "title": "Título do meu artigo",
+//   "excerpt": "Resumo do artigo para listas e SEO.",
+//   "dateISO": "2025-09-11",
+//   "readMin": 5,
+//   "views": 0,
+//   "category": "Notícias",
+//   "tags": ["PC","Atualização"],
+//   "game": "Vários",
+//   "platform": "Multi",
+//   "author": "Redação",
+//   "cover": "assets/cover-exemplo.jpg",
+//   "file": "meu-artigo.md"
+// }
+  ]
+}
