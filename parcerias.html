@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Flloydinn Gameplay — Parcerias & Mídia Kit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Parcerias com o canal Flloydinn Gameplay: formatos, pacotes, mídia kit e contato comercial.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
+      --brand:#8f0000; --brand2:#b31212;
+      --card:#1a1a1a; --border:#24262b; --shadow:0 10px 30px rgba(0,0,0,.35);
+      --ok:#57d996; --warn:#ffb84d;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
+      line-height:1.6;
+    }
+    img{max-width:100%;display:block}
+    a{color:#fff;text-decoration:none}
+    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
+    /* Header */
+    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .brand span{color:var(--brand)}
+    .menu{display:flex;gap:.6rem}
+    .btn{
+      background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);
+      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
+      transition:transform .15s ease, opacity .2s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn--ghost{background:transparent;border:1px solid var(--border)}
+    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+    .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
+    /* Hero */
+    .hero{border-bottom:1px solid var(--border);background:radial-gradient(900px 260px at 15% 5%, rgba(233,33,33,.22),transparent 60%)}
+    .hero__grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;padding:1.2rem 0 1.2rem}
+    .feature{
+      position:relative;overflow:hidden;border-radius:1rem;border:1px solid var(--border);background:var(--card);
+      display:grid;grid-template-columns:1.1fr 1fr;gap:0;min-height:260px
+    }
+    .feature__media{aspect-ratio:16/9;background:#0e0f12;display:flex;align-items:center;justify-content:center}
+    .feature__media img{width:100%;height:100%;object-fit:cover}
+    .feature__body{padding:1rem}
+    .feature__title{margin:.2rem 0 .3rem;font-size:1.8rem;line-height:1.2}
+    .meta{display:flex;gap:.6rem;flex-wrap:wrap;color:var(--muted);font-size:.95rem}
+    /* KPIs */
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:1.2rem 0}
+    .kpi{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1rem;text-align:center}
+    .kpi h3{margin:.2rem 0;font-size:1.6rem}
+    .kpi p{margin:0;color:var(--muted)}
+    /* Audience */
+    .section{padding:1.2rem 0;border-top:1px solid var(--border)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .box{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+    .bar{background:#0f1116;border:1px solid var(--border);border-radius:.5rem;overflow:hidden;height:12px}
+    .bar>span{display:block;height:100%;background:linear-gradient(135deg,#4a0,#8ad66a)}
+    .legend{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin:.35rem 0 .6rem}
+    .label{display:flex;justify-content:space-between;margin:.25rem 0}
+    /* Packages */
+    .packs{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .pack{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column}
+    .pack__head{padding:1rem;border-bottom:1px solid var(--border)}
+    .pack__body{padding:1rem;display:grid;gap:.45rem}
+    .price{font-size:1.2rem;font-weight:800}
+    .pack ul{padding-left:1.1rem;margin:.4rem 0}
+    .pack .cta{padding:1rem;border-top:1px solid var(--border);display:flex;gap:.5rem}
+    /* Cases */
+    .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .tile{position:relative;overflow:hidden;border-radius:.8rem;border:1px solid var(--border);background:#0e0f12}
+    .tile img{width:100%;height:160px;object-fit:cover;filter:saturate(.95)}
+    .tile span{position:absolute;left:.5rem;bottom:.5rem;background:rgba(0,0,0,.5);padding:.2rem .4rem;border-radius:.4rem;font-weight:700}
+    /* Logos carousel */
+    .logos{display:flex;gap:2rem;overflow:auto;white-space:nowrap;padding:.6rem 0}
+    .logos img{height:40px;filter:grayscale(100%);opacity:.8}
+    /* Testimonials */
+    .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .quote{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+    .quote p{margin:.3rem 0}
+    .quote .who{color:var(--muted);font-size:.9rem}
+    /* Form */
+    .form{display:grid;gap:.8rem}
+    .input{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:#fff;padding:.7rem .8rem}
+    .inline{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+    .ok{background:linear-gradient(135deg,#206a4f,#2db57f);padding:.7rem;border-radius:.6rem;font-weight:700;display:none}
+    /* Footer */
+    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
+    /* Responsive */
+    @media (max-width:1100px){.hero__grid{grid-template-columns:1fr}.feature{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.packs{grid-template-columns:1fr 1fr}.gallery{grid-template-columns:repeat(3,1fr)}.quotes{grid-template-columns:1fr 1fr}}
+    @media (max-width:800px){.grid-2{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.packs{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.quotes{grid-template-columns:1fr}.inline{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
+      <nav class="menu" aria-label="principal">
+        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+        <a class="btn btn--small" href="parcerias.html">Parcerias</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <article class="feature">
+        <div class="feature__media">
+          <img src="assets/parcerias-banner.jpg" alt="Parcerias Flloydinn" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+        </div>
+        <div class="feature__body">
+          <span class="tag">PARCERIAS</span>
+          <h1 class="feature__title">Conecte sua marca à comunidade certa</h1>
+          <p class="meta">Formatos sob medida: integração em gameplay, séries patrocinadas, reviews, lives e produtos digitais.</p>
+          <div style="display:flex;gap:.6rem;margin-top:.7rem">
+            <a class="btn" href="assets/midia-kit.pdf" download>Baixar Mídia Kit (PDF)</a>
+            <a class="btn btn--ghost" href="#contato">Enviar proposta</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- KPIs -->
+  <section class="container kpis" aria-label="Métricas do canal">
+    <div class="kpi"><h3 data-count="60">0</h3><p>Inscritos +</p></div>
+    <div class="kpi"><h3 data-count="55">0</h3><p>Vídeos publicados</p></div>
+    <div class="kpi"><h3 data-count="12">0</h3><p>Média vídeos/mês</p></div>
+    <div class="kpi"><h3 data-count="4.8">0</h3><p>Engajamento ★</p></div>
+  </section>
+
+  <!-- Audiência -->
+  <section class="section">
+    <div class="container grid-2">
+      <div class="box">
+        <h2 style="margin:.2rem 0 .6rem">Quem é a audiência</h2>
+        <div class="legend"><span>Faixa etária</span><span>Percentual</span></div>
+        <div class="label"><span>13–17</span><span>12%</span></div><div class="bar"><span style="width:12%"></span></div>
+        <div class="label"><span>18–24</span><span>38%</span></div><div class="bar"><span style="width:38%"></span></div>
+        <div class="label"><span>25–34</span><span>28%</span></div><div class="bar"><span style="width:28%"></span></div>
+        <div class="label"><span>35–44</span><span>15%</span></div><div class="bar"><span style="width:15%"></span></div>
+        <div class="label"><span>45+</span><span>7%</span></div><div class="bar"><span style="width:7%"></span></div>
+        <p class="meta" style="margin-top:.7rem">Plataformas preferidas: PC e Switch • Principais gêneros: ação, roguelike e coop.</p>
+      </div>
+      <div class="box">
+        <h2 style="margin:.2rem 0 .6rem">O que podemos entregar</h2>
+        <ul>
+          <li>Integrações nativas em gameplay (pré-roll, mid-roll, menções)</li>
+          <li>Lives com ativações (cupom, sorteio, QR dinâmico)</li>
+          <li>Séries patrocinadas (3–5 episódios)</li>
+          <li>Conteúdo curto (shorts/reels) e UGC para anúncio</li>
+          <li>Produtos digitais (wallpapers, mods, mapas custom)</li>
+        </ul>
+        <div class="meta" style="margin-top:.5rem"><span class="tag">FORMATO</span> Ajustamos roteiro, tom e CTA conforme a marca.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pacotes -->
+  <section class="section">
+    <div class="container">
+      <h2 style="margin:.2rem 0 .9rem">Pacotes sugeridos</h2>
+      <div class="packs">
+        <article class="pack">
+          <div class="pack__head">
+            <span class="tag">START</span>
+            <h3 style="margin:.35rem 0 .2rem">Vídeo Integrado</h3>
+            <div class="price">R$ 499</div>
+          </div>
+          <div class="pack__body">
+            <ul>
+              <li>1 vídeo (8–15 min) com integração</li>
+              <li>CTA + link rastreável</li>
+              <li>1 post comunitário</li>
+            </ul>
+          </div>
+          <div class="cta"><a class="btn" href="#contato">Solicitar</a><a class="btn btn--ghost" href="assets/midia-kit.pdf">Ver detalhes</a></div>
+        </article>
+        <article class="pack">
+          <div class="pack__head">
+            <span class="tag">PRO</span>
+            <h3 style="margin:.35rem 0 .2rem">Série + Shorts</h3>
+            <div class="price">R$ 1.490</div>
+          </div>
+          <div class="pack__body">
+            <ul>
+              <li>Série com 3 vídeos</li>
+              <li>2 shorts + 1 live (1h)</li>
+              <li>Pacote de artes para mídia</li>
+            </ul>
+          </div>
+          <div class="cta"><a class="btn" href="#contato">Solicitar</a><a class="btn btn--ghost" href="assets/midia-kit.pdf">Ver detalhes</a></div>
+        </article>
+        <article class="pack">
+          <div class="pack__head">
+            <span class="tag">ELITE</span>
+            <h3 style="margin:.35rem 0 .2rem">Cocriado + UGC</h3>
+            <div class="price">R$ 3.990</div>
+          </div>
+          <div class="pack__body">
+            <ul>
+              <li>Campanha 360º (roteiro + produção)</li>
+              <li>UGC para Ads (6 peças)</li>
+              <li>Relatório completo de performance</li>
+            </ul>
+          </div>
+          <div class="cta"><a class="btn" href="#contato">Solicitar</a><a class="btn btn--ghost" href="assets/midia-kit.pdf">Ver detalhes</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cases / Galeria -->
+  <section class="section">
+    <div class="container">
+      <h2 style="margin:.2rem 0 .9rem">Vitrine de cases</h2>
+      <div class="gallery">
+        <a class="tile" href="#" aria-label="Case 1"><img src="assets/case1.jpg" alt="Case 1" onerror="this.style.opacity=.15"><span>Gameplay Integrado</span></a>
+        <a class="tile" href="#" aria-label="Case 2"><img src="assets/case2.jpg" alt="Case 2" onerror="this.style.opacity=.15"><span>Live com Ativação</span></a>
+        <a class="tile" href="#" aria-label="Case 3"><img src="assets/case3.jpg" alt="Case 3" onerror="this.style.opacity=.15"><span>Série Patrocinada</span></a>
+        <a class="tile" href="#" aria-label="Case 4"><img src="assets/case4.jpg" alt="Case 4" onerror="this.style.opacity=.15"><span>UGC para Ads</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos -->
+  <section class="section" aria-label="Marcas">
+    <div class="container box">
+      <div class="logos" id="logos">
+        <img src="assets/logo1.png" alt="Marca 1" onerror="this.style.opacity=.2">
+        <img src="assets/logo2.png" alt="Marca 2" onerror="this.style.opacity=.2">
+        <img src="assets/logo3.png" alt="Marca 3" onerror="this.style.opacity=.2">
+        <img src="assets/logo4.png" alt="Marca 4" onerror="this.style.opacity=.2">
+        <img src="assets/logo5.png" alt="Marca 5" onerror="this.style.opacity=.2">
+      </div>
+    </div>
+  </section>
+
+  <!-- Depoimentos -->
+  <section class="section">
+    <div class="container">
+      <h2 style="margin:.2rem 0 .9rem">O que dizem</h2>
+      <div class="quotes">
+        <article class="quote"><p>“Entrega criativa e dentro do prazo. A audiência curtiu o formato.”</p><p class="who">— Agência K, coord. de conteúdo</p></article>
+        <article class="quote"><p>“Live com CTA claro e conversão acima do esperado.”</p><p class="who">— Loja X, e-commerce</p></article>
+        <article class="quote"><p>“UGCs performaram muito bem em anúncios de performance.”</p><p class="who">— Estúdio Y, marketing</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contato -->
+  <section id="contato" class="section">
+    <div class="container grid-2">
+      <div class="box">
+        <h2 style="margin:.2rem 0 .6rem">Bora começar?</h2>
+        <p>Preencha o formulário com um breve briefing. Respondemos rapidamente.</p>
+        <ul style="color:var(--muted)">
+          <li><strong>E-mail:</strong> flloydinn@gmail.com</li>
+          <li><strong>Assunto sugerido:</strong> Proposta de parceria</li>
+        </ul>
+        <p class="meta" style="margin-top:.6rem"><span class="tag">DICA</span> Pode anexar o mídia kit quando for responder por e-mail.</p>
+      </div>
+      <form class="box form" id="form" novalidate>
+        <div class="inline">
+          <input class="input" name="name" placeholder="Seu nome *" required>
+          <input class="input" name="company" placeholder="Empresa/Marca *" required>
+        </div>
+        <input class="input" name="email" type="email" placeholder="Seu e-mail *" required>
+        <select class="input" name="package">
+          <option value="">Pacote de interesse (opcional)</option>
+          <option>Start — Vídeo Integrado</option>
+          <option>Pro — Série + Shorts</option>
+          <option>Elite — Cocriado + UGC</option>
+        </select>
+        <textarea class="input" name="brief" rows="5" placeholder="Briefing rápido: objetivos, prazos, orçamento estimado"></textarea>
+        <div class="inline">
+          <button class="btn" type="submit">Enviar proposta</button>
+          <button class="btn btn--ghost" type="button" id="copyEmail">Copiar e-mail</button>
+        </div>
+        <div id="ok" class="ok">Recebemos sua proposta! (demo)</div>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© <span id="year"></span> Flloydinn Gameplay</div>
+  </footer>
+
+  <!-- JSON-LD básico para SEO de organização/persona criador -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"Flloydinn Gameplay",
+    "url":"https://seusite.exemplo",
+    "logo":"https://seusite.exemplo/assets/favicon.png",
+    "sameAs":["https://www.youtube.com/@flloydinn"]
+  }
+  </script>
+
+  <script>
+    // year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // KPIs - contadores animados
+    const counters = document.querySelectorAll('[data-count]');
+    const animateCount = (el, target, dur=900)=>{
+      const start = 0; const t0 = performance.now();
+      const dec = String(target).includes('.') ? 1 : 0;
+      function tick(t){
+        const p = Math.min(1, (t - t0)/dur);
+        const val = (start + (target-start)*p).toFixed(dec);
+        el.textContent = val.replace('.', ',');
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    };
+    counters.forEach(el=> animateCount(el, Number(el.dataset.count)));
+
+    // Logos: auto-scroll leve
+    const logos = document.getElementById('logos');
+    let scrollX = 0; let anim;
+    function autoScroll(){
+      scrollX += 0.5;
+      logos.scrollLeft = scrollX;
+      if(scrollX >= logos.scrollWidth - logos.clientWidth) scrollX = 0;
+      anim = requestAnimationFrame(autoScroll);
+    }
+    autoScroll();
+    logos.addEventListener('mouseenter', ()=> cancelAnimationFrame(anim));
+    logos.addEventListener('mouseleave', ()=> autoScroll());
+
+    // Form
+    const form = document.getElementById('form');
+    const ok = document.getElementById('ok');
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      if(!data.name || !data.company || !data.email || !data.email.includes('@')){
+        alert('Preencha nome, empresa e e-mail válidos.');
+        return;
+      }
+      // Demo: salvar no localStorage
+      const inbox = JSON.parse(localStorage.getItem('biz_inbox')||'[]');
+      inbox.push({...data, at:new Date().toISOString()});
+      localStorage.setItem('biz_inbox', JSON.stringify(inbox));
+      ok.style.display = 'block';
+      form.reset();
+    });
+    document.getElementById('copyEmail').addEventListener('click', async ()=>{
+      try { await navigator.clipboard.writeText('flloydinn@gmail.com'); alert('E-mail copiado: flloydinn@gmail.com'); }
+      catch { alert('Não foi possível copiar.'); }
+    });
+  </script>
+</body>
+</html>
