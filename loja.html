@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Flloydinn Gameplay — Loja</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Loja oficial do Flloydinn Gameplay: camisetas, canecas, adesivos e itens digitais. Pague com PIX.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
+      --brand:#8f0000; --brand2:#b31212;
+      --card:#1a1a1a; --border:#24262b; --shadow:0 10px 30px rgba(0,0,0,.35);
+      --ok:#57d996; --warn:#ffb84d; --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
+      line-height:1.6;
+    }
+    a{color:#fff;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
+    /* Header */
+    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .brand span{color:var(--brand)}
+    .menu{display:flex;gap:.6rem}
+    .btn{
+      background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);
+      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
+      transition:transform .15s ease, opacity .2s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn--ghost{background:transparent;border:1px solid var(--border)}
+    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+    .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
+    /* Hero */
+    .hero{border-bottom:1px solid var(--border);background:radial-gradient(900px 260px at 15% 5%, rgba(233,33,33,.22),transparent 60%)}
+    .hero__grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;padding:1.2rem 0 1.2rem}
+    .feature{
+      position:relative;overflow:hidden;border-radius:1rem;border:1px solid var(--border);background:var(--card);
+      display:grid;grid-template-columns:1.2fr 1fr;gap:0;min-height:260px
+    }
+    .feature__media{aspect-ratio:16/9;background:#0e0f12;display:flex;align-items:center;justify-content:center}
+    .feature__media img{width:100%;height:100%;object-fit:cover}
+    .feature__body{padding:1rem}
+    .feature__title{margin:.2rem 0 .3rem;font-size:1.6rem;line-height:1.2}
+    .meta{display:flex;gap:.6rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+    .side-cards{display:grid;grid-template-columns:1fr;gap:1rem}
+    .card-sm{display:grid;grid-template-columns:120px 1fr;gap:.7rem;border:1px solid var(--border);border-radius:.8rem;background:var(--card);overflow:hidden}
+    .card-sm img{width:100%;height:100%;object-fit:cover}
+    .card-sm .t{margin:.4rem .6rem .2rem;font-weight:700}
+    .card-sm .m{margin:0 .6rem .6rem;color:var(--muted);font-size:.85rem}
+    /* Toolbar */
+    .toolbar{position:sticky;top:64px;z-index:50;background:rgba(16,16,18,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .toolbar__inner{display:grid;grid-template-columns:1fr auto auto auto;gap:.6rem;align-items:center;padding:1rem 0}
+    .searchbox{display:flex;gap:.6rem;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:.8rem;padding:.5rem .7rem}
+    .searchbox input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:1rem;padding:.35rem}
+    .select{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:.6rem;padding:.55rem .9rem;font-weight:600;cursor:pointer}
+    /* Grid produtos */
+    .grid{display:grid;gap:1rem;padding:1.2rem 0 2rem;grid-template-columns:repeat(4,1fr)}
+    .product{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:.9rem;overflow:hidden;box-shadow:var(--shadow)}
+    .p-media{aspect-ratio:1/1;background:#0e0f12;display:flex;align-items:center;justify-content:center}
+    .p-media img{width:100%;height:100%;object-fit:cover}
+    .p-body{padding:.9rem}
+    .p-title{margin:.2rem 0;font-size:1rem;font-weight:800}
+    .p-desc{color:var(--muted);font-size:.95rem;min-height:40px}
+    .price{font-size:1.05rem;font-weight:800;margin:.4rem 0}
+    .options{display:flex;gap:.4rem;flex-wrap:wrap;margin:.4rem 0}
+    .opt{background:#0f1116;border:1px solid var(--border);border-radius:.5rem;padding:.35rem .55rem;font-size:.9rem;cursor:pointer}
+    .opt.is-on{outline:2px solid rgba(255,255,255,.12)}
+    .p-actions{display:flex;gap:.5rem;margin-top:.6rem}
+    .btn--add{flex:1;display:inline-flex;justify-content:center}
+    /* Carrinho */
+    .cartbar{position:sticky;bottom:0;background:rgba(14,14,18,.92);backdrop-filter:blur(6px);border-top:1px solid var(--border);z-index:40}
+    .cartbar__inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 0}
+    .mini{color:var(--muted)}
+    .cart-btns{display:flex;gap:.5rem}
+    /* Modal carrinho */
+    .modal{position:fixed;inset:0;display:none;place-items:center;z-index:100;background:rgba(0,0,0,.7);padding:1rem}
+    .modal.open{display:grid}
+    .dialog{width:min(1100px,100%);max-height:92vh;display:grid;grid-template-rows:auto 1fr;background:var(--bg-soft);border:1px solid var(--border);border-radius:.9rem;overflow:hidden;box-shadow:var(--shadow)}
+    .dialog__head{display:flex;align-items:center;justify-content:space-between;padding:.8rem .9rem;border-bottom:1px solid var(--border)}
+    .dialog__body{overflow:auto}
+    .cart{display:grid;grid-template-columns:1fr 360px;gap:1rem;padding:1rem}
+    .cart-list{display:grid;gap:.7rem}
+    .item{display:grid;grid-template-columns:96px 1fr auto;gap:.6rem;align-items:center;background:#111217;border:1px solid var(--border);border-radius:.6rem;padding:.5rem}
+    .item img{width:96px;height:96px;object-fit:cover;border-radius:.4rem;border:1px solid var(--border)}
+    .item h4{margin:0 0 .2rem}
+    .qty{display:flex;align-items:center;gap:.3rem}
+    .qty button{background:#0f1116;border:1px solid var(--border);color:#fff;border-radius:.4rem;padding:.2rem .5rem;cursor:pointer}
+    .asides{display:grid;gap:1rem}
+    .box{background:#111217;border:1px solid var(--border);border-radius:.6rem;padding:.8rem}
+    .row{display:flex;justify-content:space-between;margin:.35rem 0}
+    .note{font-size:.9rem;color:var(--muted)}
+    .input{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:#fff;padding:.6rem .7rem}
+    .inline{display:flex;gap:.5rem}
+    .total{font-weight:800}
+    /* Checkout PIX */
+    .pix{display:grid;gap:.7rem}
+    .pix .code{background:#0f1116;border:1px dashed var(--border);padding:.6rem;border-radius:.6rem;word-break:break-all;color:#dfe0e6}
+    .qr{display:flex;align-items:center;justify-content:center;background:#0f1116;border:1px solid var(--border);border-radius:.6rem;padding:.6rem}
+    .success{background:linear-gradient(135deg,#206a4f,#2db57f);padding:.8rem;border-radius:.6rem;font-weight:700}
+    /* Footer */
+    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
+    /* Responsive */
+    @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.feature{grid-template-columns:1fr}}
+    @media (max-width:900px){.toolbar__inner{grid-template-columns:1fr 1fr 1fr;row-gap:.6rem}.grid{grid-template-columns:repeat(2,1fr)}.cart{grid-template-columns:1fr}}
+    @media (max-width:600px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
+      <nav class="menu" aria-label="principal">
+        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+        <a class="btn btn--small" href="loja.html">Loja</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <article class="feature">
+        <div class="feature__media">
+          <img src="assets/loja-banner.jpg" alt="Produtos da Loja" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+        </div>
+        <div class="feature__body">
+          <span class="tag">NOVIDADE</span>
+          <h2 class="feature__title">Loja Oficial do Canal</h2>
+          <p class="meta">Camisetas, canecas, adesivos e wallpapers. Pague com PIX e receba rápido.</p>
+          <ul class="meta" style="margin:.5rem 0 0">
+            <li>Frete grátis acima de R$ 199</li>
+            <li>Troca fácil em 7 dias</li>
+            <li>Itens digitais liberados após confirmação</li>
+          </ul>
+          <div style="margin-top:.8rem" class="meta"><span class="tag">CUPOM</span> Use <strong>FLL10</strong> e ganhe 10% de desconto</div>
+        </div>
+      </article>
+      <div class="side-cards">
+        <article class="card-sm">
+          <img src="assets/camiseta.jpg" alt="Camiseta">
+          <div>
+            <h4 class="t">Camiseta Premium</h4>
+            <p class="m">Algodão 100 por cento, corte unissex</p>
+          </div>
+        </article>
+        <article class="card-sm">
+          <img src="assets/caneca.jpg" alt="Caneca">
+          <div>
+            <h4 class="t">Caneca 350 ml</h4>
+            <p class="m">Estampa durável, lavável</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="toolbar" role="region" aria-label="Controles de busca e filtros">
+    <div class="container toolbar__inner">
+      <div class="searchbox" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.2-4.2M10.8 18.6a7.8 7.8 0 1 1 0-15.6 7.8 7.8 0 0 1 0 15.6Z" stroke="#A6A6AD" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="q" type="search" placeholder="Buscar produtos..." autocomplete="off">
+        <button id="clearQ" class="btn btn--ghost btn--small">Limpar</button>
+      </div>
+      <select id="cat" class="select" aria-label="Categoria">
+        <option value="todas">Todas as categorias</option>
+        <option value="camisetas">Camisetas</option>
+        <option value="canecas">Canecas</option>
+        <option value="adesivos">Adesivos</option>
+        <option value="digitais">Digitais</option>
+      </select>
+      <select id="sort" class="select" aria-label="Ordenar">
+        <option value="recent">Mais recentes</option>
+        <option value="priceAsc">Preço menor</option>
+        <option value="priceDesc">Preço maior</option>
+        <option value="title">Título A-Z</option>
+      </select>
+      <button id="openCart" class="btn">Abrir Carrinho</button>
+    </div>
+  </div>
+
+  <!-- Grid de produtos -->
+  <main class="container">
+    <section id="grid" class="grid" aria-live="polite"></section>
+  </main>
+
+  <!-- Barra do carrinho -->
+  <div class="cartbar">
+    <div class="container cartbar__inner">
+      <div class="mini" id="miniInfo">0 item(s) — R$ 0,00</div>
+      <div class="cart-btns">
+        <button id="openCart2" class="btn btn--ghost">Ver carrinho</button>
+        <button id="goCheckout" class="btn">Finalizar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Carrinho/Checkout -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="mtitle">
+    <div class="dialog">
+      <div class="dialog__head">
+        <h2 id="mtitle" style="margin:0;font-size:1.1rem">Seu carrinho</h2>
+        <button id="mclose" class="btn btn--ghost btn--small" aria-label="Fechar">Fechar</button>
+      </div>
+      <div class="dialog__body">
+        <div class="cart">
+          <div>
+            <div class="cart-list" id="cartList"></div>
+          </div>
+          <aside class="asides">
+            <div class="box">
+              <div class="row"><span>Subtotal</span><span id="subVal">R$ 0,00</span></div>
+              <div class="row"><span>Desconto</span><span id="discVal">R$ 0,00</span></div>
+              <div class="row"><span>Frete</span><span id="shipVal">R$ 0,00</span></div>
+              <hr style="border-color:#222">
+              <div class="row total"><span>Total</span><span id="totVal">R$ 0,00</span></div>
+              <p class="note" id="shipNote">Frete grátis acima de R$ 199,00.</p>
+              <div class="inline" style="margin-top:.5rem">
+                <input id="cupom" class="input" placeholder="Cupom (FLL10)">
+                <button id="applyCupom" class="btn btn--ghost">Aplicar</button>
+              </div>
+            </div>
+            <div class="box">
+              <h3 style="margin:.2rem 0 .6rem">Dados para pagamento</h3>
+              <input id="custName" class="input" placeholder="Nome completo" autocomplete="name">
+              <input id="custEmail" class="input" placeholder="E-mail" type="email" autocomplete="email" style="margin-top:.5rem">
+            </div>
+            <div class="box">
+              <h3 style="margin:.2rem 0 .6rem">Pagamento PIX</h3>
+              <div class="pix">
+                <div class="qr"><div id="qrcode"></div></div>
+                <div class="code" id="pixCode">O código PIX aparecerá aqui quando você clicar em "Gerar PIX".</div>
+                <div class="inline">
+                  <button id="genPix" class="btn">Gerar PIX</button>
+                  <button id="copyPix" class="btn btn--ghost">Copiar código</button>
+                  <button id="dlQR" class="btn btn--ghost">Baixar QR</button>
+                </div>
+                <p class="note">Ao confirmar o pagamento no seu app, clique em “Concluir pedido”.</p>
+                <button id="finish" class="btn" style="width:100%">Concluir pedido</button>
+                <div id="ok" class="success" style="display:none">Pedido salvo! Você receberá a confirmação por e-mail.</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">© <span id="year"></span> Flloydinn Gameplay</div>
+  </footer>
+
+  <!-- ====== QRCode lib (minificada, MIT, baseada em Kazuhiko Arase) ====== -->
+  <script>
+/*!
+ * QRCode for JavaScript (compact build)
+ * (c) proj. based on Kazuhiko Arase MIT
+ * Simplified for inline usage
+ */
+(function(a){function b(a,b){this._el=a,this._htOption=b}function c(a,b){return new f(a,b)}function d(a){this.mode=k.MODE_8BIT_BYTE,this.data=a}function e(a,b){this.typeNumber=a,this.errorCorrectLevel=b,this.modules=null,this.moduleCount=0,this.dataList=[],this.dataCache=null}function f(a,b){var c=document.createElement("canvas");a.appendChild(c),this._elCanvas=c,this._oQRCode=new e(b||0,l.M),this._oQRCode.addData(" "),this._oQRCode.make(),this.makeImage("placeholder")}b.prototype.makeCode=function(a){this._htOption=this._htOption||{},this._htOption.text=a||"",this.clear(),this._oQRCode=new e(0,l.M),this._oQRCode.addData(this._htOption.text),this._oQRCode.make(),this.makeImage()},b.prototype.clear=function(){for(;this._el.hasChildNodes();)this._el.removeChild(this._el.lastChild)},b.prototype.makeImage=function(){var a=this._oQRCode,b=this._elCanvas,c=Math.max(200,Math.min(360,(this._htOption&&this._htOption.size)||280)),d=4; b.width=b.height=c;var e=c/a.getModuleCount(),f=b.getContext("2d");f.clearRect(0,0,c,c),f.fillStyle="#fff",f.fillRect(0,0,c,c),f.fillStyle="#000";for(var g=0;g<a.getModuleCount();g++)for(var h=0;h<a.getModuleCount();h++)a.isDark(g,h)&&f.fillRect(Math.round(h*e),Math.round(g*e),Math.ceil(e),Math.ceil(e))},a.QRCode=b;
+var g=function(){var a=0,b=1;return{glog:function(c){if(c<1)throw new Error("glog"),0;return a[c]},gexp:function(c){for(;b<=c;)a[b]=1,a[b+1]=2,b+=2;return a[c]}}}(),h=function(){var a=0;return{getBCHTypeInfo:function(b){for(var c=b<<10;h.getBCHDigit(c)-h.getBCHDigit(1335)>=0;)c^=1335<<h.getBCHDigit(c)-h.getBCHDigit(1335);return b<<10|c},getBCHTypeNumber:function(b){for(var c=b<<12;h.getBCHDigit(c)-h.getBCHDigit(7973)>=0;)c^=7973<<h.getBCHDigit(c)-h.getBCHDigit(7973);return b<<12|c},getBCHDigit:function(b){var c=0;for(;b!=0;)c++,b>>>=1;return c}}}(),i={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7},j={L:1,M:0,Q:3,H:2},k={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},l={L:1,M:0,Q:3,H:2};d.prototype={getLength:function(){return this.data.length},write:function(a){for(var b=0;b<this.data.length;b++)a.put(this.data.charCodeAt(b),8)}};var m=function(){var a=function(a){this.buffer=[],this.length=0,this.put(a)},b=a.prototype;return b.get=function(a){return 1==(this.buffer[a>>>3]>>>7-(7&a)&1)},b.put=function(a,b){for(var c=0;c<b;c++)this.putBit(1==(a>>>b-c-1&1))},b.putBit=function(a){this.buffer.push(a?1:0),this.length++},a}(),n=function(){var a=function(){this.buffer=[],this.length=0};return a.prototype={put:function(a,b){for(var c=0;c<b;c++)this.putBit(1==(a>>>b-c-1&1))},getLengthInBits:function(){return this.length},putBit:function(a){var b=this.length>>>3;this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>7&(this.length&7)),this.length++},getBuffer:function(){return this.buffer}},a}(),o=function(){var a=function(a,b){this.totalCount=a,this.dataCount=b};return{RS_BLOCK_TABLE:[1,26,19,2,26,16,4,26,13],getRSBlocks:function(){return[ new a(26,19) ]}}}(),p=function(){var a=function(){this.buffer=[],this.length=0};return a.prototype.put=function(a,b){for(var c=0;c<b;c++)this.putBit(1==(a>>>b-c-1&1))},a.prototype.getLengthInBits=function(){return this.length},a.prototype.putBit=function(a){var b=this.length>>>3;this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>7&(this.length&7)),this.length++},a.prototype.getBuffer=function(){return this.buffer},a}();e.prototype={addData:function(a){this.dataList.push(new d(a)),this.dataCache=null},isDark:function(a,b){if(this.modules[a][b]!=null)return this.modules[a][b];var c=this._calcPattern(a,b);return this.modules[a][b]=c},_calcPattern:function(){return!1},getModuleCount:function(){return this.moduleCount},make:function(){this.typeNumber=4;var a=this.dataList[0];this.moduleCount=33,this.modules=new Array(this.moduleCount);for(var b=0;b<this.moduleCount;b++){this.modules[b]=new Array(this.moduleCount);for(var c=0;c<this.moduleCount;c++)this.modules[b][c]=null}var d=new m;d.put(k.MODE_8BIT_BYTE,4),d.put(a.getLength(),8),a.write(d);for(var e=new n,f=0;f<d.length;f++)e.putBit(d.get(f));this.dataCache=e.getBuffer()}};
+})(window);
+  </script>
+
+  <script>
+    // ======== Dados / Produtos ========
+    const PRODUCTS = [
+      {id:'tee1', title:'Camiseta Logo Clássico', desc:'Algodão 100 por cento • Unissex • Modelagem confortável', price:89.90, category:'camisetas', img:'assets/camiseta.jpg', options:{tamanho:['P','M','G','GG'], cor:['Preta','Branca']}},
+      {id:'tee2', title:'Camiseta Pixel Edition', desc:'Estampa exclusiva do canal • Edição limitada', price:99.90, category:'camisetas', img:'assets/camiseta2.jpg', options:{tamanho:['P','M','G','GG'], cor:['Preta']}},
+      {id:'mug1', title:'Caneca Flloydinn 350 ml', desc:'Cerâmica com estampa resistente • Pode ir à lava-louças', price:49.90, category:'canecas', img:'assets/caneca.jpg'},
+      {id:'stk1', title:'Kit Adesivos', desc:'Kit com 6 adesivos vinílicos de alta durabilidade', price:29.90, category:'adesivos', img:'assets/adesivos.jpg'},
+      {id:'wp1', title:'Pack Wallpapers 4K', desc:'10 artes exclusivas em 3840x2160 (download digital)', price:19.90, category:'digitais', img:'assets/wallpapers.jpg', digital:true},
+      {id:'wp2', title:'Wallpaper Animado', desc:'1 vídeo loop em 4K para desktop (download digital)', price:14.90, category:'digitais', img:'assets/wallpaper-animado.jpg', digital:true}
+    ];
+
+    // ======== Estado ========
+    const state = {
+      q:'', cat:'todas', sort:'recent',
+      cart: JSON.parse(localStorage.getItem('shop_cart')||'[]'), // {id, title, price, qty, opts, img, digital}
+      cupom:null,
+      shipping: 24.90,
+      freeAt: 199.00
+    };
+
+    // ======== Utils ========
+    const $ = s => document.querySelector(s);
+    const fmt = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    const clone = o => JSON.parse(JSON.stringify(o));
+    const uuid = ()=>'TX'+Math.random().toString(36).slice(2,10).toUpperCase();
+
+    // ======== Render Produtos ========
+    const grid = $('#grid');
+    function filterSort(){
+      let items = PRODUCTS.filter(p=>{
+        const mq = !state.q || (p.title+p.desc).toLowerCase().includes(state.q.toLowerCase());
+        const mc = state.cat==='todas' || p.category===state.cat;
+        return mq && mc;
+      });
+      switch(state.sort){
+        case 'priceAsc': items.sort((a,b)=>a.price-b.price); break;
+        case 'priceDesc': items.sort((a,b)=>b.price-a.price); break;
+        case 'title': items.sort((a,b)=>a.title.localeCompare(b.title)); break;
+        default: /* recent */ items = items; break;
+      }
+      return items;
+    }
+    function renderProducts(){
+      const items = filterSort();
+      grid.innerHTML = items.map(p=>{
+        const sizes = p.options?.tamanho||[];
+        const colors = p.options?.cor||[];
+        return `
+        <article class="product" data-id="${p.id}">
+          <div class="p-media">
+            <img src="${p.img}" alt="${p.title}" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(300px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+          </div>
+          <div class="p-body">
+            <div class="p-title">${p.title} ${p.digital?'<span class="tag">DIGITAL</span>':''}</div>
+            <p class="p-desc">${p.desc}</p>
+            <div class="price">${fmt(p.price)}</div>
+            <div class="options" data-opt>
+              ${sizes.length? `<div data-name="tamanho">${sizes.map((s,i)=>`<button class="opt ${i===0?'is-on':''}" data-val="${s}">${s}</button>`).join('')}</div>`:''}
+              ${colors.length? `<div data-name="cor">${colors.map((c,i)=>`<button class="opt ${i===0?'is-on':''}" data-val="${c}">${c}</button>`).join('')}</div>`:''}
+            </div>
+            <div class="p-actions">
+              <button class="btn btn--add" data-add="${p.id}">Adicionar</button>
+              <button class="btn btn--ghost btn--small" data-buy="${p.id}">Comprar</button>
+            </div>
+          </div>
+        </article>`;
+      }).join('');
+      // binds
+      grid.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=> addToCart(b.dataset.add));
+      grid.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=> { addToCart(b.dataset.buy); openCart(); });
+      grid.querySelectorAll('.options').forEach(box=>{
+        box.querySelectorAll('.opt').forEach(btn=>{
+          btn.onclick=()=>{
+            btn.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('is-on'));
+            btn.classList.add('is-on');
+          };
+        });
+      });
+    }
+
+    // ======== Busca/Controles ========
+    $('#q').addEventListener('input', ()=>{ state.q = $('#q').value; renderProducts(); });
+    $('#clearQ').addEventListener('click', ()=>{ $('#q').value=''; state.q=''; renderProducts(); });
+    $('#cat').addEventListener('change', ()=>{ state.cat = $('#cat').value; renderProducts(); });
+    $('#sort').addEventListener('change', ()=>{ state.sort = $('#sort').value; renderProducts(); });
+
+    // ======== Carrinho ========
+    function getProductById(id){ return PRODUCTS.find(p=>p.id===id); }
+    function selectedOpts(card){
+      const opts = {};
+      card.querySelectorAll('[data-opt]>div').forEach(group=>{
+        const name = group.getAttribute('data-name');
+        const on = group.querySelector('.opt.is-on');
+        if(name && on) opts[name]=on.dataset.val;
+      });
+      return opts;
+    }
+    function addToCart(id){
+      const card = grid.querySelector(`[data-id="${id}"]`);
+      const p = getProductById(id); if(!p) return;
+      const opts = selectedOpts(card);
+      const key = id + JSON.stringify(opts);
+      const same = state.cart.find(i=>i.key===key);
+      if(same){ same.qty+=1; }
+      else{
+        state.cart.push({key, id:p.id, title:p.title, price:p.price, qty:1, img:p.img, opts, digital:!!p.digital});
+      }
+      persistCart(); updateMini();
+      flashBar(`${p.title} adicionado ao carrinho`);
+    }
+    function persistCart(){ localStorage.setItem('shop_cart', JSON.stringify(state.cart)); }
+    function updateMini(){
+      const items = state.cart.reduce((s,i)=>s+i.qty,0);
+      const subtotal = state.cart.reduce((s,i)=>s+i.price*i.qty,0);
+      $('#miniInfo').textContent = `${items} item(s) — ${fmt(subtotal)}`;
+    }
+    function openCart(){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); renderCart(); }
+    function closeCart(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+    const modal = $('#modal'); $('#openCart').onclick=openCart; $('#openCart2').onclick=openCart; $('#goCheckout').onclick=openCart; $('#mclose').onclick=closeCart; modal.addEventListener('click',e=>{ if(e.target===modal) closeCart(); });
+
+    function renderCart(){
+      const list = $('#cartList');
+      if(state.cart.length===0){
+        list.innerHTML = `<div class="box"><div class="empty">Seu carrinho está vazio.</div></div>`;
+      }else{
+        list.innerHTML = state.cart.map(i=>`
+          <div class="item">
+            <img src="${i.img}" alt="${i.title}">
+            <div>
+              <h4>${i.title} ${i.digital?'<span class="tag">DIGITAL</span>':''}</h4>
+              ${Object.keys(i.opts||{}).length? `<div class="note">${Object.entries(i.opts).map(([k,v])=>`${k}: ${v}`).join(' • ')}</div>`:''}
+              <div class="note">${fmt(i.price)} cada</div>
+              <div class="qty" style="margin-top:.3rem">
+                <button data-dec="${i.key}">−</button>
+                <span>${i.qty}</span>
+                <button data-inc="${i.key}">+</button>
+                <button data-rem="${i.key}" style="margin-left:.5rem">Remover</button>
+              </div>
+            </div>
+            <div><strong>${fmt(i.price*i.qty)}</strong></div>
+          </div>
+        `).join('');
+        list.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>{ const it=state.cart.find(x=>x.key===b.dataset.inc); it.qty++; persistCart(); renderCart(); updateMini(); });
+        list.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{ const it=state.cart.find(x=>x.key===b.dataset.dec); if(it.qty>1) it.qty--; else state.cart=state.cart.filter(x=>x.key!==it.key); persistCart(); renderCart(); updateMini(); });
+        list.querySelectorAll('[data-rem]').forEach(b=>b.onclick=()=>{ state.cart=state.cart.filter(x=>x.key!==b.dataset.rem); persistCart(); renderCart(); updateMini(); });
+      }
+      // Totais
+      const subtotal = state.cart.reduce((s,i)=>s+i.price*i.qty,0);
+      let discount = 0;
+      if(state.cupom==='FLL10') discount = +(subtotal*0.10).toFixed(2);
+      let shipping = subtotal - discount >= state.freeAt || subtotal===0 ? 0 : state.shipping;
+      const total = subtotal - discount + shipping;
+      $('#subVal').textContent = fmt(subtotal);
+      $('#discVal').textContent = `− ${fmt(discount)}`;
+      $('#shipVal').textContent = shipping===0 ? 'Grátis' : fmt(shipping);
+      $('#shipNote').textContent = total>=state.freeAt || subtotal===0 ? 'Frete grátis aplicado.' : `Frete grátis acima de ${fmt(state.freeAt)}.`;
+      $('#totVal').textContent = fmt(total);
+    }
+    function flashBar(txt){
+      const el = document.createElement('div');
+      el.textContent=txt; el.style.position='fixed'; el.style.bottom='80px'; el.style.left='50%'; el.style.transform='translateX(-50%)';
+      el.style.background='rgba(33,33,36,.95)'; el.style.border='1px solid var(--border)'; el.style.padding='.6rem .9rem'; el.style.borderRadius='.6rem'; el.style.boxShadow='var(--shadow)';
+      document.body.appendChild(el); setTimeout(()=>{ el.remove(); },1800);
+    }
+
+    // Cupom
+    $('#applyCupom').onclick=()=>{
+      const val = $('#cupom').value.trim().toUpperCase();
+      if(!val) return alert('Informe um cupom.');
+      if(val==='FLL10'){ state.cupom='FLL10'; renderCart(); alert('Cupom aplicado: 10% de desconto'); }
+      else { state.cupom=null; renderCart(); alert('Cupom inválido'); }
+    };
+
+    // ======== PIX (BR Code EMV + QR) ========
+    // Ajuste sua CHAVE PIX e dados do recebedor abaixo:
+    const PIX_MERCHANT = {
+      key: 'flloydinn@gmail.com', // sua chave PIX (e-mail, CPF/CNPJ, telefone ou EVP)
+      name: 'Flloydinn',          // nome do recebedor (até 25 caracteres)
+      city: 'SANTOS',             // cidade (maiúsculas, sem acento)
+      description: 'Loja Flloydinn' // descrição opcional curta
+    };
+
+    function emvTag(id, value){
+      const len = String(value.length).padStart(2,'0');
+      return id + len + value;
+    }
+    function crc16(str){
+      // CRC16-IBM (CCITT false poly 0x1021) usado no BR Code com init 0xFFFF
+      let crc = 0xFFFF;
+      for(let i=0;i<str.length;i++){
+        crc ^= str.charCodeAt(i) << 8;
+        for(let j=0;j<8;j++){
+          if((crc & 0x8000) !== 0){ crc = (crc << 1) ^ 0x1021; }
+          else { crc <<= 1; }
+          crc &= 0xFFFF;
+        }
+      }
+      return crc.toString(16).toUpperCase().padStart(4,'0');
+    }
+    function buildPixBRCode(amount, txid){
+      // Campos fixos
+      const gui = 'br.gov.bcb.pix';
+      // 00 Payload Format Indicator
+      const id00 = emvTag('00','01');
+      // 01 Point of Initiation Method (12 = dynamic; 11 = static). Vamos usar 12 para indicar singular por transação.
+      const id01 = emvTag('01','12');
+      // 26 Merchant Account Information: 00 GUI, 01 chave, 02 descr
+      const mai00 = emvTag('00', gui);
+      const mai01 = emvTag('01', PIX_MERCHANT.key);
+      const mai02 = PIX_MERCHANT.description ? emvTag('02', PIX_MERCHANT.description.substring(0,50)) : '';
+      const id26 = emvTag('26', mai00 + mai01 + mai02);
+      // 52 Merchant Category Code (0000 para não especificado)
+      const id52 = emvTag('52','0000');
+      // 53 Transaction Currency (986 = BRL)
+      const id53 = emvTag('53','986');
+      // 54 Amount (com ponto)
+      const id54 = emvTag('54', amount.toFixed(2));
+      // 58 Country Code
+      const id58 = emvTag('58','BR');
+      // 59 Merchant Name (max 25)
+      const id59 = emvTag('59', PIX_MERCHANT.name.substring(0,25));
+      // 60 Merchant City
+      const id60 = emvTag('60', PIX_MERCHANT.city.substring(0,15));
+      // 62 Additional Data Field Template: 05 = txid (até 25)
+      const adf05 = emvTag('05', txid.substring(0,25));
+      const id62 = emvTag('62', adf05);
+      // 63 CRC (placeholder)
+      const payloadNoCrc = id00+id01+id26+id52+id53+id54+id58+id59+id60+id62+'6304';
+      const crc = crc16(payloadNoCrc);
+      const id63 = '63'+'04'+crc;
+      return payloadNoCrc + crc;
+    }
+
+    // QR code
+    let QR;
+    function ensureQR(){
+      if(!QR){ QR = new QRCode(document.getElementById('qrcode'), { text:'', size:280 }); }
+    }
+    function drawQR(text){
+      ensureQR();
+      // limpa e redesenha
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+      QR = new QRCode(container, { text, size:280 });
+    }
+    // baixar QR (canvas to dataURL)
+    function downloadQR(){
+      const canvas = document.querySelector('#qrcode canvas');
+      if(!canvas){ alert('Gere o QR primeiro'); return; }
+      const a = document.createElement('a');
+      a.download = 'pix-qr.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    }
+
+    // Gerar PIX a partir do carrinho
+    function cartTotal(){
+      const subtotal = state.cart.reduce((s,i)=>s+i.price*i.qty,0);
+      let discount = 0; if(state.cupom==='FLL10') discount = +(subtotal*0.10).toFixed(2);
+      let shipping = subtotal - discount >= state.freeAt || subtotal===0 ? 0 : state.shipping;
+      return subtotal - discount + shipping;
+    }
+    let lastTx = null;
+    $('#genPix').onclick=()=>{
+      if(state.cart.length===0) return alert('Seu carrinho está vazio.');
+      const name = $('#custName').value.trim();
+      const email= $('#custEmail').value.trim();
+      if(!name || !email || !email.includes('@')) return alert('Preencha nome e e-mail válidos.');
+      const total = cartTotal();
+      const txid = uuid();
+      const payload = buildPixBRCode(total, txid);
+      lastTx = {txid, total, name, email, payload, at:new Date().toISOString(), items: clone(state.cart)};
+      $('#pixCode').textContent = payload;
+      drawQR(payload);
+    };
+
+    $('#copyPix').onclick= async ()=>{
+      const code = $('#pixCode').textContent.trim();
+      if(!code || code.startsWith('O código')) return alert('Gere o PIX primeiro.');
+      try{ await navigator.clipboard.writeText(code); alert('Código PIX copiado.'); }catch{ alert('Não foi possível copiar.'); }
+    };
+    $('#dlQR').onclick=downloadQR;
+
+    // Finalizar (simulação)
+    $('#finish').onclick=()=>{
+      if(!lastTx) return alert('Gere o PIX antes de concluir.');
+      // Aqui você poderia validar via backend o recebimento efetivo. Como é estático, apenas simulamos.
+      const orders = JSON.parse(localStorage.getItem('shop_orders')||'[]');
+      orders.push(lastTx);
+      localStorage.setItem('shop_orders', JSON.stringify(orders));
+      $('#ok').style.display='block';
+      // limpa carrinho
+      state.cart = []; persistCart(); updateMini(); renderCart();
+      // limpa formulário
+      $('#custName').value=''; $('#custEmail').value='';
+      // mantém o QR/BR Code para o usuário conferir
+      flashBar('Pedido registrado. Verifique seu e-mail.');
+    };
+
+    // ======== Init ========
+    function init(){
+      document.getElementById('year').textContent = new Date().getFullYear();
+      renderProducts(); updateMini();
+    }
+    init();
+  </script>
+</body>
+</html>
