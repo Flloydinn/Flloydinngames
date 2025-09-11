@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Wildlands Online — Mundo Aberto (P2P)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="Mundo aberto 3D com multiplayer WebRTC P2P (sinalização manual).">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--bg2:#121316;--text:#E8E8EA;--muted:#A6A6AD;--brand:#8f0000;--brand2:#b31212;--border:#24262b;--card:#1a1a1a;--ok:#57d996}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:linear-gradient(180deg,#0b0b0c 0%,#0d0e12 40%,#0b0b0c 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;overflow:hidden}
+.topbar{position:fixed;inset:0 0 auto 0;z-index:30;background:rgba(11,11,12,.65);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.topbar .row{width:min(1200px,calc(100% - 2rem));margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0}
+.brand{font-weight:800}.brand span{color:var(--brand)}
+.nav{display:flex;gap:.5rem}
+.btn{background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%);border:0;border-radius:.6rem;color:#fff;padding:.45rem .7rem;font-weight:700;cursor:pointer}
+.btn--ghost{background:transparent;border:1px solid var(--border)} .btn--small{font-size:.9rem}
+#game{position:fixed;inset:48px 0 0 0;display:block;background:#000}
+.hud{position:fixed;inset:48px 0 0 0;pointer-events:none}
+.panel{position:absolute;left:12px;bottom:12px;background:rgba(16,18,24,.7);border:1px solid var(--border);border-radius:.8rem;padding:.6rem;min-width:260px}
+.row{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
+.bar{flex:1;height:10px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#0f1116}
+.bar>span{display:block;height:100%;background:linear-gradient(135deg,#2db57f,#57d996)}
+.stat{font-weight:800}.meta{color:var(--muted);font-size:.9rem}
+.badge{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
+.chip{position:absolute;right:12px;top:56px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .5rem}
+.minimap{position:absolute;right:12px;bottom:12px;background:rgba(16,18,24,.7);border:1px solid var(--border);border-radius:.8rem;padding:.4rem;display:none}
+.minimap canvas{width:160px;height:160px;display:block;border-radius:.4rem;border:1px solid var(--border)}
+
+.overlay{position:fixed;inset:48px 0 0 0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:40}
+.overlay.open{display:flex}
+.modal{width:min(980px,calc(100% - 2rem));background:var(--bg2);border:1px solid var(--border);border-radius:1rem;padding:1rem}
+.modal h2{margin:.2rem 0 .6rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.input,textarea{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:#fff;padding:.6rem .7rem}
+textarea{min-height:130px;font-family:ui-monospace,Consolas,monospace}
+.small{font-size:.85rem;color:var(--muted)}
+.toast{position:absolute;left:50%;top:66px;transform:translateX(-50%);background:rgba(0,0,0,.6);border:1px solid var(--border);padding:.5rem .8rem;border-radius:.6rem;display:none;z-index:35}
+
+.chat{position:fixed;left:12px;top:60px;width:min(420px,80vw);display:grid;gap:.35rem}
+.chatlog{max-height:180px;overflow:auto;background:rgba(16,18,24,.55);border:1px solid var(--border);border-radius:.6rem;padding:.4rem;font-size:.95rem}
+.chatinput{display:flex;gap:.35rem}
+.chatinput input{flex:1} .chatinput .btn{pointer-events:auto}
+
+.mobile{position:fixed;inset:auto 0 10px 0;display:none;justify-content:space-between;padding:0 10px;z-index:25}
+.pad{width:120px;height:120px;border-radius:60px;background:rgba(16,18,24,.6);border:1px solid var(--border);position:relative}
+.stick{position:absolute;width:56px;height:56px;border-radius:28px;background:#222;border:1px solid var(--border);left:32px;top:32px}
+.btnR{width:68px;height:68px;border-radius:999px;background:rgba(16,18,24,.6);border:1px solid var(--border);display:grid;place-items:center;color:#fff;font-weight:800}
+
+.nameplate{position:absolute;padding:.1rem .3rem;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.4rem;font-size:.8rem;transform:translate(-50%,-150%);pointer-events:none}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="row">
+      <div class="brand"><a href="index.html" style="color:#fff;text-decoration:none">Flloyd<span>inn</span> Gameplay</a> <span class="meta">/ Wildlands Online</span></div>
+      <div class="nav">
+        <button id="btnHow" class="btn btn--ghost btn--small">Como entrar</button>
+        <button id="btnNet" class="btn btn--small">Multiplayer</button>
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <div class="hud" aria-hidden="true">
+    <div class="panel">
+      <div class="row"><span class="meta">Vel</span><span id="spd" class="stat">0</span> • <span class="meta">Jogadores</span><span id="pcount" class="stat">1</span></div>
+      <div class="row" style="margin:.35rem 0 .15rem"><span class="meta">Stamina</span><div class="bar"><span id="stam" style="width:70%"></span></div></div>
+      <div class="row"><span class="badge">WASD mover • Espaço pular • Shift correr • Enter chat • M minimapa • P pausa</span></div>
+    </div>
+    <div class="chip" id="clock">06:00</div>
+
+    <div class="chat">
+      <div id="chatlog" class="chatlog"></div>
+      <div class="chatinput">
+        <input id="msg" class="input" placeholder="Enter para enviar (global)" />
+        <button id="send" class="btn btn--small">Enviar</button>
+      </div>
+    </div>
+
+    <div class="minimap" id="mapWrap"><canvas id="map" width="160" height="160"></canvas></div>
+    <div class="toast" id="toast">Conectado!</div>
+  </div>
+
+  <div class="overlay" id="net">
+    <div class="modal">
+      <h2>Multiplayer (P2P via WebRTC) — Sinalização manual</h2>
+      <div class="grid">
+        <div>
+          <h3>1) Host</h3>
+          <p class="small">Clique em <b>Novo convite</b>, copie a oferta e envie ao amigo. Quando ele te mandar a resposta, cole em <b>Resposta do cliente</b> e clique <b>Concluir</b>. Repita para cada jogador.</p>
+          <div style="display:flex;gap:.35rem;margin:.35rem 0">
+            <input id="hostName" class="input" placeholder="Seu nickname (host)" />
+            <button id="mkOffer" class="btn">Novo convite</button>
+          </div>
+          <textarea id="offerOut" placeholder="Oferta (copie e envie)"></textarea>
+          <textarea id="answerIn" placeholder="Resposta do cliente (cole aqui)"></textarea>
+          <div style="display:flex;gap:.35rem;margin-top:.35rem">
+            <button id="acceptAns" class="btn">Concluir</button>
+            <button id="closeNet" class="btn btn--ghost">Fechar</button>
+          </div>
+        </div>
+        <div>
+          <h3>2) Cliente</h3>
+          <p class="small">Cole o <b>convite</b> do host, digite seu nickname e clique <b>Gerar resposta</b>. Copie a resposta e envie ao host.</p>
+          <input id="cliName" class="input" placeholder="Seu nickname (cliente)" />
+          <textarea id="offerIn" placeholder="Convite do host (cole aqui)"></textarea>
+          <textarea id="answerOut" placeholder="Resposta gerada (copie e envie ao host)"></textarea>
+          <button id="mkAnswer" class="btn">Gerar resposta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="how">
+    <div class="modal">
+      <h2>Como entrar</h2>
+      <ol>
+        <li><b>Host:</b> abre a página, clica em <b>Multiplayer → Novo convite</b>, copia o texto da oferta.</li>
+        <li><b>Cliente:</b> abre a página, cola a oferta em <b>Convite do host</b>, gera uma <b>Resposta</b> e envia ao host.</li>
+        <li><b>Host:</b> cola a resposta em <b>Resposta do cliente</b> e clica <b>Concluir</b>. Pronto, conectados.</li>
+      </ol>
+      <p class="small">Dica: abre no <b>HTTPS</b> (ou localhost). Use fone/headset para não vazar áudio do PC (o jogo não usa microfone).</p>
+      <div style="text-align:right;margin-top:.5rem"><button id="howClose" class="btn">Fechar</button></div>
+    </div>
+  </div>
+
+  <div class="mobile" id="mobile">
+    <div class="pad" id="pad"><div class="stick" id="stick"></div></div>
+    <div style="display:flex;gap:10px">
+      <div class="btnR" id="btnJump">⤒</div>
+      <div class="btnR" id="btnMap">🗺️</div>
+    </div>
+  </div>
+
+  <!-- Import map para Three.js -->
+  <script type="importmap">
+  {"imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
+  }}
+  </script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ==== DOM ==== */
+const $ = s=>document.querySelector(s);
+const canvas=$('#game');
+const hud={spd:$('#spd'), stam:$('#stam'), pcount:$('#pcount'), toast:$('#toast'), clock:$('#clock'),
+           mapWrap:$('#mapWrap'), map:$('#map'), chatlog:$('#chatlog'), msg:$('#msg')};
+const netDlg=$('#net'), howDlg=$('#how');
+$('#btnNet').onclick=()=> netDlg.classList.add('open');
+$('#closeNet').onclick=()=> netDlg.classList.remove('open');
+$('#btnHow').onclick=()=> howDlg.classList.add('open');
+$('#howClose').onclick=()=> howDlg.classList.remove('open');
+
+/* ==== THREE ==== */
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07080e);
+const camera = new THREE.PerspectiveCamera(75,1,0.1,2000);
+camera.position.set(0, 7, 10);
+function onResize(){ const w=innerWidth,h=innerHeight-48; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+onResize(); addEventListener('resize', onResize);
+
+// Luz e ciclo dia/noite
+const hemi = new THREE.HemisphereLight(0xfff0e0,0x0b0c10,.9); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, .9); sun.position.set(60,120,30); scene.add(sun);
+let timeDay=6; // 0..24
+
+// Terreno procedural
+const SIZE=1600, RES=220;
+const ggeo=new THREE.PlaneGeometry(SIZE,SIZE,RES,RES); ggeo.rotateX(-Math.PI/2);
+function n2(x,y){ const s=Math.sin(x*0.0017 + Math.sin(y*0.0013)*1.5 + 1.7)*0.5+0.5; const s2=Math.sin(x*0.004+3.2)*Math.cos(y*0.004-1.6)*0.5+0.5; return s*10 + s2*4; }
+for(let i=0;i<ggeo.attributes.position.count;i++){ const x=ggeo.attributes.position.getX(i), z=ggeo.attributes.position.getZ(i); ggeo.attributes.position.setY(i,n2(x,z)); }
+ggeo.computeVertexNormals();
+const ground=new THREE.Mesh(ggeo,new THREE.MeshStandardMaterial({color:0x374235, roughness:.95}));
+ground.receiveShadow=true; scene.add(ground);
+function hAt(x,z){return n2(x,z);}
+
+// Árvores
+const trees=new THREE.Group(); scene.add(trees);
+const tMat1=new THREE.MeshStandardMaterial({color:0x2a6628, roughness:.9, emissive:0x0});
+const tMat2=new THREE.MeshStandardMaterial({color:0x1e4d1d, roughness:.95});
+for(let i=0;i<240;i++){
+  const x=(Math.random()-0.5)*SIZE*0.85, z=(Math.random()-0.5)*SIZE*0.85;
+  const y=hAt(x,z);
+  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.2,.25,2,6), new THREE.MeshStandardMaterial({color:0x7b5a38}));
+  const top=new THREE.Mesh(new THREE.ConeGeometry(1+Math.random(),2.4,8), Math.random()<0.5?tMat1:tMat2);
+  const g=new THREE.Group(); trunk.position.y=1; top.position.y=2.6; g.add(trunk); g.add(top); g.position.set(x,y,z); trees.add(g);
+}
+
+/* ==== Player & Avatares ==== */
+const you = { id:'you', name:'Você', pos:new THREE.Vector3(0, hAt(0,0)+1.6, 0), vel:new THREE.Vector3(), yaw:0, stamina:.7, onGround:false };
+const playerMesh = new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,6,12), new THREE.MeshStandardMaterial({color:0x8f0000, roughness:.5, metalness:.2}));
+playerMesh.castShadow=true; scene.add(playerMesh);
+const nameTag=document.createElement('div'); nameTag.className='nameplate'; nameTag.textContent=you.name; document.body.appendChild(nameTag);
+
+// Outros jogadores
+const others=new Map(); // id -> {mesh, name, label}
+
+/* ==== Camera rig ==== */
+const rig=new THREE.Group(); scene.add(rig); rig.add(camera);
+function updCam(dt){ const tgt=you.pos.clone().add(new THREE.Vector3(0,5,10).applyAxisAngle(new THREE.Vector3(0,1,0), you.yaw)); rig.position.lerp(tgt, 1-Math.exp(-dt*5)); camera.lookAt(you.pos.clone().add(new THREE.Vector3(0,1.2,0))); }
+
+/* ==== Input ==== */
+const keys={}; addEventListener('keydown',e=>{ keys[e.code]=true; if(e.code==='Enter'){ sendChat(); } if(e.code==='KeyM'){ toggleMap(); } if(e.code==='KeyP'){ paused=!paused; } });
+addEventListener('keyup',e=> keys[e.code]=false);
+
+// Mobile
+const pad=$('#pad'), stick=$('#stick'), btnJump=$('#btnJump'), btnMap=$('#btnMap');
+let touch={ax:0,ay:0}; if(/Mobi|Android/i.test(navigator.userAgent)){ $('#mobile').style.display='flex'; initPad(); }
+function initPad(){
+  let drag=false,sx=0,sy=0;
+  pad.addEventListener('touchstart',e=>{drag=true; const t=e.touches[0]; sx=t.clientX; sy=t.clientY; e.preventDefault();});
+  pad.addEventListener('touchmove',e=>{
+    if(!drag) return; const t=e.touches[0]; const clamp=v=>Math.max(-45,Math.min(45,v)); const dx=clamp(t.clientX-sx), dy=clamp(t.clientY-sy);
+    stick.style.left=(32+dx)+'px'; stick.style.top=(32+dy)+'px'; touch.ax=dx/45; touch.ay=dy/45;
+  }, {passive:false});
+  const stop=()=>{drag=false; stick.style.left='32px'; stick.style.top='32px'; touch.ax=0; touch.ay=0;}; pad.addEventListener('touchend',stop); pad.addEventListener('touchcancel',stop);
+  btnJump.addEventListener('click', ()=> jump());
+  btnMap.addEventListener('click', ()=> toggleMap());
+}
+
+/* ==== Chat ==== */
+$('#send').onclick=()=> sendChat();
+hud.msg.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); sendChat(); }});
+function logChat(txt){ const div=document.createElement('div'); div.textContent=txt; hud.chatlog.appendChild(div); hud.chatlog.scrollTop=hud.chatlog.scrollHeight; }
+function sendChat(){ const t=hud.msg.value.trim(); if(!t) return; broadcast({type:'chat', name:you.name, text:t}); logChat(`Você: ${t}`); hud.msg.value=''; }
+
+/* ==== Physics ==== */
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+function jump(){ if(you.onGround){ you.vel.y=9.8; you.onGround=false; } }
+let paused=false;
+function step(dt){
+  // direções
+  const fwd = (keys['KeyW']||keys['ArrowUp']||touch.ay<-0.2)?1:0;
+  const back= (keys['KeyS']||keys['ArrowDown']||touch.ay>0.2)?1:0;
+  const left= (keys['KeyA']||keys['ArrowLeft']||touch.ax<-0.2)?1:0;
+  const right=(keys['KeyD']||keys['ArrowRight']||touch.ax>0.2)?1:0;
+  const sprint=(keys['ShiftLeft']||keys['ShiftRight']) && you.stamina>0.12;
+
+  // yaw levinho seguindo mouse X (opcional — aqui usamos A/D como strafe e yaw fixo)
+  const dir = new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0), you.yaw);
+  const side = new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0), dir).normalize();
+
+  // alvo de velocidade
+  const sp = sprint? 10 : 6.5;
+  const wish = dir.clone().multiplyScalar(fwd-back).add(side.clone().multiplyScalar(right-left)).normalize().multiplyScalar(sp);
+  you.vel.x = THREE.MathUtils.lerp(you.vel.x, wish.x, 1-Math.exp(-dt*8));
+  you.vel.z = THREE.MathUtils.lerp(you.vel.z, wish.z, 1-Math.exp(-dt*8));
+
+  // stamina
+  you.stamina += (sprint? -dt*0.28 : dt*0.18); you.stamina=clamp(you.stamina,0,1);
+
+  // gravidade + chão
+  you.vel.y += -22*dt;
+  const gy = hAt(you.pos.x, you.pos.z) + 1.2;
+  if(you.pos.y + you.vel.y*dt <= gy){ you.pos.y = gy; you.vel.y=0; you.onGround=true; }
+  else{ you.pos.y += you.vel.y*dt; you.onGround=false; }
+
+  // move horizontal
+  you.pos.x += you.vel.x*dt; you.pos.z += you.vel.z*dt;
+
+  // HUD
+  hud.spd.textContent = Math.round(new THREE.Vector2(you.vel.x,you.vel.z).length()*3.6);
+  hud.stam.style.width = (you.stamina*100|0)+'%';
+
+  // sol / relógio
+  timeDay = (timeDay + dt*0.05) % 24;
+  const h=Math.floor(timeDay), m=Math.floor((timeDay-h)*60);
+  hud.clock.textContent = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  const t = (timeDay<6?0:timeDay<9?(timeDay-6)/3*0.5:timeDay<17?1:timeDay<20?(20-timeDay)/3*0.5:0);
+  hemi.intensity=0.4+0.6*t; sun.intensity=0.3+0.7*t;
+}
+
+/* ==== Minimap ==== */
+let mapOn=false; function toggleMap(){ mapOn=!mapOn; hud.mapWrap.style.display=mapOn?'block':'none'; }
+const mctx=hud.map.getContext('2d');
+function drawMap(){
+  const ctx=mctx,c=hud.map; ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1116'; ctx.fillRect(0,0,c.width,c.height); ctx.strokeStyle='#24262b'; ctx.strokeRect(0,0,c.width,c.height);
+  const s=0.12, cx=80, cy=80;
+  // você
+  ctx.fillStyle='#ff4a4a'; const px=cx+you.pos.x*s, py=cy+you.pos.z*s; ctx.beginPath(); ctx.arc(px,py,3,0,6.28); ctx.fill();
+  // outros
+  ctx.fillStyle='#48d1ff';
+  others.forEach(o=>{ const x=cx+o.mesh.position.x*s, y=cy+o.mesh.position.z*s; ctx.fillRect(x,y,2,2); });
+}
+
+/* ==== Render loop ==== */
+let last=performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  if(!paused){ const now=performance.now(); const dt=Math.min(0.05,(now-last)/1000); last=now; step(dt); updCam(dt); }
+  // aplica posições
+  playerMesh.position.copy(you.pos);
+  // nameplate (você)
+  positionLabel(nameTag, you.pos, 'Você');
+  // outros nameplates
+  others.forEach(o=>{ positionLabel(o.label, o.mesh.position, o.name); });
+  if(mapOn) drawMap();
+  renderer.render(scene,camera);
+}
+loop();
+
+function positionLabel(el, worldPos, text){
+  const v=worldPos.clone(); v.y+=2.1; v.project(camera);
+  const x=(v.x*0.5+0.5)*innerWidth, y=(( -v.y*0.5+0.5)*(innerHeight-48))+48;
+  el.textContent=text; el.style.left=x+'px'; el.style.top=y+'px';
+}
+
+/* ==== NETWORK (WebRTC DataChannel com sinalização manual) ==== */
+const rtcConfig={ iceServers:[{urls:'stun:stun.l.google.com:19302'}] };
+
+// Estado
+let isHost=false; you.name = localStorage.getItem('nick') || `Player_${Math.floor(Math.random()*999)}`;
+$('#hostName').value = you.name; $('#cliName').value = you.name;
+
+// Host: múltiplos clientes
+const hostPeers=new Map(); // id -> {pc, dc}
+let invitePC=null; // pc atual criando oferta
+
+// Client: um host
+let clientPC=null, clientDC=null;
+
+// Mensagens base
+function broadcast(obj){ const msg=JSON.stringify(obj); if(isHost){ hostPeers.forEach(p=>{ if(p.dc?.readyState==='open') p.dc.send(msg); }); } else { clientDC?.readyState==='open' && clientDC.send(msg); } }
+function toast(t){ hud.toast.textContent=t; hud.toast.style.display='block'; setTimeout(()=> hud.toast.style.display='none', 900); }
+
+function addRemotePlayer(id,name){
+  if(others.has(id)) return;
+  const mesh=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,6,12), new THREE.MeshStandardMaterial({color:0x3477ff, roughness:.6}));
+  mesh.position.set(0,hAt(0,0)+1.6,0); scene.add(mesh);
+  const label=document.createElement('div'); label.className='nameplate'; document.body.appendChild(label);
+  others.set(id,{mesh,name,label});
+  hud.pcount.textContent = (others.size+1).toString();
+}
+function removeRemotePlayer(id){
+  const o=others.get(id); if(!o) return;
+  scene.remove(o.mesh); o.label.remove(); others.delete(id);
+  hud.pcount.textContent = (others.size+1).toString();
+}
+
+// Host — criar convite
+$('#mkOffer').onclick = async ()=>{
+  isHost=true; you.name = $('#hostName').value || you.name; localStorage.setItem('nick', you.name);
+  invitePC = new RTCPeerConnection(rtcConfig);
+  const dc = invitePC.createDataChannel('game');
+  dc.onopen = ()=> toast('Cliente conectado!');
+  dc.onmessage = ev => onMessageFromClient(dc, ev.data);
+  invitePC.onicecandidate = e=>{ if(!e.candidate){ $('#offerOut').value = btoa(unescape(encodeURIComponent(JSON.stringify(invitePC.localDescription)))); } };
+  const offer = await invitePC.createOffer(); await invitePC.setLocalDescription(offer);
+};
+
+// Host — aceitar resposta e finalizar conexão
+$('#acceptAns').onclick = async ()=>{
+  if(!invitePC) return;
+  try{
+    const ansStr = decodeURIComponent(escape(atob($('#answerIn').value.trim())));
+    const ans = JSON.parse(ansStr);
+    await invitePC.setRemoteDescription(ans);
+    // quando conecta, movemos pc/dc para peers
+    invitePC.ondatachannel = e=>{ /* não usado — canal já criado pelo host */ };
+    invitePC.onconnectionstatechange = ()=>{
+      if(invitePC.connectionState==='connected'){
+        const dc = invitePC.sctp?.transport ? invitePC?.createDataChannel?.('noop') : null; // noop
+      }
+    };
+    invitePC.oniceconnectionstatechange = ()=>{
+      if(invitePC.iceConnectionState==='connected' || invitePC.iceConnectionState==='completed'){
+        // pega o DC criado antes
+        // hack: varrer datachannels existentes
+      }
+    };
+    // intercepta o primeiro datachannel (já criado no mkOffer)
+    // no Chrome não há listagem, então guardamos no onopen
+    // solução: armazene temporário via closure
+  }catch(e){ console.error(e); }
+};
+
+// Host — tratador de mensagens de um cliente específico
+function onMessageFromClient(dc, data){
+  try{
+    const msg = JSON.parse(data);
+    if(msg.type==='hello'){
+      const id=msg.id, name=msg.name;
+      // registra este dc
+      hostPeers.set(id, {dc});
+      addRemotePlayer(id,name);
+      // responde com olá + nomes de quem já está
+      dc.send(JSON.stringify({type:'welcome', id:'host', name:you.name}));
+      // avisa a todos novo player
+      broadcast({type:'join', id, name});
+    }else if(msg.type==='state'){
+      // repassa a todos menos o próprio
+      hostPeers.forEach((p,k)=>{ if(k!==msg.id && p.dc?.readyState==='open') p.dc.send(data); });
+      // atualiza posição local do registro (para minimapa/consistência)
+      const o=others.get(msg.id); if(o){ o.mesh.position.set(msg.x,msg.y,msg.z); }
+    }else if(msg.type==='chat'){
+      broadcast(msg);
+      logChat(`${msg.name}: ${msg.text}`);
+    }
+  }catch{}
+}
+
+/* CLIENTE */
+$('#mkAnswer').onclick = async ()=>{
+  isHost=false; you.name = $('#cliName').value || you.name; localStorage.setItem('nick', you.name);
+  clientPC = new RTCPeerConnection(rtcConfig);
+  clientPC.ondatachannel = e=>{
+    clientDC = e.channel;
+    clientDC.onopen = ()=>{ toast('Conectado ao host'); hello(); };
+    clientDC.onmessage = ev => onMessageFromHost(ev.data);
+  };
+  const offerStr = decodeURIComponent(escape(atob($('#offerIn').value.trim())));
+  const offer = JSON.parse(offerStr);
+  await clientPC.setRemoteDescription(offer);
+  const answer = await clientPC.createAnswer(); await clientPC.setLocalDescription(answer);
+  clientPC.onicecandidate = e=>{ if(!e.candidate){ $('#answerOut').value = btoa(unescape(encodeURIComponent(JSON.stringify(clientPC.localDescription)))); } };
+};
+
+// HELLO
+function hello(){
+  const id = crypto.getRandomValues(new Uint32Array(1))[0].toString(16)+Date.now().toString(16);
+  you.id = id;
+  const pkt={type:'hello', id, name:you.name};
+  if(isHost){
+    // host finge ser cliente para si mesmo (para ficar consistente)
+    addRemotePlayer(id, you.name); removeRemotePlayer(id); // não duplicar
+  }else{
+    clientDC?.send(JSON.stringify(pkt));
+  }
+}
+
+// Cliente — mensagens do host
+function onMessageFromHost(data){
+  try{
+    const msg=JSON.parse(data);
+    if(msg.type==='welcome'){ logChat(`Host: Bem-vindo, ${you.name}!`); }
+    else if(msg.type==='join'){ addRemotePlayer(msg.id, msg.name); logChat(`${msg.name} entrou`); }
+    else if(msg.type==='leave'){ removeRemotePlayer(msg.id); logChat(`Jogador saiu`); }
+    else if(msg.type==='state'){ const o=others.get(msg.id); if(o){ o.mesh.position.set(msg.x,msg.y,msg.z); o.mesh.rotation.y=msg.yaw||0; } }
+    else if(msg.type==='chat'){ logChat(`${msg.name}: ${msg.text}`); }
+  }catch{}
+}
+
+// Broadcast de estado (15 Hz)
+setInterval(()=>{
+  const pkt={type:'state', id:you.id, x:you.pos.x, y:you.pos.y, z:you.pos.z, yaw:you.yaw, t:Date.now()};
+  if(isHost){
+    // host só envia para todos (se estiver aceitando conexões)
+    hostPeers.forEach(p=>{ if(p.dc?.readyState==='open') p.dc.send(JSON.stringify(pkt)); });
+  }else{
+    clientDC?.readyState==='open' && clientDC.send(JSON.stringify(pkt));
+  }
+}, 66);
+
+// Limpeza ao sair
+addEventListener('beforeunload', ()=>{
+  broadcast({type:'leave', id:you.id});
+  if(isHost){ hostPeers.forEach(p=> p.dc?.close()); }
+  else clientDC?.close();
+});
+
+/* ==== Pequenos detalhes ==== */
+function logSystem(t){ logChat(`* ${t}`); }
+toast('Carregado. Abra “Multiplayer” para conectar.');
+hud.pcount.textContent='1';
+
+/* ==== Extra: clique no terreno para olhar / pular ==== */
+canvas.addEventListener('dblclick', ()=> jump());
+</script>
+</body>
+</html>
