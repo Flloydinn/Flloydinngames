@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Flloydinn Gameplay — TV (Canal 24/7)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Canal 24/7 do Flloydinn: vídeos do YouTube em programação contínua e sincronizada.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
+      --brand:#8f0000; --brand2:#b31212; --card:#1a1a1a; --border:#24262b;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
+      line-height:1.6;
+    }
+    a{color:#fff;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
+
+    /* Header */
+    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .brand span{color:var(--brand)}
+    .menu{display:flex;gap:.6rem}
+    .btn{
+      background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);
+      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
+      transition:transform .15s ease, opacity .2s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn--ghost{background:transparent;border:1px solid var(--border)}
+    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+
+    /* Player area */
+    .tv-wrap{position:relative;border-bottom:1px solid var(--border)}
+    .player{position:relative;aspect-ratio:16/9;background:#000}
+    #player{position:absolute;inset:0}
+    .overlay{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;
+    }
+    .overlay .pill{
+      pointer-events:auto;
+      background:rgba(15,17,22,.85);border:1px solid var(--border);border-radius:.8rem;padding:.7rem 1rem;
+      display:flex;gap:.6rem;align-items:center;backdrop-filter:blur(6px)
+    }
+    .live{position:absolute;left:12px;top:12px;display:flex;gap:.5rem;align-items:center;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.2rem .5rem}
+    .dot{width:8px;height:8px;border-radius:999px;background:#ff4a4a;box-shadow:0 0 10px #ff4a4a}
+    .now{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .55rem}
+    .now strong{color:#fff}
+
+    /* Controls bottom */
+    .controls{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem; background:rgba(11,11,12,.6); border-top:1px solid var(--border)}
+    .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+    .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
+    .muted{color:var(--muted)}
+
+    /* Guide */
+    .guide{padding:1.2rem 0}
+    .grid{display:grid;grid-template-columns:1fr .8fr;gap:1rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden}
+    .card h3{margin:.7rem .9rem}
+    .list{display:grid;gap:.6rem;padding:0 .9rem .9rem}
+    .item{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center;background:#0f1116;border:1px solid var(--border);border-radius:.6rem;padding:.6rem}
+    .item .meta{color:var(--muted);font-size:.9rem}
+    .upnext .item.now{outline:2px solid rgba(255,255,255,.12)}
+    .desc{padding:.9rem;color:var(--muted)}
+    .small{font-size:.9rem;color:var(--muted)}
+
+    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
+    @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
+      <nav class="menu" aria-label="principal">
+        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
+        <a class="btn btn--small" href="tv.html">TV</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TV -->
+  <section class="tv-wrap">
+    <div class="player">
+      <div id="player"></div>
+      <div class="live"><span class="dot"></span><span>AO VIVO (linear)</span></div>
+      <div class="now small">Agora: <strong id="nowTitle">—</strong> • <span id="nowClock">--:--</span></div>
+      <div id="overlay" class="overlay" style="display:none">
+        <div class="pill">
+          <span>Áudio está <strong>mutado</strong> para iniciar automaticamente.</span>
+          <button id="btnUnmute" class="btn btn--small">Ativar áudio</button>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="row">
+        <button id="btnUnmute2" class="btn btn--small">Ativar áudio</button>
+        <button id="btnFS" class="btn btn--ghost btn--small">Tela cheia</button>
+        <span class="tag" id="syncTag">Sincronizado</span>
+      </div>
+      <div class="row muted">
+        <span id="clockBRT">—:— BRT</span>
+        <span class="tag">Canal #1</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guide -->
+  <main class="container guide">
+    <div class="grid">
+      <section class="card upnext">
+        <h3>Guia de Programação</h3>
+        <div id="guide" class="list"></div>
+      </section>
+      <aside class="card">
+        <h3>Sobre a TV</h3>
+        <div class="desc">
+          <p>Programação contínua com vídeos do canal. Todo mundo vê a mesma coisa, do mesmo ponto. A grade é calculada pela hora do Brasil (BRT) e reinicia quando a playlist termina.</p>
+          <p class="small">Para atualizar a programação sem mexer no código, publique <code>/tv/playlist.json</code> (exemplo abaixo). A página busca esse arquivo a cada 5 minutos.</p>
+          <details>
+            <summary>Exemplo de <code>tv/playlist.json</code></summary>
+<pre class="small">[
+  { "id": "CYbAoKRh8JA", "title": "Gameplay 01 — Aventura", "dur": 452 },
+  { "id": "dQw4w9WgXcQ", "title": "Gameplay 02 — Boss Rush", "dur": 612 },
+  { "id": "kxopViU98Xo", "title": "Gameplay 03 — Co-op Caótico", "dur": 538 }
+]</pre>
+          </details>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="year"></span> Flloydinn Gameplay • Canal TV experimental</div>
+  </footer>
+
+  <!-- YouTube IFrame API -->
+  <script>
+    // ====== Config ======
+    const TIMEZONE = 'America/Sao_Paulo'; // BRT como referência
+    const EPOCH = Date.parse('2025-01-01T00:00:00-03:00'); // marco da programação
+    const PLAYLIST_JSON_URL = 'tv/playlist.json'; // opcional; se não existir, usamos fallback
+    const REFRESH_JSON_MS = 5 * 60 * 1000;
+
+    // Fallback inicial (edite se quiser; será substituído pelo JSON quando existir)
+    let PLAYLIST = [
+      { id: 'CYbAoKRh8JA', title: 'Canal Trailer • Flloydinn', dur: 120 },
+      { id: 'dQw4w9WgXcQ', title: 'Gameplay — Clássico', dur: 212 }, // substitua por vídeos do canal
+      { id: 'kxopViU98Xo', title: 'Highlights — Coop', dur: 180 }
+    ];
+
+    // ====== Utils ======
+    const $ = s => document.querySelector(s);
+    const fmtClock = d => new Intl.DateTimeFormat('pt-BR', {hour:'2-digit',minute:'2-digit', timeZone: TIMEZONE}).format(d);
+    const sumDur = arr => arr.reduce((s,v)=> s + (v.dur||0), 0);
+    const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+
+    function nowBRT(){ return new Date(new Date().toLocaleString('en-US', { timeZone: TIMEZONE })); }
+
+    function pickCurrentByTime(){
+      const total = sumDur(PLAYLIST);
+      if(!total) return {index:0, offset:0, loopStart: new Date(EPOCH)};
+      const now = nowBRT();
+      const elapsed = Math.floor((now - EPOCH)/1000); // segs
+      let t = ((elapsed % total) + total) % total; // posição dentro do loop
+      let idx = 0;
+      while(idx < PLAYLIST.length && t >= (PLAYLIST[idx].dur||0)){
+        t -= (PLAYLIST[idx].dur||0); idx++;
+      }
+      if(idx >= PLAYLIST.length){ idx = 0; t = 0; }
+      // calcula início dessa volta para montar grade com horários bonitinhos
+      const loops = Math.floor(elapsed / total);
+      const loopStart = new Date(EPOCH + loops*total*1000);
+      return { index: idx, offset: t, loopStart };
+    }
+
+    function buildGuide(){
+      const g = $('#guide');
+      const { index, offset, loopStart } = pickCurrentByTime();
+      const list = [];
+      let t = new Date(loopStart);
+      // avança até o início do vídeo atual
+      for(let i=0;i<index;i++) t = new Date(+t + (PLAYLIST[i].dur*1000));
+      // atual + próximos 6
+      for(let k=0;k<7;k++){
+        const i = (index + k) % PLAYLIST.length;
+        const v = PLAYLIST[i];
+        const start = new Date(+t + (k===0 ? 0 : 0)); // já está em t correto
+        const end = new Date(+start + v.dur*1000);
+        list.push({i, v, start, end, now: k===0});
+        t = end;
+      }
+      g.innerHTML = list.map(row => `
+        <article class="item ${row.now?'now':''}">
+          <div class="meta">${fmtClock(row.start)}–${fmtClock(row.end)}</div>
+          <div><strong>${row.v.title||'Sem título'}</strong><div class="small">ID: ${row.v.id}</div></div>
+          <div class="tag">${Math.round(row.v.dur/60)} min</div>
+        </article>
+      `).join('');
+      $('#nowTitle').textContent = PLAYLIST[index]?.title || '—';
+      $('#nowClock').textContent = fmtClock(new Date());
+    }
+
+    // ====== YouTube Player ======
+    let player, booted=false, target = {videoId:null, seek:0};
+    function ensureYT(){
+      if(window.YT && YT.Player){ onYouTubeIframeAPIReady(); return; }
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+    }
+    window.onYouTubeIframeAPIReady = function(){
+      if(player) return;
+      const opts = {
+        videoId: 'CYbAoKRh8JA',
+        playerVars: {
+          autoplay: 1, controls: 0, disablekb: 1, fs: 0, modestbranding: 1, playsinline: 1,
+          rel: 0, iv_load_policy: 3
+        },
+        events: {
+          onReady: onReady,
+          onStateChange: onStateChange,
+          onError: onError
+        }
+      };
+      player = new YT.Player('player', opts);
+    };
+
+    function onReady(){
+      booted = true;
+      player.mute(); // garante autoplay
+      $('#overlay').style.display = 'flex';
+      syncToSchedule(true);
+      heartbeat();
+    }
+    function onStateChange(e){
+      // 0 ended, 1 playing, 2 paused, 3 buffering
+      if(e.data === YT.PlayerState.ENDED){
+        // troca pro próximo da playlist conforme relógio (não “fila local”)
+        syncToSchedule(true);
+      }
+    }
+    function onError(){ console.warn('YT error'); setTimeout(()=> syncToSchedule(true), 1500); }
+
+    // ====== Sincronização ======
+    function syncToSchedule(forceLoad=false){
+      if(!booted) return;
+      const { index, offset } = pickCurrentByTime();
+      const vid = PLAYLIST[index]?.id;
+      if(!vid){ return; }
+
+      const curId = player.getVideoData()?.video_id;
+      const curTime = player.getCurrentTime ? player.getCurrentTime() : 0;
+      const drift = Math.abs(curTime - offset);
+
+      // decide se recarrega
+      if(forceLoad || vid !== curId || drift > 3){
+        try{
+          player.loadVideoById(vid, offset, 'hd1080');
+        }catch{
+          player.cueVideoById(vid, offset, 'hd1080');
+          setTimeout(()=> player.playVideo?.(), 200);
+        }
+        $('#syncTag').textContent = 'Sincronizado';
+      }else{
+        // apenas corrige leve drift
+        if(drift > 0.8) player.seekTo(offset, true);
+      }
+      buildGuide();
+      $('#nowTitle').textContent = PLAYLIST[index]?.title || '—';
+    }
+
+    // batimento: mantém hora, resincroniza leve e detecta troca de bloco
+    function heartbeat(){
+      $('#clockBRT').textContent = fmtClock(new Date()) + ' BRT';
+      // resync leve cada 15s
+      syncToSchedule(false);
+      setTimeout(heartbeat, 15000);
+    }
+
+    // resincroniza quando volta ao foco
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) setTimeout(()=> syncToSchedule(true), 400); });
+
+    // ====== Controles ======
+    function unmute(){
+      try{ player.unMute(); }catch{}
+      $('#overlay').style.display = 'none';
+    }
+    $('#btnUnmute').onclick = unmute;
+    $('#btnUnmute2').onclick = unmute;
+
+    $('#btnFS').onclick = ()=>{
+      const el = document.documentElement;
+      if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
+    };
+
+    // ====== Playlist externa (opcional) ======
+    async function tryLoadJSON(){
+      try{
+        const r = await fetch(PLAYLIST_JSON_URL, {cache:'no-store'});
+        if(!r.ok) throw 0;
+        const data = await r.json();
+        if(Array.isArray(data) && data.length){
+          PLAYLIST = data.filter(x=>x.id && x.dur>0).map(x=>({
+            id:String(x.id), title:String(x.title||'Sem título'), dur:Number(x.dur)
+          }));
+          buildGuide();
+          syncToSchedule(true);
+        }
+      }catch(e){
+        // silencioso: mantém fallback
+      }
+    }
+    setInterval(tryLoadJSON, REFRESH_JSON_MS);
+
+    // ====== Inicialização ======
+    document.getElementById('year').textContent = new Date().getFullYear();
+    ensureYT();
+    buildGuide();
+    tryLoadJSON();
+    // reloginho
+    setInterval(()=> { $('#clockBRT').textContent = fmtClock(new Date()) + ' BRT'; }, 1000);
+    // “Sincronizado” pisca quando ajusta
+    setInterval(()=>{ const el=$('#syncTag'); el.textContent = (el.textContent==='Sincronizado'?'OK':'Sincronizado'); }, 2000);
+  </script>
+</body>
+</html>
