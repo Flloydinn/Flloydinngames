@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Desert Drifter 3D — Hovercraft Simulator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="Simulador 3D de hovercraft no deserto: física arcade, boost, coleta de cristais, dia/noite e minimapa.">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b0c; --bg2:#121316; --text:#E8E8EA; --muted:#A6A6AD;
+    --brand:#8f0000; --brand2:#b31212; --border:#24262b; --card:#1a1a1a;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;overflow:hidden}
+
+  /* Header mini */
+  .topbar{position:fixed;inset:0 0 auto 0;z-index:30;background:rgba(11,11,12,.6);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+  .topbar .row{width:min(1200px,calc(100% - 2rem));margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0}
+  .brand{font-weight:800;letter-spacing:.3px}
+  .brand span{color:var(--brand)}
+  .nav{display:flex;gap:.5rem}
+  .btn{background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);border:0;border-radius:.6rem;color:#fff;padding:.45rem .7rem;font-weight:700;cursor:pointer}
+  .btn--ghost{background:transparent;border:1px solid var(--border)}
+  .btn--small{font-size:.9rem}
+  .hide-mobile{display:block}
+  @media (max-width:800px){.hide-mobile{display:none}}
+
+  /* Canvas */
+  #game{position:fixed;inset:48px 0 0 0;display:block;background:#000}
+
+  /* HUD */
+  .hud{position:fixed;inset:48px 0 0 0;pointer-events:none}
+  .hud .panel{position:absolute;left:12px;bottom:12px;background:rgba(16,18,24,.65);border:1px solid var(--border);border-radius:.8rem;padding:.6rem;min-width:240px}
+  .row{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
+  .bar{flex:1;height:10px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#0f1116}
+  .bar>span{display:block;height:100%;background:linear-gradient(135deg,#2db57f,#57d996)}
+  .stat{font-weight:800}
+  .meta{color:var(--muted);font-size:.9rem}
+  .hud .right{position:absolute;right:12px;bottom:12px;display:grid;gap:.35rem;justify-items:end}
+  .tag{font-size:.75rem;background:rgba(0,0,0,.4);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
+  .toast{position:absolute;left:50%;top:66px;transform:translateX(-50%);background:rgba(0,0,0,.6);border:1px solid var(--border);padding:.5rem .8rem;border-radius:.6rem;display:none}
+
+  /* Minimap */
+  .minimap{position:absolute;right:12px;top:60px;background:rgba(16,18,24,.7);border:1px solid var(--border);border-radius:.8rem;padding:.4rem}
+  .minimap canvas{width:160px;height:160px;display:block;border-radius:.4rem;border:1px solid var(--border)}
+
+  /* Crosshair */
+  .cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;opacity:.7}
+  .cross:before,.cross:after{content:"";position:absolute;background:#fff}
+  .cross:before{left:8px;top:0;width:2px;height:18px}
+  .cross:after{left:0;top:8px;width:18px;height:2px}
+
+  /* Help / Pause */
+  .overlay{position:fixed;inset:48px 0 0 0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:20}
+  .overlay.open{display:flex}
+  .modal{width:min(900px,calc(100% - 2rem));background:var(--bg2);border:1px solid var(--border);border-radius:1rem;padding:1rem}
+  .modal h2{margin:.2rem 0 .4rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .input{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:#fff;padding:.6rem .7rem}
+
+  /* Mobile controls */
+  .mobile{position:fixed;inset:auto 0 10px 0;display:none;justify-content:space-between;padding:0 10px;z-index:25}
+  .pad{width:120px;height:120px;border-radius:60px;background:rgba(16,18,24,.6);border:1px solid var(--border);position:relative}
+  .stick{position:absolute;width:56px;height:56px;border-radius:28px;background:#222;border:1px solid var(--border);left:32px;top:32px}
+  .btnR{width:68px;height:68px;border-radius:999px;background:rgba(16,18,24,.6);border:1px solid var(--border);display:grid;place-items:center;color:#fff;font-weight:800}
+  @media (max-width:900px){.mobile{display:flex}}
+</style>
+</head>
+<body>
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="row">
+      <div class="brand"><a href="index.html" style="color:#fff;text-decoration:none">Flloyd<span>inn</span> Gameplay</a> <span class="meta hide-mobile">/ Desert Drifter 3D</span></div>
+      <div class="nav">
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
+        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div class="hud" aria-hidden="true">
+    <div class="panel">
+      <div class="row"><span class="meta">Velocidade</span><span class="stat" id="spd">0</span> <span class="meta">km/h</span></div>
+      <div class="row" style="margin:.35rem 0 .15rem">
+        <span class="meta">Boost</span><div class="bar"><span id="boostBar" style="width:60%"></span></div>
+      </div>
+      <div class="row"><span class="meta">Cristais</span><span class="stat" id="crystals">0</span> • <span class="meta">Volta</span><span class="stat" id="lap">0</span> • <span class="meta">Recorde</span><span class="stat" id="best">—</span></div>
+      <div class="row"><span class="meta">Hora</span><span class="stat" id="clock">06:00</span> <span class="tag" id="tip">WASD / Shift / Espaço</span></div>
+    </div>
+    <div class="right">
+      <div class="tag">P pausa • M mapa • H farol</div>
+    </div>
+    <div class="toast" id="toast">+1 cristal</div>
+    <div class="minimap" id="mapWrap" style="display:none"><canvas id="map" width="160" height="160"></canvas></div>
+    <div class="cross"></div>
+  </div>
+
+  <!-- Pause / Help -->
+  <div class="overlay" id="pause">
+    <div class="modal">
+      <h2>Pausa</h2>
+      <div class="grid-2">
+        <div>
+          <p class="meta">Controles: <strong>WASD</strong> mover • <strong>Shift</strong> boost • <strong>Espaço</strong> freio/slide • <strong>Mouse</strong> câmera • <strong>P</strong> pausa • <strong>M</strong> mapa • <strong>H</strong> farol</p>
+          <p class="meta">Objetivo: colete <strong>cristais</strong>, complete voltas no circuito (pórticos luminosos) e melhore seu recorde.</p>
+          <div class="row" style="margin-top:.6rem">
+            <button id="btnResume" class="btn">Continuar</button>
+            <button id="btnReset" class="btn btn--ghost">Reiniciar</button>
+            <button id="btnClearSave" class="btn btn--ghost">Apagar save</button>
+          </div>
+        </div>
+        <div>
+          <label class="meta">Sensibilidade do mouse
+            <input id="sens" class="input" type="range" min="0.2" max="2.0" step="0.1" value="1">
+          </label>
+          <label class="meta">Volume (efeitos)
+            <input id="vol" class="input" type="range" min="0" max="1" step="0.05" value="0.4">
+          </label>
+          <p class="meta">Dica: ative o mapa (M) para ver o traçado e os cristais. Use o boost em retas; o hover recarrega se você aliviar o acelerador.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile controls -->
+  <div class="mobile" id="mobile">
+    <div class="pad" id="pad"><div class="stick" id="stick"></div></div>
+    <div style="display:flex;gap:10px">
+      <div class="btnR" id="btnBoost">⚡</div>
+      <div class="btnR" id="btnBrake">■</div>
+    </div>
+  </div>
+
+<script type="module">
+/* ====== Imports Three.js (ESM via CDN) ====== */
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/controls/OrbitControls.js'; // usado só no pause/debug opcional
+import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/controls/PointerLockControls.js';
+
+/* ====== Shortcuts & DOM ====== */
+const $ = s => document.querySelector(s);
+const canvas = $('#game');
+const hud = {
+  spd: $('#spd'), boost: $('#boostBar'), crystals: $('#crystals'),
+  lap: $('#lap'), best: $('#best'), clock: $('#clock'), toast: $('#toast'),
+  tip: $('#tip'), mapWrap: $('#mapWrap'), map: $('#map')
+};
+const pauseOverlay = $('#pause');
+const btnHelp = $('#btnHelp'), btnResume = $('#btnResume'), btnReset = $('#btnReset'), btnClear = $('#btnClearSave');
+const sensInput = $('#sens'), volInput = $('#vol');
+
+/* ====== Renderer / Scene / Camera ====== */
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+function onResize(){
+  const w = window.innerWidth, h = window.innerHeight - 48;
+  renderer.setSize(w, h, false);
+  camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x060708);
+const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 2000);
+camera.position.set(0, 6, 10);
+
+/* ====== Lights & Environment ====== */
+const hemi = new THREE.HemisphereLight(0xfff0e0, 0x0a0a0a, 0.8);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+sun.position.set(100,150,30);
+sun.castShadow = true;
+scene.add(sun);
+
+const fog = new THREE.FogExp2(0x0b0c10, 0.0012);
+scene.fog = fog;
+
+/* Sky dome (gradiente dia/noite) */
+const skyGeo = new THREE.SphereGeometry(1000, 32, 16);
+const skyMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  uniforms: { t:{value: 0.25 } }, // 0 noite, 0.5 manhã, 1 dia
+  vertexShader: `varying vec3 vPos; void main(){ vPos=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+  fragmentShader: `
+    uniform float t; varying vec3 vPos;
+    vec3 mix3(vec3 a, vec3 b, float x){ return a*(1.0-x)+b*x; }
+    void main(){
+      float h = normalize(vPos).y*0.5+0.5;
+      vec3 night = vec3(0.01,0.02,0.05);
+      vec3 dawn = vec3(0.25,0.12,0.25);
+      vec3 day = vec3(0.35,0.55,0.85);
+      vec3 c = mix3(mix3(night,dawn, smoothstep(0.0,0.5,t)), day, smoothstep(0.5,1.0,t));
+      gl_FragColor = vec4(c,1.0);
+    }`
+});
+const sky = new THREE.Mesh(skyGeo, skyMat);
+scene.add(sky);
+
+/* ====== Ground (ruído) ====== */
+const SIZE = 1200;
+const RES = 300;
+const ggeo = new THREE.PlaneGeometry(SIZE, SIZE, RES, RES);
+ggeo.rotateX(-Math.PI/2);
+// simples ruído 2D
+function noise2(x,y){
+  const s = Math.sin(x*0.0017 + Math.sin(y*0.0013)*1.5 + 1.7)*0.5 + 0.5;
+  const s2 = Math.sin(x*0.004 + 3.2)*Math.cos(y*0.004 - 1.6)*0.5 + 0.5;
+  return s*14 + s2*6;
+}
+for(let i=0;i<ggeo.attributes.position.count;i++){
+  const x = ggeo.attributes.position.getX(i);
+  const z = ggeo.attributes.position.getZ(i);
+  ggeo.attributes.position.setY(i, noise2(x,z));
+}
+ggeo.computeVertexNormals();
+const gmat = new THREE.MeshStandardMaterial({
+  color:0x4d3a2c, roughness:0.95, metalness:0.0
+});
+const ground = new THREE.Mesh(ggeo, gmat);
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* ====== Track (pórticos de checkpoint) ====== */
+const gates = [];
+const gateGeom = new THREE.TorusGeometry(6, .2, 8, 64);
+const gateMat = new THREE.MeshBasicMaterial({color:0xff4455});
+function placeGate(x,z){
+  const y = groundHeightAt(x,z) + 6;
+  const tor = new THREE.Mesh(gateGeom, gateMat);
+  tor.position.set(x,y,z);
+  tor.rotation.x = Math.PI/2;
+  scene.add(tor);
+  gates.push({mesh:tor, passed:false});
+}
+const trackPoints = [
+  [0,0],[120,60],[240,140],[260,260],[120,360],[-60,420],[-220,340],[-280,200],[-220,60],[-80,0]
+];
+trackPoints.forEach(([x,z])=> placeGate(x,z));
+
+/* ====== Crystals (coletáveis) ====== */
+const crystals = [];
+const cGeo = new THREE.ConeGeometry(0.8, 2, 5);
+const cMat = new THREE.MeshStandardMaterial({color:0x6cf1ff, emissive:0x113344, emissiveIntensity:0.2, roughness:0.3, metalness:0.1});
+function spawnCrystal(x,z){
+  const y = groundHeightAt(x,z)+2.2;
+  const m = new THREE.Mesh(cGeo, cMat);
+  m.castShadow = true;
+  m.position.set(x, y, z);
+  m.rotation.x = Math.PI;
+  scene.add(m);
+  crystals.push(m);
+}
+// espalha 60 cristais em torno da pista
+for(let i=0;i<60;i++){
+  const p = trackPoints[i%trackPoints.length];
+  const x = p[0] + (Math.random()-0.5)*80;
+  const z = p[1] + (Math.random()-0.5)*80;
+  spawnCrystal(x,z);
+}
+
+/* ====== Rocks (obstáculos) ====== */
+const rocks = new THREE.Group();
+scene.add(rocks);
+const rGeo = new THREE.IcosahedronGeometry(1.6, 0);
+const rMat = new THREE.MeshStandardMaterial({color:0x3a3028, roughness:0.95});
+for(let i=0;i<80;i++){
+  const x = (Math.random()-0.5)*SIZE*0.8;
+  const z = (Math.random()-0.5)*SIZE*0.8;
+  const y = groundHeightAt(x,z)+1.6;
+  const r = new THREE.Mesh(rGeo, rMat);
+  r.position.set(x,y,z);
+  r.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);
+  r.castShadow=true; r.receiveShadow=true;
+  rocks.add(r);
+}
+
+/* ====== Hovercraft ====== */
+const hover = new THREE.Group();
+scene.add(hover);
+// corpo
+const body = new THREE.Mesh(new THREE.CapsuleGeometry(1, 2.2, 6, 12), new THREE.MeshStandardMaterial({color:0x8f0000, metalness:.2, roughness:.6}));
+body.castShadow=true; body.receiveShadow=true; hover.add(body);
+// asa
+const wing = new THREE.Mesh(new THREE.BoxGeometry(4.4, .18, .6), new THREE.MeshStandardMaterial({color:0x222}));
+wing.position.y = 0.6; hover.add(wing);
+// luz frontal (farol)
+const head = new THREE.SpotLight(0xffffff, 0.0, 40, Math.PI/6, 0.4, 1.2);
+head.position.set(0,1.2,1.8); head.target.position.set(0,0,-8);
+hover.add(head); hover.add(head.target);
+
+// físicas simples
+const phys = {
+  pos: new THREE.Vector3(0, 3, 10),
+  vel: new THREE.Vector3(0, 0, 0),
+  yaw: 0, pitch: 0, roll: 0,
+  thrust: 0, steer: 0,
+  boost: 0.6,
+  headlight: 0,
+  groundedY: 0
+};
+hover.position.copy(phys.pos);
+
+/* ====== Camera Rig (3rd person) ====== */
+const rig = new THREE.Group();
+scene.add(rig);
+rig.add(camera);
+function updateCam(dt){
+  // câmera segue o hover com mola
+  const target = hover.position.clone().add(new THREE.Vector3(0, 2.8, 5).applyAxisAngle(new THREE.Vector3(0,1,0), phys.yaw));
+  rig.position.lerp(target, 1 - Math.exp(-dt*5));
+  camera.lookAt(hover.position.clone().add(new THREE.Vector3(0,1,0)));
+}
+
+/* ====== Helpers ====== */
+function groundHeightAt(x,z){
+  // aproxima via amostragem da malha (rápido o bastante)
+  return noise2(x,z);
+}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+/* ====== Controls ====== */
+const keys = {};
+window.addEventListener('keydown', e=>{
+  keys[e.code]=true;
+  if(e.code==='KeyM'){ toggleMap(); }
+  if(e.code==='KeyH'){ phys.headlight = phys.headlight ? 0 : 1; head.intensity = phys.headlight ? 1.2 : 0.0; }
+  if(e.code==='KeyP'){ togglePause(); }
+});
+window.addEventListener('keyup', e=>{ keys[e.code]=false; });
+
+// pointer lock to look around slightly (yaw input)
+let pointerDown=false;
+canvas.addEventListener('click', ()=> canvas.requestPointerLock?.());
+document.addEventListener('pointerlockchange', ()=>{ pointerDown = !!document.pointerLockElement; });
+document.addEventListener('mousemove', (e)=>{
+  if(!pointerDown) return;
+  const sens = Number(sensInput.value);
+  phys.yaw -= e.movementX*0.002*sens;
+  phys.pitch = clamp(phys.pitch - e.movementY*0.0005*sens, -0.2, 0.2);
+});
+
+/* ====== Mobile virtual controls ====== */
+const pad = $('#pad'), stick = $('#stick'), btnBoost = $('#btnBoost'), btnBrake = $('#btnBrake');
+let touch = {ax:0, ay:0};
+function initPad(){
+  let dragging=false, startX=0, startY=0;
+  pad.addEventListener('touchstart', e=>{ dragging=true; const t=e.touches[0]; startX=t.clientX; startY=t.clientY; e.preventDefault();});
+  pad.addEventListener('touchmove', e=>{
+    if(!dragging) return;
+    const t=e.touches[0];
+    const dx = clamp(t.clientX-startX, -45, 45);
+    const dy = clamp(t.clientY-startY, -45, 45);
+    stick.style.left = (32+dx)+'px'; stick.style.top=(32+dy)+'px';
+    touch.ax = dx/45; touch.ay = dy/45;
+  }, {passive:false});
+  const stop=()=>{dragging=false; stick.style.left='32px'; stick.style.top='32px'; touch.ax=0; touch.ay=0;};
+  pad.addEventListener('touchend', stop); pad.addEventListener('touchcancel', stop);
+  btnBoost.addEventListener('touchstart', ()=> keys['ShiftLeft']=true);
+  btnBoost.addEventListener('touchend', ()=> keys['ShiftLeft']=false);
+  btnBrake.addEventListener('touchstart', ()=> keys['Space']=true);
+  btnBrake.addEventListener('touchend', ()=> keys['Space']=false);
+}
+if(/Mobi|Android/i.test(navigator.userAgent)){ $('#mobile').style.display='flex'; initPad(); }
+
+/* ====== Game State & Save ====== */
+const state = { crystals:0, lap:0, bestLap:null, timeDay:6.0 }; // hora 0-24
+loadSave();
+function save(){ localStorage.setItem('drifter_save', JSON.stringify(state)); }
+function loadSave(){
+  try{
+    const s = JSON.parse(localStorage.getItem('drifter_save')||'null');
+    if(s){ Object.assign(state, s); }
+  }catch{}
+}
+
+/* ====== Audio (web audio basic) ====== */
+const AC = window.AudioContext? new AudioContext() : null;
+const snd = {
+  boost: null, pickup: null, bump: null
+};
+function beep(freq=440, dur=0.06, gain=0.1){
+  if(!AC) return;
+  const o = AC.createOscillator(); const g = AC.createGain();
+  o.frequency.value = freq; o.type='sawtooth';
+  g.gain.value = Number(volInput.value)*gain;
+  o.connect(g).connect(AC.destination);
+  o.start(); o.stop(AC.currentTime+dur);
+}
+
+/* ====== UI / Pause ====== */
+let paused = false;
+function togglePause(){
+  paused = !paused;
+  pauseOverlay.classList.toggle('open', paused);
+  if(!paused) canvas.requestPointerLock?.();
+}
+btnHelp.onclick = ()=>{ paused=true; pauseOverlay.classList.add('open'); };
+btnResume.onclick = ()=> togglePause();
+btnReset.onclick = ()=>{ phys.pos.set(0,3,10); phys.vel.set(0,0,0); phys.yaw=0; state.lap=0; save(); togglePause(); };
+btnClear.onclick = ()=>{ localStorage.removeItem('drifter_save'); location.reload(); };
+
+/* ====== Minimap ====== */
+let mapOn = false;
+function toggleMap(){ mapOn=!mapOn; hud.mapWrap.style.display = mapOn?'block':'none'; }
+const mctx = hud.map.getContext('2d');
+function drawMap(){
+  const ctx = mctx, c = hud.map;
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0f1116'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.strokeStyle='#24262b'; ctx.strokeRect(0,0,c.width,c.height);
+  // track points
+  ctx.fillStyle='#555'; ctx.strokeStyle='#999';
+  ctx.beginPath();
+  trackPoints.forEach(([x,z],i)=>{
+    const p = mapTo(x,z);
+    if(i==0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
+    ctx.fillRect(p.x-2,p.y-2,4,4);
+  });
+  ctx.closePath(); ctx.stroke();
+  // crystals
+  ctx.fillStyle='#6cf1ff';
+  crystals.forEach(c=>{
+    if(!c.visible) return;
+    const p = mapTo(c.position.x, c.position.z);
+    ctx.fillRect(p.x-1,p.y-1,2,2);
+  });
+  // player
+  const pp = mapTo(hover.position.x, hover.position.z);
+  ctx.fillStyle='#ff4455'; ctx.beginPath(); ctx.arc(pp.x, pp.y, 3, 0, Math.PI*2); ctx.fill();
+}
+function mapTo(x,z){
+  const s = 0.16; // escala
+  return { x: 80 + x*s, y: 80 + z*s };
+}
+
+/* ====== Gameplay loop helpers ====== */
+function updateHUD(dt){
+  const speed = phys.vel.length()*18; // m/s -> ~km/h fudge
+  hud.spd.textContent = Math.round(speed);
+  hud.boost.style.width = (phys.boost*100).toFixed(0)+'%';
+  hud.crystals.textContent = state.crystals;
+  hud.lap.textContent = state.lap;
+  hud.best.textContent = state.bestLap ? (state.bestLap.toFixed(1)+'s') : '—';
+  // relógio
+  state.timeDay = (state.timeDay + dt*0.1) % 24;
+  const h = Math.floor(state.timeDay), m = Math.floor((state.timeDay - h)*60);
+  hud.clock.textContent = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  // sky tint
+  const t = (state.timeDay<6? 0 : state.timeDay<9? (state.timeDay-6)/3*0.5 : state.timeDay<17? 1.0 : state.timeDay<20? (20-state.timeDay)/3*0.5 : 0);
+  skyMat.uniforms.t.value = t;
+  sun.intensity = 0.3 + 0.7*t;
+  hemi.intensity = 0.4 + 0.6*t;
+  fog.density = 0.0012 + (1.0-t)*0.0008;
+}
+
+/* ====== Physics & Controls ====== */
+let currentGate = 0, lapStartTime = performance.now();
+function step(dt){
+  // input
+  const forward = (keys['KeyW']||keys['ArrowUp']||touch.ay<-0.2) ? 1 : 0;
+  const back    = (keys['KeyS']||keys['ArrowDown']||touch.ay>0.2) ? 1 : 0;
+  const left    = (keys['KeyA']||keys['ArrowLeft']||touch.ax<-0.2) ? 1 : 0;
+  const right   = (keys['KeyD']||keys['ArrowRight']||touch.ax>0.2) ? 1 : 0;
+  const brake   = (keys['Space']) ? 1 : 0;
+  const boosting= (keys['ShiftLeft']||keys['ShiftRight']) && phys.boost>0.1;
+
+  // steer & thrust
+  phys.steer = (right-left)*1.6;
+  phys.thrust = forward - back;
+
+  // yaw/roll dynamics
+  phys.yaw += phys.steer * dt * 1.2;
+  phys.roll = THREE.MathUtils.lerp(phys.roll, -phys.steer*0.3, 1-Math.exp(-dt*6));
+
+  // forward dir in XZ
+  const dir = new THREE.Vector3(Math.sin(phys.yaw), 0, Math.cos(phys.yaw)*-1);
+  const side= new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0), dir).normalize();
+
+  // target acceleration
+  let accel = dir.multiplyScalar(phys.thrust * (boosting? 30: 18));
+  // side friction & drift
+  const vSide = side.clone().multiplyScalar(phys.vel.dot(side));
+  phys.vel.addScaledVector(vSide, -dt*4*(brake?3:1)); // derrapa menos quando freia
+  // forward friction
+  phys.vel.addScaledVector(phys.vel, -dt*(brake?2.2:0.6));
+  // apply accel
+  phys.vel.addScaledVector(accel, dt);
+
+  // boost energy regen/degen
+  phys.boost += (boosting? -dt*0.35 : dt*0.22);
+  phys.boost = clamp(phys.boost, 0, 1);
+
+  // hover altura (raycast analítico)
+  const desiredH = 1.4;
+  const groundY = groundHeightAt(phys.pos.x, phys.pos.z);
+  const diff = (groundY + desiredH) - phys.pos.y;
+  phys.vel.y += diff*6*dt; // mola
+  phys.vel.y += -phys.vel.y*4*dt; // amortecimento
+
+  // move
+  phys.pos.addScaledVector(phys.vel, dt);
+  hover.position.copy(phys.pos);
+  hover.rotation.set(phys.pitch, phys.yaw, phys.roll);
+
+  // colisão simples com rochas (repulsão)
+  rocks.children.forEach(r=>{
+    const d = r.position.distanceTo(hover.position);
+    if(d<2.8){
+      const push = hover.position.clone().sub(r.position).setY(0).normalize().multiplyScalar(10*dt);
+      phys.vel.add(push);
+      beep(120, .05, .2);
+    }
+  });
+
+  // coleta de cristais
+  crystals.forEach((c)=>{
+    if(!c.visible) return;
+    if(c.position.distanceTo(hover.position)<2.4){
+      c.visible=false;
+      state.crystals++;
+      save();
+      hud.toast.textContent = '+1 cristal';
+      hud.toast.style.display='block';
+      setTimeout(()=> hud.toast.style.display='none', 600);
+      beep(880,.08,.15);
+    }
+  });
+
+  // pass gate -> lap
+  const gate = gates[currentGate];
+  if(gate){
+    const d = gate.mesh.position.clone().setY(hover.position.y).distanceTo(hover.position);
+    if(d<6){
+      gate.passed=true; currentGate=(currentGate+1)%gates.length;
+      if(currentGate===0){
+        // completou volta
+        const now=performance.now();
+        const lapTime = (now - lapStartTime)/1000;
+        lapStartTime = now;
+        state.lap++;
+        if(!state.bestLap || lapTime < state.bestLap) state.bestLap = lapTime;
+        save();
+        hud.toast.textContent = `Volta ${state.lap} — ${lapTime.toFixed(1)}s`;
+        hud.toast.style.display='block';
+        setTimeout(()=> hud.toast.style.display='none', 1200);
+        beep(660,.07,.12); beep(990,.08,.12);
+      }else{
+        beep(520,.05,.09);
+      }
+    }
+  }
+
+  updateHUD(dt);
+  if(mapOn) drawMap();
+  updateCam(dt);
+}
+
+/* ====== Render loop ====== */
+let last = performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  if(paused) return;
+  const now = performance.now();
+  const dt = Math.min(0.05, (now-last)/1000); last = now;
+  step(dt);
+  renderer.render(scene, camera);
+}
+loop();
+
+/* ====== Initial sizing ====== */
+onResize(); window.addEventListener('resize', onResize);
+
+/* ====== Buttons ====== */
+function showTip(txt){ hud.tip.textContent = txt; setTimeout(()=> hud.tip.textContent='WASD / Shift / Espaço', 3000); }
+volInput.oninput = ()=> AC && AC.resume?.();
+sensInput.oninput = ()=> showTip('Sensibilidade: '+sensInput.value);
+function toggleHead(){ phys.headlight = phys.headlight ? 0 : 1; head.intensity = phys.headlight ? 1.2 : 0.0; }
+
+/* ====== Start position ====== */
+phys.pos.set(0, groundHeightAt(0,10)+1.4, 10);
+
+/* ====== OrbitControls for debug (apenas quando pausado) ====== */
+const orbit = new OrbitControls(camera, renderer.domElement);
+orbit.enabled = false;
+document.addEventListener('keydown', (e)=>{
+  if(e.code==='KeyO'){ orbit.enabled = !orbit.enabled; showTip('Orbit '+(orbit.enabled?'ON':'OFF')); }
+});
+
+/* ====== Little polish: farol inicial à noite ====== */
+if(state.timeDay<6 || state.timeDay>19){ toggleHead(); }
+
+/* ====== Keyboard shortcut for Map on start ====== */
+setTimeout(()=>{ toggleMap(); setTimeout(()=>toggleMap(), 2000); }, 1500);
+</script>
+</body>
+</html>
