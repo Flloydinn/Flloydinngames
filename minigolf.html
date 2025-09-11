@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Galaxy MiniGolf 3D — Neon Course</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mini-golf 3D futurista: mire, controle a força e complete os buracos no menor número de tacadas.">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#0b0b0c; --bg2:#121316; --text:#E8E8EA; --muted:#A6A6AD; --brand:#8f0000; --brand2:#b31212; --border:#24262b; --card:#1a1a1a; --ok:#57d996; --warn:#ffb84d; }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;overflow:hidden}
+
+  .topbar{position:fixed;inset:0 0 auto 0;z-index:30;background:rgba(11,11,12,.65);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+  .topbar .row{width:min(1200px,calc(100% - 2rem));margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0}
+  .brand{font-weight:800}.brand span{color:var(--brand)}
+  .nav{display:flex;gap:.5rem}
+  .btn{background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);border:0;border-radius:.6rem;color:#fff;padding:.45rem .7rem;font-weight:700;cursor:pointer}
+  .btn--ghost{background:transparent;border:1px solid var(--border)} .btn--small{font-size:.9rem}
+
+  #game{position:fixed;inset:48px 0 0 0;display:block;background:#000}
+  .hud{position:fixed;inset:48px 0 0 0;pointer-events:none}
+  .panel{position:absolute;left:12px;bottom:12px;background:rgba(16,18,24,.7);border:1px solid var(--border);border-radius:.8rem;padding:.6rem;min-width:260px}
+  .row{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
+  .stat{font-weight:800}.meta{color:var(--muted);font-size:.9rem}
+  .chip{position:absolute;right:12px;top:56px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .5rem}
+  .aim{position:absolute;inset:48px 0 0 0;pointer-events:none}
+  .power{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);width:min(420px,80vw);height:12px;border:1px solid var(--border);border-radius:8px;background:#0f1116;overflow:hidden;display:none}
+  .power>span{display:block;height:100%;background:linear-gradient(90deg,#4ee0ff,#57d996)}
+  .cursor{position:absolute;width:18px;height:18px;border-radius:9px;border:2px solid rgba(255,255,255,.9);transform:translate(-50%,-50%);display:none}
+  .toast{position:absolute;left:50%;top:66px;transform:translateX(-50%);background:rgba(0,0,0,.6);border:1px solid var(--border);padding:.5rem .8rem;border-radius:.6rem;display:none}
+
+  .overlay{position:fixed;inset:48px 0 0 0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:20}
+  .overlay.open{display:flex}
+  .modal{width:min(900px,calc(100% - 2rem));background:var(--bg2);border:1px solid var(--border);border-radius:1rem;padding:1rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .input{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:#fff;padding:.6rem .7rem}
+
+  .score{margin-top:.6rem;border:1px dashed var(--border);border-radius:.6rem;padding:.5rem}
+  .score h4{margin:.2rem 0}
+  .score table{width:100%;border-collapse:collapse}
+  .score th,.score td{font-size:.9rem;padding:.25rem;border-bottom:1px solid var(--border);text-align:center}
+  .score tr:last-child td{border-bottom:0}
+
+  .mobile{position:fixed;inset:auto 0 12px 0;display:none;justify-content:center;gap:10px;z-index:25}
+  .btnR{width:68px;height:68px;border-radius:999px;background:rgba(16,18,24,.65);border:1px solid var(--border);display:grid;place-items:center;color:#fff;font-weight:800}
+  @media (max-width:900px){.mobile{display:flex}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="row">
+      <div class="brand"><a href="index.html" style="color:#fff;text-decoration:none">Flloyd<span>inn</span> Gameplay</a> <span class="meta">/ Galaxy MiniGolf 3D</span></div>
+      <div class="nav">
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
+        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
+        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <div class="hud" aria-hidden="true">
+    <div class="panel">
+      <div class="row">
+        <span class="meta">Buraco</span><span id="hole" class="stat">1</span>•
+        <span class="meta">PAR</span><span id="par" class="stat">3</span>•
+        <span class="meta">Tacadas</span><span id="strokes" class="stat">0</span>
+      </div>
+      <div class="row"><span class="meta">Total</span><span id="total" class="stat">0</span> • <span class="meta">Melhor</span><span id="best" class="stat">—</span></div>
+      <div class="score">
+        <h4 class="meta">Placar</h4>
+        <table id="scoreTbl"></table>
+      </div>
+    </div>
+    <div class="chip">R reiniciar • N próximo • P pausa • O câmera livre</div>
+    <div class="aim">
+      <div id="power" class="power"><span></span></div>
+      <div id="cursor" class="cursor"></div>
+    </div>
+    <div id="toast" class="toast">Hole in One!</div>
+  </div>
+
+  <div class="overlay" id="pause">
+    <div class="modal">
+      <h2>Pausa</h2>
+      <div class="grid-2">
+        <div>
+          <p class="meta">Arraste para <strong>mirar</strong> e <strong>definir a força</strong>. Solte para bater. Complete o curso no menor número de tacadas.</p>
+          <p class="meta">Obstáculos: rampas aceleram, bumpers refletem, portais dão impulso.</p>
+          <div class="row" style="margin-top:.6rem">
+            <button id="btnResume" class="btn">Continuar</button>
+            <button id="btnReset" class="btn btn--ghost">Reiniciar buraco</button>
+            <button id="btnNext" class="btn btn--ghost">Próximo buraco</button>
+          </div>
+        </div>
+        <div>
+          <label class="meta">Sensibilidade do mouse <input id="sens" class="input" type="range" min="0.5" max="2.0" step="0.1" value="1"></label>
+          <label class="meta">Volume (efeitos) <input id="vol" class="input" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile" id="mobile">
+    <button id="btnHit" class="btnR">⛳</button>
+    <button id="btnResetM" class="btnR">R</button>
+  </div>
+
+  <!-- Import map para Three.js -->
+  <script type="importmap">
+  {"imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
+  }}
+  </script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const $ = s=>document.querySelector(s);
+const canvas = $('#game');
+const HUD = {hole:$('#hole'), par:$('#par'), strokes:$('#strokes'), total:$('#total'), best:$('#best'), scoreTbl:$('#scoreTbl'), toast:$('#toast')};
+const powerEl = $('#power'), powerBar = powerEl.querySelector('span'), cursorEl = $('#cursor');
+const overlay=$('#pause'), btnHelp=$('#btnHelp'), btnResume=$('#btnResume'), btnReset=$('#btnReset'), btnNext=$('#btnNext');
+const sensInput=$('#sens'), volInput=$('#vol');
+
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled = true;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07080e);
+const camera = new THREE.PerspectiveCamera(70,1,0.1,2000);
+camera.position.set(0,14,18);
+
+function onResize(){ const w=innerWidth, h=innerHeight-48; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+onResize(); addEventListener('resize', onResize);
+
+// Luzes
+scene.add(new THREE.AmbientLight(0x8890a0,.6));
+const sun = new THREE.DirectionalLight(0xffffff,.9); sun.position.set(20,30,14); sun.castShadow=true; scene.add(sun);
+
+// Materiais
+const matFloor = new THREE.MeshStandardMaterial({color:0x12141c, roughness:.9, metalness:.05});
+const neon = (c)=> new THREE.MeshStandardMaterial({color:c, emissive:c, emissiveIntensity:0.7, roughness:.45, metalness:.1});
+
+// Campo (plataforma com bordas)
+let courseGroup = new THREE.Group(); scene.add(courseGroup);
+const walls = [], ramps = [], bumpers = [], portals = [];
+let holeCup, flag;
+function buildCourse(seed=1){
+  // limpa anterior
+  walls.length = 0; ramps.length=0; bumpers.length=0; portals.length=0;
+  courseGroup.children.slice().forEach(m=>courseGroup.remove(m));
+
+  // base retangular
+  const W = 16 + (seed%3)*2; // largura
+  const L = 26 + ((seed*7)%4)*4; // comprimento
+  const base = new THREE.Mesh(new THREE.BoxGeometry(W,.6,L), matFloor);
+  base.receiveShadow=true; base.position.y=0; courseGroup.add(base);
+
+  // bordas neon
+  const edge = new THREE.Mesh(new THREE.BoxGeometry(W+.3,.08,L+.3), neon(0x1de9b6));
+  edge.position.y=.34; courseGroup.add(edge);
+
+  // paredes laterais
+  const wallMat = neon(0x4ee0ff);
+  function wall(x,z,dx,dz,len,th=0.6,h=1.2){
+    const g = new THREE.BoxGeometry(len, h, th);
+    const m = new THREE.Mesh(g, wallMat); m.castShadow=true; m.position.set(x,z===0?0:z,0);
+    m.rotation.y = Math.atan2(dz,dx);
+    m.position.set(x, h/2+.3, z);
+    courseGroup.add(m); walls.push(m);
+  }
+  // retângulo externo
+  wall(0, L/2-.4, 1,0, W);
+  wall(0,-L/2+.4, 1,0, W);
+  wall( W/2-.4,0, 0,1, L);
+  wall(-W/2+.4,0, 0,1, L);
+
+  // obstáculos aleatórios
+  const rnd = (a,b)=> a + Math.random()*(b-a);
+  const count = 4 + (seed%3)*2;
+  for(let i=0;i<count;i++){
+    const kind = i%3;
+    const x = rnd(-W*0.35, W*0.35);
+    const z = rnd(-L*0.35, L*0.2);
+    if(kind===0){
+      // rampa fina
+      const g = new THREE.BoxGeometry(4,.4,3);
+      const m = new THREE.Mesh(g, neon(0xff7bd5)); m.position.set(x,.3,z); m.castShadow=true;
+      m.rotation.x = Math.random()<0.5? -Math.PI/12 : Math.PI/12;
+      courseGroup.add(m); ramps.push(m);
+    }else if(kind===1){
+      // bumper (cilindro)
+      const g = new THREE.CylinderGeometry(1.2,1.2,.8,12);
+      const m = new THREE.Mesh(g, neon(0xffe066)); m.position.set(x,.4,z); m.castShadow=true; courseGroup.add(m); bumpers.push(m);
+    }else{
+      // portal (impulso)
+      const g = new THREE.TorusGeometry(1.4,.18,8,32);
+      const m = new THREE.Mesh(g, neon(0x9b79ff)); m.rotation.x=Math.PI/2; m.position.set(x,1.2,z); courseGroup.add(m); portals.push(m);
+    }
+  }
+
+  // buraco (copo)
+  const cup = new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.5,24), new THREE.MeshStandardMaterial({color:0x0a0b10, metalness:.4, roughness:.3}));
+  cup.position.set(rnd(-W*0.35, W*0.35), .15, L/2-3); cup.receiveShadow=true; courseGroup.add(cup); holeCup = cup;
+
+  // bandeira
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,2,8), new THREE.MeshStandardMaterial({color:0xffffff, roughness:.4}));
+  pole.position.set(cup.position.x, 1.15, cup.position.z);
+  const flagGeo = new THREE.PlaneGeometry(1, .6); const flagMat = new THREE.MeshStandardMaterial({color:0xff4455, side:THREE.DoubleSide});
+  const flagMesh = new THREE.Mesh(flagGeo, flagMat); flagMesh.position.set(.5, .4, 0); flagMesh.rotation.y = Math.PI/2;
+  const flagGrp = new THREE.Group(); flagGrp.add(pole); flagGrp.add(flagMesh); courseGroup.add(flagGrp); flag = flagGrp;
+
+  // ponto inicial
+  startPos.set(0,.6,-L/2+3);
+  par = 3 + Math.floor(count/2);
+}
+
+function resetBall(){
+  ball.position.copy(startPos);
+  ballVel.set(0,0,0);
+  rolling = false;
+  strokes = 0;
+}
+
+function nextHole(){
+  holeIndex = (holeIndex % HOLES) + 1;
+  buildCourse(holeIndex*7);
+  resetBall();
+  updateScoreUI();
+  cameraToBall(true);
+}
+
+function rebuildScoreTable(){
+  let html = '<tr><th>#</th>';
+  for(let i=1;i<=HOLES;i++) html += `<th>${i}</th>`;
+  html += '</tr><tr><td>PAR</td>';
+  for(let i=1;i<=HOLES;i++) html += `<td>${pars[i]||'-'}</td>`;
+  html += '</tr><tr><td>TAC</td>';
+  for(let i=1;i<=HOLES;i++) html += `<td id="s${i}">${scores[i]??'-'}</td>`;
+  html += '</tr>';
+  HUD.scoreTbl.innerHTML = html;
+}
+
+// Bola
+const ball = new THREE.Mesh(new THREE.SphereGeometry(.35,24,16), new THREE.MeshStandardMaterial({color:0xffffff, metalness:.4, roughness:.2}));
+ball.castShadow=true; scene.add(ball);
+const startPos = new THREE.Vector3();
+let ballVel = new THREE.Vector3(0,0,0), rolling=false;
+
+// Câmera: segue a bola
+const rig = new THREE.Group(); scene.add(rig); rig.add(camera);
+function cameraToBall(immediate=false){
+  const target = ball.position.clone().add(new THREE.Vector3(0,6,10));
+  if(immediate){ rig.position.copy(target); camera.lookAt(ball.position); return; }
+  camTarget.copy(target);
+}
+let camTarget = new THREE.Vector3();
+
+// Controles alternativos (debug/observação)
+const orbit = new OrbitControls(camera, renderer.domElement); orbit.enabled=false;
+addEventListener('keydown',e=>{
+  if(e.code==='KeyP') togglePause();
+  if(e.code==='KeyR') { resetBall(); updateScoreUI(); }
+  if(e.code==='KeyN') { finishHole(true); }
+  if(e.code==='KeyO') { orbit.enabled=!orbit.enabled; showToast('Câmera '+(orbit.enabled?'livre':'seguindo')); }
+});
+
+// UI / Pausa
+let paused=false;
+function togglePause(){ paused=!paused; overlay.classList.toggle('open', paused); }
+btnHelp.onclick = ()=>{ paused=true; overlay.classList.add('open'); };
+btnResume.onclick = ()=> togglePause();
+btnReset.onclick = ()=> { resetBall(); updateScoreUI(); togglePause(); };
+btnNext.onclick = ()=> { finishHole(true); togglePause(); };
+
+// Áudio
+const AC = window.AudioContext? new AudioContext(): null;
+function beep(freq=440,dur=0.07,gain=0.12){ if(!AC) return; const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=freq; g.gain.value=Number(volInput.value)*gain; o.connect(g).connect(AC.destination); o.start(); o.stop(AC.currentTime+dur); }
+function showToast(t){ HUD.toast.textContent=t; HUD.toast.style.display='block'; setTimeout(()=> HUD.toast.style.display='none', 800); }
+
+// Aiming (mouse/touch)
+let aiming=false, aimStart={x:0,y:0}, aimNow={x:0,y:0};
+canvas.addEventListener('mousedown', e=> beginAim(e.clientX,e.clientY));
+canvas.addEventListener('mousemove', e=> moveAim(e.clientX,e.clientY));
+addEventListener('mouseup', ()=> endAim());
+canvas.addEventListener('touchstart', e=>{ const t=e.touches[0]; beginAim(t.clientX,t.clientY); e.preventDefault();},{passive:false});
+canvas.addEventListener('touchmove', e=>{ const t=e.touches[0]; moveAim(t.clientX,t.clientY); e.preventDefault();},{passive:false});
+canvas.addEventListener('touchend', ()=> endAim());
+
+function beginAim(x,y){
+  if(paused || rolling) return;
+  aiming=true; aimStart={x,y}; aimNow={x,y};
+  powerEl.style.display='block'; cursorEl.style.display='block';
+  cursorEl.style.left = x+'px'; cursorEl.style.top = y+'px';
+}
+function moveAim(x,y){
+  if(!aiming) return;
+  aimNow={x,y};
+  const dx = (aimStart.x - aimNow.x);
+  const dy = (aimStart.y - aimNow.y);
+  const sens = Number(sensInput.value);
+  const force = Math.min(1, Math.hypot(dx,dy)/300 * sens);
+  powerBar.style.width = (force*100|0)+'%';
+}
+function endAim(){
+  if(!aiming) return;
+  const dx = (aimStart.x - aimNow.x);
+  const dy = (aimStart.y - aimNow.y);
+  const sens = Number(sensInput.value);
+  const force = Math.min(1, Math.hypot(dx,dy)/300 * sens);
+  powerEl.style.display='none'; cursorEl.style.display='none';
+  aiming=false;
+  if(force<0.04) return; // tap fraco ignora
+  // direção: da bola para o arrasto
+  const ang = Math.atan2(dy, dx);
+  const dir = new THREE.Vector3(Math.cos(ang), 0, Math.sin(ang));
+  ballVel.addScaledVector(dir, force*16);
+  rolling = true;
+  strokes++; updateScoreUI();
+  beep(880,.05,.12);
+}
+
+// Física simplificada
+const FRICTION = 0.98;
+const STOP_EPS = 0.02;
+
+// Colisões com paredes/limites e obstáculos
+function reflectIfHit(boxMin, boxMax){
+  // parede retângulo externo
+  const pos = ball.position;
+  const r = 0.35;
+  if(pos.x - r < boxMin.x){ pos.x = boxMin.x + r; ballVel.x = Math.abs(ballVel.x); }
+  if(pos.x + r > boxMax.x){ pos.x = boxMax.x - r; ballVel.x = -Math.abs(ballVel.x); }
+  if(pos.z - r < boxMin.z){ pos.z = boxMin.z + r; ballVel.z = Math.abs(ballVel.z); }
+  if(pos.z + r > boxMax.z){ pos.z = boxMax.z - r; ballVel.z = -Math.abs(ballVel.z); }
+}
+
+function collideCylinder(c, radius=1.2, bounce=1.0){
+  const p2 = new THREE.Vector2(ball.position.x, ball.position.z);
+  const c2 = new THREE.Vector2(c.x, c.z);
+  const d = p2.distanceTo(c2);
+  const r = radius + 0.35;
+  if(d<r){
+    const n = p2.clone().sub(c2).normalize();
+    // empurra e reflete
+    const overlap = r-d;
+    ball.position.x += n.x*overlap;
+    ball.position.z += n.y*overlap;
+    const v = new THREE.Vector2(ballVel.x, ballVel.z);
+    const vn = n.clone().multiplyScalar(v.dot(n));
+    const vt = v.clone().sub(vn);
+    const vref = vt.clone().sub(vn.multiplyScalar(bounce));
+    ballVel.x = vref.x; ballVel.z = vref.y;
+    beep(220,.04,.12);
+  }
+}
+
+function collideBox(m, half){ // metade: {x,z}
+  const r=0.35;
+  const dx = Math.abs(ball.position.x - m.position.x) - (half.x + r);
+  const dz = Math.abs(ball.position.z - m.position.z) - (half.z + r);
+  if(dx<0 && dz<0){
+    // resolve eixo dominante
+    if(dx > dz){
+      const s = Math.sign(ball.position.x - m.position.x);
+      ball.position.x = m.position.x + s*(half.x + r);
+      ballVel.x *= -1;
+    }else{
+      const s = Math.sign(ball.position.z - m.position.z);
+      ball.position.z = m.position.z + s*(half.z + r);
+      ballVel.z *= -1;
+    }
+    beep(200,.04,.11);
+  }
+}
+
+// Estado do jogo / placar
+const HOLES = 6;
+let holeIndex = 1, par = 3, strokes = 0;
+const scores = {}; const pars = {};
+let total = 0;
+const bestKey='minigolf_best';
+let best = Number(localStorage.getItem(bestKey) || 0);
+HUD.best.textContent = best? best : '—';
+
+function updateScoreUI(){
+  HUD.hole.textContent = holeIndex;
+  HUD.par.textContent = par;
+  HUD.strokes.textContent = strokes;
+  HUD.total.textContent = total;
+  pars[holeIndex] = par;
+  scores[holeIndex] = strokes;
+  // update tabela
+  for(let i=1;i<=HOLES;i++){
+    const td = document.getElementById('s'+i);
+    if(td) td.textContent = scores[i] ?? '-';
+  }
+}
+
+function finishHole(skipBall=false){
+  // marca pontuação e vai pro próximo
+  total = Object.values(scores).reduce((a,b)=> a + (b||0), 0);
+  if(holeIndex >= HOLES){
+    // fim do curso
+    if(!best || total<best){ best = total; localStorage.setItem(bestKey, String(best)); HUD.best.textContent=best; }
+    showToast('Curso completo! Total: '+total);
+    holeIndex = 0; total = 0;
+    for(let k in scores) delete scores[k];
+  }else{
+    if(!skipBall) showToast('Buraco '+(holeIndex+1));
+  }
+  holeIndex++;
+  buildCourse(holeIndex*7);
+  resetBall();
+  rebuildScoreTable();
+  updateScoreUI();
+  cameraToBall(true);
+}
+
+// Buraco (detectar bola dentro)
+function checkCup(){
+  const d = ball.position.distanceTo(holeCup.position);
+  if(d < 0.48 && ballVel.length()<0.35){
+    // caiu
+    ball.position.copy(holeCup.position).add(new THREE.Vector3(0,.2,0));
+    ballVel.set(0,0,0); rolling=false;
+    if(strokes===1) showToast('Hole in One!');
+    else if(strokes<=par) showToast('Birdie!');
+    else showToast('Par '+par+' em '+strokes);
+    scores[holeIndex]=strokes; updateScoreUI();
+    setTimeout(()=> finishHole(false), 800);
+    beep(990,.08,.15); beep(1320,.08,.12);
+  }
+}
+
+// Objetos estáticos do cenário (decor)
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(2000,2000), new THREE.MeshBasicMaterial({color:0x05060a}));
+floor.rotation.x = -Math.PI/2; floor.position.y=-1.2; scene.add(floor);
+
+// Inicializa primeiro curso
+buildCourse(7);
+rebuildScoreTable();
+resetBall();
+cameraToBall(true);
+
+// Loop
+let last = performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  if(paused){ renderer.render(scene,camera); return; }
+
+  const now = performance.now(); const dt = Math.min(0.05,(now-last)/1000); last=now;
+
+  // física da bola
+  if(rolling){
+    ball.position.addScaledVector(ballVel, dt);
+    ballVel.multiplyScalar(Math.pow(FRICTION, 60*dt));
+
+    // gravidade artificial nas rampas: aplica impulso na direção "para baixo" da rampa (eixo XZ pelo tilt)
+    ramps.forEach(r=>{
+      const tilt = r.rotation.x; // positivo: desce pra +Z; negativo: -Z
+      if(Math.abs(tilt)>0.001){
+        const s = Math.sign(tilt);
+        ballVel.z += s * Math.sin(Math.abs(tilt)) * 8 * dt;
+      }
+    });
+
+    // colisões: limites da base
+    const base = courseGroup.children.find(m=>m.geometry?.parameters?.depth); // a caixa base
+    const hw = base.geometry.parameters.width/2 - .6;
+    const hz = base.geometry.parameters.depth/2 - .6;
+    reflectIfHit(new THREE.Vector3(-hw,0,-hz), new THREE.Vector3(hw,0,hz));
+
+    // paredes extras/bumper/portal
+    bumpers.forEach(b=> collideCylinder(b.position, 1.2, 1.1));
+    walls.forEach(w=> collideBox(w, {x:(w.geometry.parameters.width||w.geometry.parameters.depth)/2, z:0.3}));
+    // portais: acelera na direção ao centro do aro
+    portals.forEach(p=>{
+      const d = ball.position.distanceTo(p.position);
+      if(d<1.4){ const dir = p.position.clone().sub(ball.position).setY(0).normalize(); ballVel.addScaledVector(dir, 8*dt); }
+    });
+
+    // parar
+    if(ballVel.length()<STOP_EPS){ ballVel.set(0,0,0); rolling=false; }
+    checkCup();
+  }
+
+  // câmera segue rig
+  camTarget.lerp(ball.position.clone().add(new THREE.Vector3(0,6,10)), 1-Math.exp(-dt*6));
+  rig.position.lerp(camTarget, 1-Math.exp(-dt*6));
+  camera.lookAt(ball.position);
+
+  // animar bandeira
+  if(flag) flag.children[1].rotation.z = Math.sin(now*0.002)*0.1;
+
+  renderer.render(scene,camera);
+}
+loop();
+cameraToBall(true);
+
+// Helpers UI
+function showToast(t){ HUD.toast.textContent=t; HUD.toast.style.display='block'; setTimeout(()=> HUD.toast.style.display='none', 900); }
+
+// Botões mobile
+if(/Mobi|Android/i.test(navigator.userAgent)){
+  document.getElementById('mobile').style.display='flex';
+  document.getElementById('btnHit').addEventListener('click', ()=>{ beginAim(innerWidth/2, innerHeight-120); aimNow={x:innerWidth/2-200,y:innerHeight-120-40}; endAim(); });
+  document.getElementById('btnResetM').addEventListener('click', ()=>{ resetBall(); updateScoreUI(); });
+}
+
+// Atualiza UI inicial
+updateScoreUI();
+</script>
+</body>
+</html>
