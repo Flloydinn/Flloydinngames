@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Flloydinn Gameplay — Post</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Artigo do blog de games do Flloydinn Gameplay">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
+      --brand:#8f0000; --card:#1a1a1a; --border:#24262b; --shadow:0 10px 30px rgba(0,0,0,.35);
+      --ok:#57d996;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
+      line-height:1.65;
+    }
+    a{color:#fff;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{width:min(1100px,calc(100% - 2rem));margin:0 auto}
+    .site-header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 0}
+    .brand{font-weight:800}
+    .brand span{color:var(--brand)}
+    .btn{background:linear-gradient(135deg,var(--brand) 0%, #b31212 100%);color:#fff;border:0;border-radius:.6rem;padding:.55rem .85rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+    .btn--ghost{background:transparent;border:1px solid var(--border)}
+    .header-tools{display:flex;gap:.6rem}
+    .cover{
+      aspect-ratio:16/9; background:#0e0f12; border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;overflow:hidden
+    }
+    .cover img{width:100%;height:100%;object-fit:cover;filter:saturate(.98)}
+    .article{
+      display:grid;grid-template-columns:1fr 320px;gap:1.4rem;padding:1.2rem 0
+    }
+    .main{
+      background:var(--card);border:1px solid var(--border);border-radius:.9rem;overflow:hidden
+    }
+    .content{padding:1rem 1.1rem}
+    .kicker{display:inline-block;background:rgba(255,255,255,.08);border:1px solid var(--border);padding:.2rem .45rem;border-radius:.4rem;font-weight:800;font-size:.8rem}
+    h1{margin:.4rem 0 .5rem;font-size:1.8rem;line-height:1.2}
+    .meta{color:var(--muted);display:flex;gap:.6rem;flex-wrap:wrap;font-size:.95rem}
+    .md-content{margin-top:1rem}
+    .md-content h2{font-size:1.4rem;margin:1.2rem 0 .4rem}
+    .md-content h3{font-size:1.15rem;margin:1rem 0 .3rem}
+    .md-content p{color:#d8d8de;margin:.6rem 0}
+    .md-content ul,.md-content ol{padding-left:1.2rem}
+    .md-content code{background:#12141b;border:1px solid var(--border);padding:.15rem .35rem;border-radius:.3rem}
+    .md-content pre{background:#0f1116;border:1px solid var(--border);padding:1rem;border-radius:.6rem;overflow:auto}
+    .badge{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.2rem .45rem;border-radius:.4rem;font-weight:700}
+    .badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.6rem}
+    .sidebar{position:sticky;top:76px;height:fit-content;display:grid;gap:1rem}
+    .box{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+    .author{display:flex;gap:.6rem;align-items:center}
+    .author img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+    .list{display:grid;gap:.7rem}
+    .item{display:grid;grid-template-columns:96px 1fr;gap:.6rem;align-items:center}
+    .item img{width:100%;height:64px;object-fit:cover;border-radius:.4rem;border:1px solid var(--border)}
+    .empty{border:1px dashed var(--border);border-radius:.7rem;padding:1rem;text-align:center;color:var(--muted)}
+    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
+    .skeleton{position:relative;overflow:hidden;background:#141519}
+    .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 1.2s infinite}
+    @keyframes shimmer{100%{transform:translateX(100%)}}
+    @media (max-width:980px){.article{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
+      <div class="header-tools">
+        <a class="btn btn--ghost" href="blog.html">Blog</a>
+        <a class="btn" id="backToBlog" href="blog.html">Voltar</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Capa -->
+  <div id="cover" class="cover skeleton" aria-label="Imagem de capa do post"></div>
+
+  <!-- Artigo -->
+  <main class="container article">
+    <article class="main">
+      <div class="content">
+        <span id="category" class="kicker">Carregando</span>
+        <h1 id="title">Carregando post</h1>
+        <p class="meta" id="meta">...</p>
+        <div id="tags" class="badges"></div>
+        <div id="content" class="md-content"></div>
+      </div>
+    </article>
+
+    <aside class="sidebar">
+      <section class="box">
+        <div class="author">
+          <img id="authorImg" src="assets/avatar.jpg" alt="Foto do autor">
+          <div>
+            <strong id="authorName">Autor</strong>
+            <div style="color:var(--muted);font-size:.9rem" id="authorRole">Redação</div>
+          </div>
+        </div>
+        <p style="margin:.7rem 0 0;color:var(--muted)">Compartilhe com a comunidade e marque @flloydinn</p>
+      </section>
+
+      <section class="box">
+        <h3 style="margin:.2rem 0 .6rem">Mais recentes</h3>
+        <div id="recentList" class="list"></div>
+      </section>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="year"></span> Flloydinn Gameplay</div>
+  </footer>
+
+  <script>
+    // Util básico
+    const $ = sel => document.querySelector(sel);
+    const fmtDate = iso => new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+    const readLabel = m => `${m} min de leitura`;
+
+    // Markdown parser leve (suporta títulos, negrito, itálico, code, blocos de código, listas, links, imagens)
+    function mdToHtml(md){
+      // Escapa HTML
+      md = md.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      // Code block ```
+      md = md.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.replace(/\n$/,'')}</code></pre>`);
+      // Headings
+      md = md.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+      md = md.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+      md = md.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+      // Bold, italic, inline code
+      md = md.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      md = md.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Imagens ![alt](src)
+      md = md.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
+      // Links [text](url)
+      md = md.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      // Listas
+      md = md.replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>');
+      md = md.replace(/(<li>.*<\/li>)(?!\n<li>)/gs, '<ul>$1</ul>');
+      // Parágrafos
+      md = md.replace(/^(?!<h\d|<ul|<pre|<img|<p|<blockquote)([^\n]+)\n?/gm, '<p>$1</p>');
+      return md;
+    }
+
+    // Lê parâmetros
+    const params = new URLSearchParams(location.search);
+    const slug = params.get('slug');
+
+    // Render default data
+    $('#year').textContent = new Date().getFullYear();
+
+    async function loadIndex(){
+      const res = await fetch('posts/index.json', { cache: 'no-cache' });
+      if(!res.ok) throw new Error('Não foi possível carregar posts/index.json');
+      return res.json();
+    }
+
+    function renderRecent(list, currentSlug){
+      const recent = [...list].sort((a,b)=> new Date(b.dateISO) - new Date(a.dateISO)).slice(0,5);
+      $('#recentList').innerHTML = recent.map(p=>`
+        <a class="item" href="post.html?slug=${encodeURIComponent(p.slug)}" aria-label="${p.title}">
+          <img src="${p.cover}" alt="${p.title}">
+          <div>
+            <strong>${p.title}</strong>
+            <div style="color:var(--muted);font-size:.9rem">${fmtDate(p.dateISO)} • ${p.category}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    async function renderPost(){
+      const data = await loadIndex();
+
+      if(!slug){
+        document.title = 'Post não encontrado';
+        $('#content').innerHTML = '<div class="empty">Defina ?slug=meu-artigo na URL.</div>';
+        return;
+      }
+
+      const post = data.posts.find(p => p.slug === slug);
+      if(!post){
+        document.title = 'Post não encontrado';
+        $('#content').innerHTML = '<div class="empty">Este artigo não existe no index.json.</div>';
+        return;
+      }
+
+      // Meta
+      document.title = `${post.title} — Flloydinn Gameplay`;
+      $('#category').textContent = post.category || 'Artigo';
+      $('#title').textContent = post.title;
+      $('#meta').textContent = `${fmtDate(post.dateISO)} • ${readLabel(post.readMin||5)} • ${post.author||'Redação'}`;
+      $('#tags').innerHTML = (post.tags||[]).map(t=>`<span class="badge">#${t}</span>`).join('');
+      $('#authorName').textContent = post.author || 'Redação';
+      $('#authorRole').textContent = post.author === 'Flloydinn' ? 'Autor' : 'Redação';
+
+      // Capa
+      const cover = document.createElement('img');
+      cover.src = post.cover;
+      cover.alt = post.title;
+      const coverBox = document.getElementById('cover');
+      coverBox.classList.remove('skeleton');
+      coverBox.innerHTML = '';
+      coverBox.appendChild(cover);
+
+      // Conteúdo MD
+      const mdUrl = `posts/${post.file}`;
+      const res = await fetch(mdUrl, { cache: 'no-cache' });
+      if(!res.ok){
+        $('#content').innerHTML = '<div class="empty">Conteúdo não encontrado para este post.</div>';
+      } else {
+        const md = await res.text();
+        $('#content').innerHTML = mdToHtml(md);
+      }
+
+      // Recentes
+      renderRecent(data.posts, slug);
+    }
+
+    // Inicia
+    renderPost().catch(err=>{
+      console.error(err);
+      $('#content').innerHTML = '<div class="empty">Erro ao carregar o post.</div>';
+    });
+  </script>
+</body>
+</html>
