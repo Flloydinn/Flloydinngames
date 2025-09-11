@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Flloydinn Gameplay — Blog de Notícias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Blog de notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --bg-soft:#121316;
+      --text:#E8E8EA;
+      --muted:#A6A6AD;
+      --brand:#8f0000;
+      --card:#1a1a1a;
+      --border:#24262b;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --ok:#57d996;
+      --warn:#ffb84d;
+      --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
+      line-height:1.6;
+    }
+    img{max-width:100%;display:block}
+    a{color:#fff;text-decoration:none}
+    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
+    /* Header */
+    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+    .brand{font-weight:800;letter-spacing:.4px}
+    .brand span{color:var(--brand)}
+    .menu{display:flex;gap:.6rem}
+    .btn{
+      background:linear-gradient(135deg,var(--brand) 0%, #b31212 100%);
+      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
+    }
+    .btn--ghost{background:transparent;border:1px solid var(--border)}
+    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+    /* Hero destaque */
+    .hero{border-bottom:1px solid var(--border);background:radial-gradient(900px 260px at 15% 5%, rgba(233,33,33,.22),transparent 60%)}
+    .hero__grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;padding:1.2rem 0 1.2rem}
+    .feature{
+      position:relative;overflow:hidden;border-radius:1rem;border:1px solid var(--border);background:var(--card);
+      display:grid;grid-template-columns:1.2fr 1fr;gap:0
+    }
+    .feature__media{aspect-ratio:16/9;overflow:hidden}
+    .feature__media img{width:100%;height:100%;object-fit:cover;filter:saturate(.95)}
+    .feature__body{padding:1rem}
+    .kicker{font-size:.8rem;font-weight:800;letter-spacing:.08em;color:#fff;background:rgba(255,255,255,.08);display:inline-block;padding:.25rem .5rem;border-radius:.4rem;border:1px solid var(--border)}
+    .feature__title{margin:.5rem 0 .3rem;font-size:1.6rem;line-height:1.2}
+    .meta{display:flex;gap:.6rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+    .side-cards{display:grid;grid-template-columns:1fr;gap:1rem}
+    .card-sm{display:grid;grid-template-columns:120px 1fr;gap:.7rem;border:1px solid var(--border);border-radius:.8rem;background:var(--card);overflow:hidden}
+    .card-sm img{width:100%;height:100%;object-fit:cover}
+    .card-sm .t{margin:.4rem .6rem .2rem;font-weight:700}
+    .card-sm .m{margin:0 .6rem .6rem;color:var(--muted);font-size:.85rem}
+    /* Toolbar filtros */
+    .toolbar{position:sticky;top:64px;z-index:50;background:rgba(16,16,18,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .toolbar__inner{display:grid;grid-template-columns:1.3fr .7fr;gap:1rem;align-items:center;padding:1rem 0}
+    .searchbox{display:flex;gap:.6rem;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:.8rem;padding:.5rem .7rem}
+    .searchbox input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:1rem;padding:.35rem}
+    .filters{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end}
+    .select,.chip,.toggle{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:.6rem;padding:.55rem .75rem;font-weight:600;cursor:pointer}
+    .select{padding:.55rem .9rem}
+    .chip.is-active{outline:2px solid rgba(255,255,255,.12)}
+    .toolbar__tags{padding:.9rem 0;border-top:1px solid var(--border)}
+    .taglist{display:flex;gap:.4rem;flex-wrap:wrap}
+    .tag{font-size:.85rem;background:transparent;border:1px dashed var(--border);padding:.35rem .55rem;border-radius:.6rem;color:var(--muted);cursor:pointer}
+    .tag.is-on{background:#0f1116;border-style:solid;color:#fff}
+    .legend{color:var(--muted);font-size:.9rem;margin:.4rem 0 0}
+    /* Grid posts */
+    .grid{display:grid;gap:1rem;padding:1.2rem 0 2rem;grid-template-columns:repeat(3,1fr)}
+    .post{
+      display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:.9rem;overflow:hidden;box-shadow:var(--shadow)
+    }
+    .post .media{aspect-ratio:16/9;overflow:hidden;background:#0e0f12}
+    .post .media img{width:100%;height:100%;object-fit:cover;transition:transform .25s}
+    .post:hover .media img{transform:scale(1.04)}
+    .post .body{padding:.9rem}
+    .post .title{margin:.3rem 0 .35rem;font-size:1.1rem;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .post .excerpt{color:var(--muted);font-size:.95rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.6rem}
+    .badge{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.2rem .45rem;border-radius:.4rem;font-weight:700}
+    .actions{display:flex;gap:.5rem;margin-top:.7rem}
+    .btn--read{flex:1;display:inline-flex;justify-content:center}
+    .btn--save{background:transparent;border:1px solid var(--border)}
+    .controls{display:flex;justify-content:center;gap:.6rem;padding:1rem 0 2rem}
+    .empty{border:1px dashed var(--border);border-radius:.8rem;padding:2rem;text-align:center;color:var(--muted)}
+    /* Newsletter */
+    .newsletter{border-top:1px solid var(--border);background:var(--bg-soft)}
+    .newsletter__box{display:grid;grid-template-columns:2fr 1fr;gap:1rem;padding:1.4rem 0}
+    .newsletter .form{display:flex;gap:.6rem}
+    .newsletter input{flex:1;background:#0d0f14;border:1px solid var(--border);border-radius:.6rem;color:var(--text);padding:.7rem .8rem}
+    .note{font-size:.85rem;color:var(--muted)}
+    /* Modal artigo */
+    .modal{position:fixed;inset:0;display:none;place-items:center;z-index:100;background:rgba(0,0,0,.7);padding:1rem}
+    .modal.open{display:grid}
+    .dialog{width:min(1100px,100%);max-height:90vh;display:grid;grid-template-rows:auto 1fr;background:var(--bg-soft);border:1px solid var(--border);border-radius:.9rem;overflow:hidden;box-shadow:var(--shadow)}
+    .dialog__head{display:flex;align-items:center;justify-content:space-between;padding:.8rem .9rem;border-bottom:1px solid var(--border)}
+    .dialog__body{overflow:auto}
+    .article{display:grid;grid-template-columns:1fr 300px;gap:1.2rem;padding:1rem}
+    .article .cover{aspect-ratio:16/9;border-radius:.6rem;overflow:hidden;border:1px solid var(--border)}
+    .article .content h1{margin:.3rem 0 .5rem;font-size:1.6rem}
+    .article .content p{color:#d6d6dc}
+    .sidebar{position:sticky;top:1rem;height:fit-content;border:1px solid var(--border);border-radius:.6rem;background:#111217;padding:.8rem}
+    .author{display:flex;gap:.6rem;align-items:center}
+    .author img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+    .skeleton{position:relative;overflow:hidden;background:#141519}
+    .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 1.2s infinite}
+    @keyframes shimmer{100%{transform:translateX(100%)}}
+    /* Responsive */
+    @media (max-width:1100px){.hero__grid{grid-template-columns:1fr}.feature{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.newsletter__box{grid-template-columns:1fr}}
+    @media (max-width:700px){.grid{grid-template-columns:1fr}.article{grid-template-columns:1fr}.toolbar__inner{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Flloydinn Gameplay">
+        <span>Flloyd<span>inn</span> Gameplay</span>
+      </a>
+      <nav class="menu" aria-label="principal">
+        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
+        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
+        <a class="btn btn--small" href="#">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero destaque -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <article class="feature" id="feature">
+        <div class="feature__media skeleton"></div>
+        <div class="feature__body">
+          <span class="kicker" id="featCat">Destaque</span>
+          <h2 class="feature__title" id="featTitle">Carregando destaque</h2>
+          <p class="meta" id="featMeta">...</p>
+          <p id="featExcerpt" style="color:#cfd0d6;margin:.5rem 0 1rem">...</p>
+          <div class="badges" id="featTags"></div>
+          <div class="actions" style="margin-top:.9rem">
+            <button id="featRead" class="btn btn--read">Ler agora</button>
+            <a class="btn btn--ghost" href="#" id="rssBtn" aria-label="Assinar RSS">RSS</a>
+          </div>
+        </div>
+      </article>
+      <div class="side-cards" id="sideCards">
+        <!-- later -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="toolbar" role="region" aria-label="Controles de busca e filtros">
+    <div class="container toolbar__inner">
+      <div class="searchbox" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.2-4.2M10.8 18.6a7.8 7.8 0 1 1 0-15.6 7.8 7.8 0 0 1 0 15.6Z" stroke="#A6A6AD" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="q" type="search" placeholder="Buscar por título, jogo, plataforma, tag..." autocomplete="off">
+        <button id="clearBtn" class="btn btn--ghost btn--small" aria-label="Limpar busca">Limpar</button>
+      </div>
+      <div class="filters">
+        <select id="sort" class="select" aria-label="Ordenar">
+          <option value="recent">Mais recentes</option>
+          <option value="popular">Mais lidos</option>
+          <option value="title">Título A-Z</option>
+        </select>
+        <select id="period" class="select" aria-label="Período">
+          <option value="all">Todo período</option>
+          <option value="7">Últimos 7 dias</option>
+          <option value="30">Últimos 30 dias</option>
+          <option value="90">Últimos 90 dias</option>
+          <option value="365">Últimos 12 meses</option>
+        </select>
+        <select id="length" class="select" aria-label="Tamanho do texto">
+          <option value="all">Todos os tamanhos</option>
+          <option value="short">Curto até 4 min</option>
+          <option value="medium">4 a 8 min</option>
+          <option value="long">Mais de 8 min</option>
+        </select>
+      </div>
+    </div>
+    <div class="container toolbar__tags">
+      <div id="chipCats" class="filters" role="listbox" aria-label="Categorias"></div>
+      <div class="taglist" id="tagList" aria-label="Tags"></div>
+      <p class="legend" id="legend"></p>
+    </div>
+  </div>
+
+  <!-- Grid de posts -->
+  <main class="container" id="main">
+    <section id="grid" class="grid" aria-live="polite"></section>
+    <div class="controls">
+      <button id="prev" class="btn btn--ghost">Anterior</button>
+      <button id="next" class="btn">Próxima</button>
+    </div>
+  </main>
+
+  <!-- Newsletter -->
+  <section class="newsletter">
+    <div class="container newsletter__box">
+      <div>
+        <h3 style="margin:.3rem 0 .2rem">Receba as novidades</h3>
+        <p class="note">Assine para receber notícias e bastidores. Sem spam.</p>
+      </div>
+      <form id="newsForm" class="form" novalidate>
+        <input type="email" name="email" placeholder="seu@email.com" required>
+        <button type="submit" class="btn">Assinar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Modal Artigo -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="mtitle">
+    <div class="dialog">
+      <div class="dialog__head">
+        <h2 id="mtitle" style="margin:0;font-size:1.1rem">Lendo artigo</h2>
+        <button id="mclose" class="btn btn--ghost btn--small" aria-label="Fechar">Fechar</button>
+      </div>
+      <div class="dialog__body">
+        <article id="article" class="article">
+          <div class="content">
+            <div class="cover skeleton" id="acover"></div>
+            <h1 id="atitle">...</h1>
+            <p class="meta" id="ameta">...</p>
+            <div id="acontent" style="margin-top:.6rem">
+              <!-- conteúdo dinâmico -->
+            </div>
+          </div>
+          <aside class="sidebar">
+            <div class="author">
+              <img id="aauthorImg" src="assets/avatar.jpg" alt="Foto do autor">
+              <div>
+                <strong id="aauthor">Flloydinn</strong>
+                <div class="note" id="aauthorRole">Redação</div>
+              </div>
+            </div>
+            <hr style="border-color:#222;margin:.8rem 0">
+            <div id="asideTags" class="badges"></div>
+            <p class="note" style="margin-top:.7rem">Compartilhe com os amigos e marque @flloydinn</p>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Dataset de exemplo =====
+    // Campos: id, title, slug, excerpt, content, cover, dateISO, readMin, views, category, tags[], game, platform, author
+    const POSTS = [
+      {
+        id:1, title:"Preview de Elden Ring DLC Shadow of the Erdtree",
+        slug:"preview-elden-ring-dlc",
+        excerpt:"Impressões iniciais da expansão mais esperada: novas áreas, chefes e ajustes de build.",
+        content:[
+          "Visitamos a nova região e testamos três armas inéditas. Os inimigos punem posicionamento ruim, mas a janela de parry ficou mais justa.",
+          "Exploradores vão curtir segredos bem escondidos. A expansão também refina poise e status, o que muda rotações em PvE.",
+          "Para veteranos, a curva fica mais íngreme. Para iniciantes, há talismãs de qualidade de vida que aliviam o começo."
+        ],
+        cover:"assets/eldenring.jpg", dateISO:"2025-09-07", readMin:6, views:5400,
+        category:"Análises", tags:["Soulslike","DLC","RPG"], game:"Elden Ring", platform:"PC", author:"Flloydinn"
+      },
+      {
+        id:2, title:"Nintendo Direct: destaques e datas",
+        slug:"nintendo-direct-destaques",
+        excerpt:"Resumo com os anúncios que empolgaram a comunidade e como isso mexe com o calendário de lançamentos.",
+        content:[
+          "Sequência surpresa de um clássico 2D, coletânea remaster e novo party game focado em online.",
+          "As janelas de lançamento ocupam outubro e novembro. Boas notícias para quem curte portátil.",
+          "Indies também apareceram com propostas criativas e multiplayer local caprichado."
+        ],
+        cover:"assets/nintendo.jpg", dateISO:"2025-09-09", readMin:4, views:7200,
+        category:"Notícias", tags:["Nintendo","Eventos"], game:"Vários", platform:"Switch", author:"Redação"
+      },
+      {
+        id:3, title:"Como otimizar FPS no Fortnite sem perder qualidade",
+        slug:"otimizar-fps-fortnite",
+        excerpt:"Guia prático com ajustes de driver e configurações do jogo para equilibrar performance e visual.",
+        content:[
+          "Atualize drivers e use modo desempenho quando a GPU for o gargalo. Se a CPU limita, reduza sombras e distância.",
+          "DLSS em modo qualidade resolve bem em 1080p. Considere limitar FPS para estabilidade e termal mais baixo.",
+          "Teste campo de visão e sensibilidade em mapas de treino para manter consistência no aim."
+        ],
+        cover:"assets/fortnite.jpg", dateISO:"2025-08-30", readMin:7, views:3800,
+        category:"Guias", tags:["Fortnite","Performance","PC"], game:"Fortnite", platform:"PC", author:"Flloydinn"
+      },
+      {
+        id:4, title:"Indies imperdíveis de setembro",
+        slug:"indies-imperdiveis-setembro",
+        excerpt:"Quatro jogos pequenos com ideias grandes que podem virar suas novas obsessões.",
+        content:[
+          "Roguelike com loop rápido, aventura narrativa com escolhas significativas, metroidvania compacto e puzzle relax.",
+          "Todos têm demo. Trilha sonora e direção de arte dão identidade forte para cada projeto.",
+          "Ideal para quem tem pouco tempo por dia e quer experiências fechadas."
+        ],
+        cover:"assets/indies.jpg", dateISO:"2025-09-03", readMin:5, views:2900,
+        category:"Listas", tags:["Indie","Recomendações"], game:"Vários", platform:"PC", author:"Redação"
+      },
+      {
+        id:5, title:"Crossplay em 2025: quem conversa com quem",
+        slug:"crossplay-2025",
+        excerpt:"Panorama atualizado de crossplay e cross-progression nos principais games competitivos.",
+        content:[
+          "Fortnite segue como referência. Valorant testa integração em plataformas novas.",
+          "Atenção a progressão cruzada: contas vinculadas exigem autenticação em dois fatores.",
+          "Checamos tabelas de compatibilidade para os títulos mais jogados pela comunidade."
+        ],
+        cover:"assets/crossplay.jpg", dateISO:"2025-08-20", readMin:6, views:4100,
+        category:"Notícias", tags:["Multiplayer","Serviços"], game:"Vários", platform:"Multi", author:"Redação"
+      },
+      {
+        id:6, title:"Setup do canal: áudio limpo e imagem nítida",
+        slug:"setup-canal",
+        excerpt:"Bastidores do estúdio com dicas baratas de microfone, iluminação e captura.",
+        content:[
+          "Dinamize o áudio com filtro pop e tratamento básico no OBS. Gate e compressor ajudam muito.",
+          "Luz contínua difusa resolve 80% das cenas. Posicionamento importa mais que potência.",
+          "Capture em 1080p60 e use CBR para plataformas que priorizam estabilidade."
+        ],
+        cover:"assets/setup.jpg", dateISO:"2025-09-01", readMin:8, views:3300,
+        category:"Bastidores", tags:["Produtividade","Equipamentos"], game:"Vários", platform:"PC", author:"Flloydinn"
+      }
+    ];
+
+    // ===== Estado =====
+    const el = {
+      grid: document.getElementById('grid'),
+      q: document.getElementById('q'),
+      clear: document.getElementById('clearBtn'),
+      sort: document.getElementById('sort'),
+      period: document.getElementById('period'),
+      length: document.getElementById('length'),
+      chipCats: document.getElementById('chipCats'),
+      tagList: document.getElementById('tagList'),
+      legend: document.getElementById('legend'),
+      prev: document.getElementById('prev'),
+      next: document.getElementById('next'),
+      feature: document.getElementById('feature'),
+      featCat: document.getElementById('featCat'),
+      featTitle: document.getElementById('featTitle'),
+      featMeta: document.getElementById('featMeta'),
+      featExcerpt: document.getElementById('featExcerpt'),
+      featTags: document.getElementById('featTags'),
+      featRead: document.getElementById('featRead'),
+      sideCards: document.getElementById('sideCards'),
+      modal: document.getElementById('modal'),
+      mclose: document.getElementById('mclose'),
+      mtitle: document.getElementById('mtitle'),
+      acover: document.getElementById('acover'),
+      atitle: document.getElementById('atitle'),
+      ameta: document.getElementById('ameta'),
+      acontent: document.getElementById('acontent'),
+      aaImg: document.getElementById('aauthorImg'),
+      aaName: document.getElementById('aauthor'),
+      aaRole: document.getElementById('aauthorRole'),
+      asideTags: document.getElementById('asideTags'),
+      newsForm: document.getElementById('newsForm'),
+      rssBtn: document.getElementById('rssBtn'),
+    };
+
+    const state = {
+      q: "",
+      sort:"recent",
+      period:"all",
+      length:"all",
+      category:"todas",
+      tags:new Set(),
+      page:1,
+      perPage:9,
+      favs:new Set(JSON.parse(localStorage.getItem('fll_blog_favs')||'[]'))
+    };
+
+    // ===== Util =====
+    const fmtDate = iso => new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+    const daysAgo = (iso) => (Date.now() - new Date(iso).getTime()) / 86400000;
+    const readLabel = m => `${m} min de leitura`;
+
+    // ===== Categorias e tags dinâmicas =====
+    const CATS = ["todas", ...Array.from(new Set(POSTS.map(p=>p.category)))];
+    const ALL_TAGS = Array.from(new Set(POSTS.flatMap(p=>p.tags))).sort();
+
+    function renderCatChips(){
+      el.chipCats.innerHTML = "";
+      CATS.forEach(c=>{
+        const b = document.createElement('button');
+        b.className = 'chip' + (state.category===c?" is-active":"");
+        b.role = 'option';
+        b.textContent = c;
+        b.addEventListener('click', ()=>{ state.category=c; state.page=1; update(); });
+        el.chipCats.appendChild(b);
+      });
+    }
+    function renderTags(){
+      el.tagList.innerHTML = "";
+      ALL_TAGS.forEach(t=>{
+        const b = document.createElement('button');
+        b.className = 'tag' + (state.tags.has(t)?" is-on":"");
+        b.textContent = `#${t}`;
+        b.addEventListener('click', ()=>{
+          if(state.tags.has(t)) state.tags.delete(t); else state.tags.add(t);
+          state.page=1; update();
+        });
+        el.tagList.appendChild(b);
+      });
+    }
+
+    // ===== Busca, filtros e ordenação =====
+    function applyFilters(){
+      const q = state.q.trim().toLowerCase();
+      let list = POSTS.filter(p=>{
+        const matchesQ = !q || [p.title,p.excerpt,p.content.join(" "),p.game,p.platform,(p.tags||[]).join(" ")].join(" ").toLowerCase().includes(q);
+        const matchesCat = state.category==='todas' || p.category===state.category;
+        const matchesTags = state.tags.size===0 || Array.from(state.tags).every(t=>p.tags.includes(t));
+        const inPeriod = (()=> {
+          if(state.period==='all') return true;
+          return daysAgo(p.dateISO) <= Number(state.period);
+        })();
+        const matchesLen = state.length==='all' ||
+          (state.length==='short' && p.readMin<=4) ||
+          (state.length==='medium' && p.readMin>4 && p.readMin<=8) ||
+          (state.length==='long' && p.readMin>8);
+        return matchesQ && matchesCat && matchesTags && inPeriod && matchesLen;
+      });
+
+      switch(state.sort){
+        case 'recent': list.sort((a,b)=> new Date(b.dateISO) - new Date(a.dateISO)); break;
+        case 'popular': list.sort((a,b)=> b.views - a.views); break;
+        case 'title': list.sort((a,b)=> a.title.localeCompare(b.title)); break;
+      }
+      return list;
+    }
+
+    // ===== Render destaque e laterais =====
+    function renderFeature(items){
+      if(items.length===0) return;
+      const f = items[0];
+      el.feature.querySelector('.feature__media').classList.remove('skeleton');
+      el.feature.querySelector('.feature__media').innerHTML = `<img src="${f.cover}" alt="${f.title}">`;
+      el.featCat.textContent = f.category;
+      el.featTitle.textContent = f.title;
+      el.featMeta.textContent = `${fmtDate(f.dateISO)} • ${readLabel(f.readMin)} • ${f.views.toLocaleString('pt-BR')} leituras`;
+      el.featExcerpt.textContent = f.excerpt;
+      el.featTags.innerHTML = f.tags.map(t=>`<span class="badge">#${t}</span>`).join('');
+      el.featRead.onclick = ()=> openArticle(f.id);
+      // side cards dos próximos 3
+      const side = items.slice(1,4);
+      el.sideCards.innerHTML = side.map(p=>`
+        <article class="card-sm">
+          <img src="${p.cover}" alt="${p.title}">
+          <div>
+            <h4 class="t">${p.title}</h4>
+            <p class="m">${fmtDate(p.dateISO)} • ${p.category}</p>
+            <div style="padding:0 .6rem .6rem">
+              <button class="btn btn--ghost btn--small" data-read="${p.id}">Ler</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      el.sideCards.querySelectorAll('[data-read]').forEach(b=> b.addEventListener('click', ()=> openArticle(Number(b.dataset.read))));
+    }
+
+    // ===== Grid e paginação =====
+    function renderGrid(items){
+      const start = (state.page-1)*state.perPage;
+      const end = start + state.perPage;
+      const pageItems = items.slice(start,end);
+      if(pageItems.length===0){
+        el.grid.innerHTML = `<div class="empty">Nada por aqui com esses filtros. Tente limpar busca ou escolher outro período.</div>`;
+        el.legend.textContent = "";
+        el.prev.disabled = true; el.next.disabled = true;
+        return;
+      }
+      el.grid.innerHTML = pageItems.map(p=>{
+        const saved = state.favs.has(p.id);
+        return `
+          <article class="post">
+            <div class="media"><img src="${p.cover}" alt="${p.title}"></div>
+            <div class="body">
+              <span class="badge">${p.category}</span>
+              <h3 class="title">${p.title}</h3>
+              <p class="meta">${fmtDate(p.dateISO)} • ${readLabel(p.readMin)} • ${p.views.toLocaleString('pt-BR')} leituras</p>
+              <p class="excerpt">${p.excerpt}</p>
+              <div class="badges">${p.tags.map(t=>`<span class="badge">#${t}</span>`).join('')}</div>
+              <div class="actions">
+                <button class="btn btn--read" data-open="${p.id}" aria-label="Ler ${p.title}">Ler</button>
+                <button class="btn btn--save btn--small" data-save="${p.id}" aria-label="Salvar">${saved?'Salvo':'Salvar'}</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+      const total = items.length;
+      const showing = `${start+1} a ${Math.min(end,total)}`;
+      el.legend.textContent = `Exibindo ${showing} de ${total} posts`;
+      el.prev.disabled = state.page===1;
+      el.next.disabled = end >= items.length;
+
+      el.grid.querySelectorAll('[data-open]').forEach(b=> b.addEventListener('click', ()=> openArticle(Number(b.dataset.open))));
+      el.grid.querySelectorAll('[data-save]').forEach(b=> b.addEventListener('click', ()=>{
+        const id = Number(b.dataset.save);
+        if(state.favs.has(id)){ state.favs.delete(id); b.textContent = 'Salvar'; }
+        else { state.favs.add(id); b.textContent = 'Salvo'; }
+        localStorage.setItem('fll_blog_favs', JSON.stringify(Array.from(state.favs)));
+      }));
+    }
+
+    // ===== Modal Artigo =====
+    const modal = el.modal;
+    let lastFocus = null;
+
+    function openArticle(id){
+      const p = POSTS.find(x=>x.id===id);
+      if(!p) return;
+      lastFocus = document.activeElement;
+      el.mtitle.textContent = p.title;
+      el.atitle.textContent = p.title;
+      el.ameta.textContent = `${fmtDate(p.dateISO)} • ${readLabel(p.readMin)} • ${p.category}`;
+      el.acover.classList.remove('skeleton');
+      el.acover.innerHTML = `<img src="${p.cover}" alt="${p.title}">`;
+      el.acontent.innerHTML = p.content.map(par=>`<p>${par}</p>`).join('') + `
+        <p class="note">Tags: ${p.tags.map(t=>`#${t}`).join(' ')}</p>`;
+      el.asideTags.innerHTML = p.tags.map(t=>`<span class="badge">#${t}</span>`).join('');
+      el.aaName.textContent = p.author;
+      el.aaRole.textContent = p.author==='Flloydinn' ? 'Autor' : 'Redação';
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+      el.mclose.focus();
+      // Atualiza URL
+      const params = new URLSearchParams(location.search);
+      params.set('post', p.slug);
+      history.replaceState(null,'',`?${params.toString()}`);
+    }
+    function closeArticle(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      if(lastFocus) lastFocus.focus();
+      // Limpa slug da URL
+      const params = new URLSearchParams(location.search);
+      params.delete('post');
+      const q = params.toString();
+      history.replaceState(null,'', q ? `?${q}` : location.pathname);
+    }
+    el.mclose.addEventListener('click', closeArticle);
+    modal.addEventListener('click', e=>{ if(e.target===modal) closeArticle(); });
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeArticle(); });
+
+    // ===== Busca e filtros =====
+    function debounce(fn, wait){ let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), wait); }; }
+    el.q.addEventListener('input', debounce(()=>{ state.q = el.q.value; state.page=1; update(); }, 200));
+    el.clear.addEventListener('click', ()=>{ el.q.value=""; state.q=""; state.page=1; update(); el.q.focus(); });
+    el.sort.addEventListener('change', ()=>{ state.sort = el.sort.value; state.page=1; update(); });
+    el.period.addEventListener('change', ()=>{ state.period = el.period.value; state.page=1; update(); });
+    el.length.addEventListener('change', ()=>{ state.length = el.length.value; state.page=1; update(); });
+    el.prev.addEventListener('click', ()=>{ if(state.page>1){ state.page--; update(); } });
+    el.next.addEventListener('click', ()=>{ state.page++; update(); });
+
+    // Newsletter fake
+    el.newsForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(el.newsForm).entries());
+      if(!data.email || !data.email.includes('@')) return alert('Informe um e-mail válido');
+      alert('Inscrição realizada');
+      e.target.reset();
+    });
+
+    // RSS fake
+    el.rssBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      alert('Em produção. Adicione /rss.xml quando o feed estiver ativo.');
+    });
+
+    // ===== URL Sync =====
+    function syncFromURL(){
+      const p = new URLSearchParams(location.search);
+      state.q = p.get('q') || state.q;
+      state.sort = p.get('sort') || state.sort;
+      state.period = p.get('period') || state.period;
+      state.length = p.get('len') || state.length;
+      state.category = p.get('cat') || state.category;
+      const tags = p.get('tags'); if(tags){ state.tags = new Set(tags.split(',')); }
+      state.page = parseInt(p.get('page')||state.page,10);
+      // Preenche inputs
+      el.q.value = state.q;
+      el.sort.value = state.sort;
+      el.period.value = state.period;
+      el.length.value = state.length;
+      // Abre artigo se slug presente
+      const slug = p.get('post');
+      if(slug){
+        const post = POSTS.find(x=>x.slug===slug);
+        if(post){ setTimeout(()=>openArticle(post.id), 50); }
+      }
+    }
+    function pushURL(){
+      const p = new URLSearchParams();
+      if(state.q) p.set('q',state.q);
+      if(state.sort!=='recent') p.set('sort',state.sort);
+      if(state.period!=='all') p.set('period',state.period);
+      if(state.length!=='all') p.set('len',state.length);
+      if(state.category!=='todas') p.set('cat',state.category);
+      if(state.tags.size>0) p.set('tags', Array.from(state.tags).join(','));
+      if(state.page!==1) p.set('page', String(state.page));
+      const q = p.toString();
+      history.replaceState(null,'', q ? `?${q}` : location.pathname);
+    }
+
+    // ===== Update =====
+    function update(){
+      const items = applyFilters();
+      // Destaque sempre refeito a partir do conjunto filtrado
+      renderFeature(items);
+      renderGrid(items);
+      pushURL();
+    }
+
+    // ===== Init =====
+    (function init(){
+      renderCatChips();
+      renderTags();
+      syncFromURL();
+      update();
+    })();
+  </script>
+</body>
+</html>
