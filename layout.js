@@ -78,25 +78,28 @@
     var active = activeId(el);
     var uid = 'mobileDrawer';
 
-    var items = NAV.filter(function (n) { return !(home && n.hideOnHome); });
+    // Navbar única (padrão da home) em todas as páginas: marca + links em texto + botão Contato.
+    // "Início" fica só na gaveta mobile (no desktop a marca já leva ao início).
+    var items = NAV.filter(function (n) { return !n.hideOnHome; });
     function hrefOf(n) { return home && n.homeHref ? n.homeHref : resolve(n.href, base); }
-    function current(n) { return !home && n.id === active ? ' aria-current="page"' : ''; }
+    function current(n) { return n.id === active && !(home && n.id === 'inicio') ? ' aria-current="page"' : ''; }
+    var contactHref = home ? CONTACT.homeHref : resolve(CONTACT.href, base);
 
     var menu = items.map(function (n) {
-      var cls = home ? '' : (n.id === active && !home ? 'btn btn--small' : 'btn btn--ghost btn--small');
-      return '<a' + (cls ? ' class="' + cls + '"' : '') + ' href="' + esc(hrefOf(n)) + '"' + current(n) + '>' + esc(n.label) + '</a>';
-    }).join('');
-    if (home) menu += '<a class="btn btn--small" href="' + esc(CONTACT.homeHref) + '">' + esc(CONTACT.label) + '</a>';
+      return '<a href="' + esc(hrefOf(n)) + '"' + current(n) + '>' + esc(n.label) + '</a>';
+    }).join('') + '<a class="btn btn--small" href="' + esc(contactHref) + '">' + esc(CONTACT.label) + '</a>';
 
-    var drawer = (home ? HOME_EXTRA_DRAWER : []).map(function (n) {
+    var first = home
+      ? HOME_EXTRA_DRAWER
+      : [{ label: 'Início', href: resolve('index.html', base) }];
+    var drawer = first.map(function (n) {
       return '<a class="drawer-link" href="' + esc(n.href) + '">' + esc(n.label) + '</a>';
     }).join('') + items.map(function (n) {
       return '<a class="drawer-link" href="' + esc(hrefOf(n)) + '"' + current(n) + '>' + esc(n.drawerLabel || n.label) + '</a>';
-    }).join('') + '<a class="btn" href="' + esc(home ? CONTACT.homeHref : resolve(CONTACT.href, base)) + '">' + esc(CONTACT.label) + '</a>';
+    }).join('') + '<a class="btn" href="' + esc(contactHref) + '">' + esc(CONTACT.label) + '</a>';
 
-    var brand = home
-      ? '<a class="brand" href="#topo" aria-label="Flloydinn Gameplay — topo"><span class="logo">Flloyd<span>inn</span></span></a>'
-      : '<a class="brand" href="' + esc(resolve('index.html', base)) + '" aria-label="Flloydinn Gameplay — início">Flloyd<span>inn</span> Gameplay</a>';
+    var brand = '<a class="brand" href="' + (home ? '#topo' : esc(resolve('index.html', base))) + '" aria-label="Flloydinn Gameplay — ' + (home ? 'topo' : 'início') + '">' +
+      '<span class="logo">Flloyd<span>inn</span></span></a>';
 
     el.innerHTML =
       '<header class="site-header' + (home ? ' site-header--home' : '') + '"' + (home ? ' id="topo"' : '') + '>' +

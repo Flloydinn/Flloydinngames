@@ -63,18 +63,23 @@ site-header,site-footer{display:contents}
 .brand{font-weight:800;letter-spacing:.3px}
 .brand span{color:var(--brand)}
 .menu{display:flex;gap:.6rem}
-/* botões do menu com especificidade própria: ajustes locais de .btn/.btn--small nas páginas não alteram o header */
-.site-header .menu .btn--small{padding:.45rem .7rem;font-size:.9rem;font-weight:700}
 
-/* Variante "home" (index): marca maior e menu em texto */
-.site-header--home .nav{gap:1rem}
-.site-header--home .brand .logo{font-weight:800;letter-spacing:.5px;font-size:1.3rem;display:inline-block;color:#fff}
-.site-header--home .brand .logo span{color:var(--brand)}
-.site-header--home .menu{gap:1.2rem;align-items:center}
-.site-header--home .menu a{opacity:.9}
-.site-header--home .menu a:hover,
-.site-header--home .menu a[aria-current="page"]{opacity:1}
-.site-header--home .menu .btn--small{padding:.5rem .8rem;font-weight:600}
+/* Navbar única (padrão da home) em todas as páginas.
+   Seletores presos a .site-header: ajustes locais de .brand/.nav/.btn nas páginas não mudam o header. */
+.site-header .nav{gap:1rem;line-height:1.6}
+/* mesma largura da home em todas as páginas: a navbar não "pula" ao trocar de página */
+.site-header .container{width:min(1100px,calc(100% - 2rem))}
+.site-header .brand{font-weight:800;letter-spacing:.3px;flex-shrink:0}
+.site-header .brand .logo{font-weight:800;letter-spacing:.5px;font-size:1.3rem;display:inline-block;color:#fff}
+.site-header .brand .logo span{color:var(--brand)}
+.site-header .menu{gap:1.2rem;align-items:center;flex-wrap:nowrap;white-space:nowrap}
+.site-header .menu a:not(.btn){position:relative;opacity:.9;border:0;background:none;box-shadow:none;padding:0;transition:opacity .15s ease}
+.site-header .menu a:not(.btn):hover,.site-header .menu a:not(.btn):focus-visible{opacity:1}
+/* página atual: discreto, sem borda — texto pleno + traço fino na cor da marca */
+.site-header .menu a[aria-current="page"]{opacity:1;font-weight:600}
+.site-header .menu a[aria-current="page"]::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;background:var(--brand2)}
+/* único botão da navbar (Contato), igual ao da home */
+.site-header .menu .btn--small{padding:.5rem .8rem;font-size:.9rem;font-weight:600}
 
 /* Botão hambúrguer + gaveta mobile */
 .hamburger{display:none;background:transparent;border:0;padding:.25rem;cursor:pointer;color:inherit}
