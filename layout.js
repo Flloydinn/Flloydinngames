@@ -1,0 +1,173 @@
+/* =====================================================================
+ * Header e footer compartilhados — Flloydinn Gameplay
+ *
+ * Uso (carregar no <head>, SEM defer/async, depois do styles.css):
+ *   <script src="layout.js"></script>
+ *   ...
+ *   <site-header></site-header>                 -> header padrão (menu em botões)
+ *   <site-header variant="home"></site-header>  -> header do index (menu em texto + âncoras)
+ *   <site-footer></site-footer>
+ *   <site-footer note="• Canal TV experimental"></site-footer>
+ *
+ * Atributos opcionais:
+ *   active="blog"  -> força o item ativo (por padrão é detectado pelo nome do arquivo)
+ *   base="/"       -> prefixo dos links (o 404.html usa "/" porque pode abrir em qualquer URL)
+ *
+ * Por que custom elements: como o script já está carregado quando o navegador lê
+ * <site-header>, o conteúdo é montado na hora (sem "pulo" de layout) e o footer
+ * existe antes dos scripts das páginas rodarem.
+ *
+ * Para mudar o menu do site inteiro, edite só NAV / FOOTER_LINKS abaixo.
+ * ===================================================================== */
+(function () {
+  'use strict';
+
+  var NAV = [
+    { id: 'inicio',    label: 'Início',    href: 'index.html', hideOnHome: true },
+    { id: 'videos',    label: 'Vídeos',    href: 'videos.html' },
+    { id: 'tv',        label: 'TV',        href: 'tv.html', drawerLabel: 'TV 24/7' },
+    { id: 'blog',      label: 'Blog',      href: 'blog.html' },
+    { id: 'jogos',     label: 'Jogos',     href: 'index.html#jogos', homeHref: '#jogos' },
+    { id: 'loja',      label: 'Loja',      href: 'loja.html' },
+    { id: 'agenda',    label: 'Agenda',    href: 'agenda.html' },
+    { id: 'parcerias', label: 'Parcerias', href: 'parcerias.html' }
+  ];
+  var CONTACT = { label: 'Contato', href: 'index.html#contato', homeHref: '#contato' };
+  var HOME_EXTRA_DRAWER = [{ label: 'Sobre', href: '#sobre' }]; // só na gaveta do index
+
+  var FOOTER_LINKS = [
+    { label: 'Arcade',  href: 'arcade.html' },
+    { label: 'Setup',   href: 'setup.html' },
+    { label: 'FAQ',     href: 'faq.html' },
+    { label: 'YouTube', href: 'https://www.youtube.com/@flloydinn', external: true }
+  ];
+
+  // arquivo -> item do menu que fica destacado
+  var SECTION_OF = {
+    '': 'inicio', 'index.html': 'inicio',
+    'videos.html': 'videos', 'tv.html': 'tv',
+    'blog.html': 'blog', 'post.html': 'blog', 'oblog.html': 'blog',
+    'arcade.html': 'jogos', 'loja.html': 'loja', 'agenda.html': 'agenda', 'parcerias.html': 'parcerias'
+  };
+
+  var BREAKPOINT = 860; // mesmo valor do @media em styles.css
+
+  // ------------------------------------------------------------------
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function currentFile() {
+    var parts = location.pathname.split('/');
+    return decodeURIComponent(parts[parts.length - 1] || '');
+  }
+  function resolve(href, base) {
+    if (/^(https?:|mailto:|#)/.test(href)) return href;
+    return (base || '') + href;
+  }
+  function activeId(el) {
+    return el.getAttribute('active') || SECTION_OF[currentFile()] || '';
+  }
+
+  // ------------------------------------------------------------------
+  function renderHeader(el) {
+    var home = el.getAttribute('variant') === 'home';
+    var base = el.getAttribute('base') || '';
+    var active = activeId(el);
+    var uid = 'mobileDrawer';
+
+    var items = NAV.filter(function (n) { return !(home && n.hideOnHome); });
+    function hrefOf(n) { return home && n.homeHref ? n.homeHref : resolve(n.href, base); }
+    function current(n) { return !home && n.id === active ? ' aria-current="page"' : ''; }
+
+    var menu = items.map(function (n) {
+      var cls = home ? '' : (n.id === active && !home ? 'btn btn--small' : 'btn btn--ghost btn--small');
+      return '<a' + (cls ? ' class="' + cls + '"' : '') + ' href="' + esc(hrefOf(n)) + '"' + current(n) + '>' + esc(n.label) + '</a>';
+    }).join('');
+    if (home) menu += '<a class="btn btn--small" href="' + esc(CONTACT.homeHref) + '">' + esc(CONTACT.label) + '</a>';
+
+    var drawer = (home ? HOME_EXTRA_DRAWER : []).map(function (n) {
+      return '<a class="drawer-link" href="' + esc(n.href) + '">' + esc(n.label) + '</a>';
+    }).join('') + items.map(function (n) {
+      return '<a class="drawer-link" href="' + esc(hrefOf(n)) + '"' + current(n) + '>' + esc(n.drawerLabel || n.label) + '</a>';
+    }).join('') + '<a class="btn" href="' + esc(home ? CONTACT.homeHref : resolve(CONTACT.href, base)) + '">' + esc(CONTACT.label) + '</a>';
+
+    var brand = home
+      ? '<a class="brand" href="#topo" aria-label="Flloydinn Gameplay — topo"><span class="logo">Flloyd<span>inn</span></span></a>'
+      : '<a class="brand" href="' + esc(resolve('index.html', base)) + '" aria-label="Flloydinn Gameplay — início">Flloyd<span>inn</span> Gameplay</a>';
+
+    el.innerHTML =
+      '<header class="site-header' + (home ? ' site-header--home' : '') + '"' + (home ? ' id="topo"' : '') + '>' +
+        '<div class="container nav">' +
+          brand +
+          '<nav class="menu" aria-label="Principal">' + menu + '</nav>' +
+          '<button class="hamburger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="' + uid + '">' +
+            '<span></span><span></span><span></span>' +
+          '</button>' +
+        '</div>' +
+        '<nav class="mobile-drawer" id="' + uid + '" aria-label="Menu">' + drawer + '</nav>' +
+      '</header>';
+
+    bindDrawer(el);
+  }
+
+  function bindDrawer(el) {
+    var btn = el.querySelector('.hamburger');
+    var drawer = el.querySelector('.mobile-drawer');
+    if (!btn || !drawer) return;
+    function setOpen(open) {
+      drawer.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+    }
+    btn.addEventListener('click', function () { setOpen(!drawer.classList.contains('open')); });
+    drawer.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) { setOpen(false); btn.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (drawer.classList.contains('open') && !el.contains(e.target)) setOpen(false);
+    });
+    window.addEventListener('resize', function () { if (window.innerWidth > BREAKPOINT) setOpen(false); });
+  }
+
+  // ------------------------------------------------------------------
+  function renderFooter(el) {
+    var home = el.getAttribute('variant') === 'home';
+    var base = el.getAttribute('base') || '';
+    var note = el.getAttribute('note');
+    var links = FOOTER_LINKS.map(function (l) {
+      return '<a href="' + esc(l.external ? l.href : resolve(l.href, base)) + '"' +
+        (l.external ? ' target="_blank" rel="noopener"' : '') + '>' + esc(l.label) + '</a>';
+    }).join('');
+    el.innerHTML =
+      '<footer class="site-footer' + (home ? ' site-footer--home' : '') + '">' +
+        '<div class="container site-footer__inner">' +
+          '<p>© <span data-year>' + new Date().getFullYear() + '</span> Flloydinn Gameplay' + (note ? ' ' + esc(note) : '') + '</p>' +
+          '<nav class="site-footer__links" aria-label="Rodapé">' + links + '</nav>' +
+          (home ? '<a href="#topo" class="to-top" aria-label="Voltar ao topo">↑</a>' : '') +
+        '</div>' +
+      '</footer>';
+  }
+
+  // ------------------------------------------------------------------
+  function upgrade(tag, render) {
+    if (window.customElements && !customElements.get(tag)) {
+      customElements.define(tag, class extends HTMLElement {
+        connectedCallback() { if (!this.hasAttribute('data-rendered')) { this.setAttribute('data-rendered', ''); render(this); } }
+      });
+    } else if (!window.customElements) {
+      // navegadores muito antigos: monta quando o HTML terminar de carregar
+      document.addEventListener('DOMContentLoaded', function () {
+        Array.prototype.forEach.call(document.getElementsByTagName(tag), function (el) {
+          if (!el.hasAttribute('data-rendered')) { el.setAttribute('data-rendered', ''); render(el); }
+        });
+      });
+    }
+  }
+  upgrade('site-header', renderHeader);
+  upgrade('site-footer', renderFooter);
+
+  window.FlloydLayout = { NAV: NAV, FOOTER_LINKS: FOOTER_LINKS };
+})();

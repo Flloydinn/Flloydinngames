@@ -1,42 +1,37 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
+  <script src="analytics.js"></script>
   <meta charset="utf-8">
   <title>Flloydinn Gameplay — Blog de Notícias</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Blog de notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
-  <link rel="icon" href="assets/favicon.png">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/blog.html">
+  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Blog do Flloydinn Gameplay">
+  <meta property="og:description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/blog.html">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blog do Flloydinn Gameplay">
+  <meta name="twitter:description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
   <style>
-    :root{
-      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
-      --brand:#8f0000; --card:#1a1a1a; --border:#24262b; --shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
-      line-height:1.6;
-    }
-    img{max-width:100%;display:block}
-    a{color:#fff;text-decoration:none}
-    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
-    /* Header */
-    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
-    .brand{font-weight:800;letter-spacing:.4px}
-    .brand span{color:var(--brand)}
-    .menu{display:flex;gap:.6rem}
-    .btn{
-      background:linear-gradient(135deg,var(--brand) 0%, #b31212 100%);
-      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
-    }
-    .btn--ghost{background:transparent;border:1px solid var(--border)}
-    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+    /* Marca (ajuste) */
+    .brand{letter-spacing:.4px} /* ajuste desta página sobre styles.css */
     /* Hero destaque */
     .hero{border-bottom:1px solid var(--border);background:radial-gradient(900px 260px at 15% 5%, rgba(233,33,33,.22),transparent 60%)}
     .hero__grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;padding:1.2rem 0 1.2rem}
@@ -100,21 +95,11 @@
     @media (max-width:1100px){.hero__grid{grid-template-columns:1fr}.feature{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.newsletter__box{grid-template-columns:1fr}}
     @media (max-width:700px){.grid{grid-template-columns:1fr}.toolbar__inner{grid-template-columns:1fr}}
   </style>
+  <script src="img-fallback.js"></script>
 </head>
 <body>
   <!-- Header -->
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="index.html" aria-label="Flloydinn Gameplay">
-        <span>Flloyd<span>inn</span> Gameplay</span>
-      </a>
-      <nav class="menu" aria-label="principal">
-        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
-        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
-        <a class="btn btn--small" href="blog.html">Blog</a>
-      </nav>
-    </div>
-  </header>
+  <site-header></site-header>
 
   <!-- Hero destaque -->
   <section class="hero">
@@ -198,6 +183,9 @@
     </div>
   </section>
 
+
+  <!-- Rodapé -->
+  <site-footer></site-footer>
   <script>
     // ========= UTIL =========
     const $ = (sel) => document.querySelector(sel);

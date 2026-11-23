@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <script src="/analytics.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Página não encontrada — Flloydinn Gameplay</title>
+  <meta name="description" content="A página que você procurou não existe. Volte para o início do Flloydinn Gameplay.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Caminhos absolutos: o 404 pode ser servido em qualquer URL (ex.: /pasta/qualquer) -->
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/layout.js"></script>
+  <style>
+    .nf{min-height:calc(100vh - 140px); display:grid; align-items:center; padding:3rem 0}
+    .nf__code{font-size:clamp(4.5rem, 14vw, 9rem); font-weight:800; line-height:1; margin:0;
+      background:linear-gradient(135deg,#fff 0%, var(--brand) 85%); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .nf h1{font-size:clamp(1.4rem, 2vw + 1rem, 2.2rem); margin:.4rem 0 .6rem}
+    .nf p{color:var(--muted); max-width:52ch; margin:0}
+    .nf__links{display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:.8rem; margin-top:2rem}
+    .nf__links a{display:grid; gap:.15rem; padding:.9rem 1rem; background:var(--card); border:1px solid var(--border);
+      border-radius:.8rem; transition:transform .15s ease, border-color .2s ease}
+    .nf__links a:hover,.nf__links a:focus-visible{transform:translateY(-2px); border-color:var(--brand)}
+    .nf__links small{color:var(--muted)}
+  </style>
+  <script src="/img-fallback.js"></script>
+</head>
+<body>
+  <site-header base="/"></site-header>
+
+  <main class="nf">
+    <div class="container">
+      <p class="nf__code" aria-hidden="true">404</p>
+      <h1>Game over… essa página não existe.</h1>
+      <p>O link pode estar quebrado ou o conteúdo mudou de lugar. Respawn em um dos pontos abaixo:</p>
+      <div class="cta-row">
+        <a class="btn" href="/index.html">Voltar ao início</a>
+        <a class="btn btn--ghost" href="/index.html#jogos">Jogar agora</a>
+      </div>
+
+      <nav class="nf__links" aria-label="Seções principais">
+        <a href="/videos.html"><strong>Vídeos</strong><small>Biblioteca do canal</small></a>
+        <a href="/tv.html"><strong>TV 24/7</strong><small>Programação contínua</small></a>
+        <a href="/blog.html"><strong>Blog</strong><small>Notícias e análises</small></a>
+        <a href="/arcade.html"><strong>Arcade</strong><small>Mini-games rápidos</small></a>
+        <a href="/loja.html"><strong>Loja</strong><small>Camisetas, canecas e mais</small></a>
+        <a href="/agenda.html"><strong>Agenda</strong><small>Lives e eventos</small></a>
+        <a href="/parcerias.html"><strong>Parcerias</strong><small>Mídia kit e contato</small></a>
+        <a href="/faq.html"><strong>FAQ</strong><small>Dúvidas e suporte</small></a>
+      </nav>
+    </div>
+  </main>
+
+  <site-footer base="/"></site-footer>
+
+  <script>
+    // Header, menu mobile e ano do rodapé: layout.js
+    if (window.gtag) gtag('event', 'page_not_found', { page_path: location.pathname, page_referrer: document.referrer });
+  </script>
+</body>
+</html>

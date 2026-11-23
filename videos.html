@@ -1,59 +1,43 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
+  <script src="analytics.js"></script>
   <meta charset="utf-8">
   <title>Flloydinn Gameplay — Vídeos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Biblioteca de vídeos do canal Flloydinn Gameplay com busca, filtros e categorias.">
-  <link rel="icon" href="assets/favicon.png">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/videos.html">
+  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vídeos do Flloydinn Gameplay">
+  <meta property="og:description" content="Biblioteca de vídeos do canal com busca, filtros e categorias: séries, lives, shorts e clipes.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/videos.html">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vídeos do Flloydinn Gameplay">
+  <meta name="twitter:description" content="Biblioteca de vídeos do canal com busca, filtros e categorias: séries, lives, shorts e clipes.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
   <style>
-    :root{
-      --bg:#0b0b0c;
-      --bg-soft:#121316;
-      --text:#E8E8EA;
-      --muted:#A6A6AD;
-      --brand:#8f0000;
-      --brand-2:#ffffff;
-      --card:#1a1a1a;
-      --border:#24262b;
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-      --ok:#57d996;
-      --warn:#ffb84d;
-      --danger:#ff6b6b;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
-      line-height:1.55;
-    }
-    img{max-width:100%;display:block}
-    a{color:var(--brand-2);text-decoration:none}
-    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
-    .site-header{
-      position:sticky;top:0;z-index:50;
-      background:rgba(11,11,12,.7);backdrop-filter:blur(6px);
-      border-bottom:1px solid var(--border);
-    }
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0;gap:1rem}
-    .brand{font-weight:800;letter-spacing:.3px}
+    body{line-height:1.55} /* ajuste desta página sobre styles.css */
+    a{color:var(--brand-2)} /* ajuste desta página sobre styles.css */
+    .site-header{z-index:50} /* ajuste desta página sobre styles.css */
+    .nav{gap:1rem} /* ajuste desta página sobre styles.css */
     .brand .logo{font-size:1.2rem}
     .brand .logo span{color:var(--brand)}
-    .btn{
-      background:linear-gradient(135deg,var(--brand) 0%,#b31212 100%);
-      color:#fff;border:0;border-radius:.6rem;
-      padding:.65rem 1rem;font-weight:600;box-shadow:var(--shadow);
-      cursor:pointer;transition:transform .15s ease,opacity .2s ease;
-    }
-    .btn:hover{transform:translateY(-2px)}
-    .btn--ghost{background:transparent;border:1px solid var(--border)}
-    .btn--small{padding:.5rem .75rem;font-size:.9rem}
+    .btn{padding:.65rem 1rem;font-weight:600} /* ajuste desta página sobre styles.css */
+    .btn--small{padding:.5rem .75rem} /* ajuste desta página sobre styles.css */
     .toolbar{
       position:sticky;top:56px;z-index:40;
       background:rgba(16,16,18,.9);backdrop-filter:blur(6px);
@@ -161,20 +145,11 @@
     }
     @media (max-width:640px){.grid{grid-template-columns:repeat(2,1fr)}}
   </style>
+  <script src="img-fallback.js"></script>
 </head>
 <body>
   <!-- Header -->
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="#" aria-label="Flloydinn Gameplay">
-        <span class="logo">Flloyd<span>inn</span> Gameplay</span>
-      </a>
-      <nav class="menu" aria-label="principal">
-        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
-        <a class="btn btn--small" href="#videos">Vídeos</a>
-      </nav>
-    </div>
-  </header>
+  <site-header></site-header>
 
   <!-- Toolbar -->
   <div class="toolbar" role="region" aria-label="Controles de busca e filtros">
@@ -234,6 +209,9 @@
     </div>
   </div>
 
+
+  <!-- Rodapé -->
+  <site-footer></site-footer>
   <script>
     // ===== Dataset de exemplo =====
     // Campos: id, youtubeId, title, game, categories, type, durationMin, views, dateISO, thumb

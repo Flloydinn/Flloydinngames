@@ -1,44 +1,25 @@
-// Header effects
+// Scripts específicos da página inicial (index.html)
+// Header, menu mobile e ano do rodapé ficam em layout.js; formulário em forms.js.
+
+// Sombra no header ao rolar
 const header = document.querySelector('.site-header');
-const hamburger = document.getElementById('hamburger');
-const drawer = document.getElementById('mobileDrawer');
-const year = document.getElementById('year');
+if (header) {
+  window.addEventListener('scroll', () => {
+    header.style.boxShadow = window.scrollY > 10 ? '0 8px 20px rgba(0,0,0,.35)' : 'none';
+  }, { passive: true });
+}
 
-year.textContent = new Date().getFullYear();
-
-window.addEventListener('scroll', () => {
-  const elevated = window.scrollY > 10;
-  header.style.boxShadow = elevated ? '0 8px 20px rgba(0,0,0,.35)' : 'none';
-});
-
-// Mobile menu
-const toggleDrawer = () => drawer.classList.toggle('open');
-hamburger.addEventListener('click', toggleDrawer);
-drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => drawer.classList.remove('open')));
-
-// Smooth scroll (links with #)
+// Rolagem suave para âncoras internas (#sobre, #jogos, #contato…)
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e){
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target){
+  anchor.addEventListener('click', function (e) {
+    const id = this.getAttribute('href');
+    if (id.length < 2) return;
+    const target = document.querySelector(id);
+    if (target) {
       e.preventDefault();
-      window.scrollTo({ top: target.offsetTop - 64, behavior:'smooth' });
+      // #topo é o próprio header (sticky): vai direto ao início da página
+      const top = target.classList.contains('site-header') ? 0 : target.getBoundingClientRect().top + window.scrollY - 64;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   });
-});
-
-// Fake form submission
-const form = document.getElementById('contactForm');
-const alertBox = document.getElementById('formAlert');
-form.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(form).entries());
-  if(!data.name || !data.email || !data.message){
-    alertBox.textContent = 'Preencha todos os campos.';
-    alertBox.style.color = '#ff6b6b';
-    return;
-  }
-  alertBox.textContent = 'Mensagem enviada! (demo)';
-  alertBox.style.color = '#57d996';
-  form.reset();
 });

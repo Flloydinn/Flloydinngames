@@ -2,62 +2,40 @@
 <html lang="pt-br">
 <head>
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0VJ19JZXGY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0VJ19JZXGY');
-</script>
-
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TWBF6RH6');</script>
-<!-- End Google Tag Manager -->
+  <script src="analytics.js"></script>
   
   <meta charset="utf-8">
   <title>Flloydinn Gameplay — FAQ & Suporte</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Dúvidas frequentes, suporte e contato do Flloydinn Gameplay. Envio, pagamentos, lives e parte técnica.">
-  <link rel="icon" href="assets/favicon.png">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/faq.html">
+  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="FAQ &amp; Suporte — Flloydinn Gameplay">
+  <meta property="og:description" content="Dúvidas frequentes sobre loja, pagamentos, lives e parte técnica, além dos canais de suporte.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/faq.html">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FAQ &amp; Suporte — Flloydinn Gameplay">
+  <meta name="twitter:description" content="Dúvidas frequentes sobre loja, pagamentos, lives e parte técnica, além dos canais de suporte.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
   <style>
-    :root{
-      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
-      --brand:#8f0000; --brand2:#b31212;
-      --card:#1a1a1a; --border:#24262b; --shadow:0 10px 30px rgba(0,0,0,.35);
-      --ok:#57d996; --warn:#ffb84d; --danger:#ff6b6b;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
-      line-height:1.65;
-    }
-    a{color:#fff;text-decoration:none}
-    img{max-width:100%;display:block}
-    .container{width:min(1100px,calc(100% - 2rem));margin:0 auto}
-    /* Header */
-    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
-    .brand{font-weight:800;letter-spacing:.3px}
-    .brand span{color:var(--brand)}
-    .menu{display:flex;gap:.6rem}
-    .btn{
-      background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);
-      color:#fff;border:0;border-radius:.6rem;padding:.55rem .85rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer
-    }
-    .btn--ghost{background:transparent;border:1px solid var(--border)}
-    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+    body{line-height:1.65} /* ajuste desta página sobre styles.css */
+    .container{width:min(1100px,calc(100% - 2rem))} /* ajuste desta página sobre styles.css */
+    .btn{padding:.55rem .85rem} /* ajuste desta página sobre styles.css */
+    .btn--small{padding:.45rem .7rem} /* reaplica o tamanho pequeno depois do ajuste de .btn acima */
     .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
 
     /* Hero */
@@ -98,9 +76,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .inline{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
     .ok{display:none;background:linear-gradient(135deg,#206a4f,#2db57f);padding:.7rem;border-radius:.6rem;font-weight:700}
 
-    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
     @media (max-width:990px){.hero__grid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
   </style>
+  <script src="img-fallback.js"></script>
+  <script src="forms.js" defer></script>
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -109,18 +88,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
   
   <!-- Header -->
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
-      <nav class="menu" aria-label="principal">
-        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
-        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
-        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
-        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
-        <a class="btn btn--small" href="faq.html">FAQ</a>
-      </nav>
-    </div>
-  </header>
+  <site-header></site-header>
 
   <!-- Hero -->
   <section class="hero">
@@ -172,7 +140,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <aside class="side">
         <div class="box">
           <h3 style="margin:.2rem 0 .6rem">Abrir ticket</h3>
-          <form id="form" class="form" novalidate>
+          <!-- Envio real: endpoint em forms.js (FORM_CONFIG.suporte) ou data-endpoint="https://formspree.io/f/..." aqui -->
+          <form id="form" class="form" novalidate data-form="suporte" data-subject="Ticket de suporte" data-success="Ticket enviado! Você receberá a resposta no e-mail informado.">
             <div class="inline">
               <input class="input" name="name" placeholder="Seu nome *" required>
               <input class="input" name="email" type="email" placeholder="Seu e-mail *" required>
@@ -189,7 +158,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <button class="btn" type="submit">Enviar</button>
               <button class="btn btn--ghost" type="button" id="copyEmail">Copiar e-mail</button>
             </div>
-            <div id="ok" class="ok">Ticket enviado! (demo)</div>
+            <div data-form-status role="status" aria-live="polite"></div>
           </form>
         </div>
 
@@ -197,7 +166,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h3 style="margin:.2rem 0 .6rem">Políticas & links</h3>
           <ul class="note" style="line-height:1.9">
             <li><a href="loja.html">Loja</a> — trocas/devoluções em até 7 dias</li>
-            <li><a href="blognews.html">Blog</a> — notícias e bastidores</li>
+            <li><a href="blog.html">Blog</a> — notícias e bastidores</li>
             <li><a href="parcerias.html">Parcerias</a> — mídia kit</li>
             <li><a href="#!" id="downloadPolicy">Baixar política (PDF)</a></li>
           </ul>
@@ -206,9 +175,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </main>
 
-  <footer>
-    <div class="container">© <span id="year"></span> Flloydinn Gameplay</div>
-  </footer>
+  <site-footer></site-footer>
 
   <!-- FAQPage JSON-LD -->
   <script type="application/ld+json" id="faqjson"></script>
@@ -236,8 +203,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       q: $('#q'),
       clearQ: $('#clearQ'),
       tabs: $('#tabs'),
-      form: $('#form'),
-      ok: $('#ok'),
       copyEmail: $('#copyEmail'),
       faqjson: $('#faqjson'),
       downloadPolicy: $('#downloadPolicy')
@@ -296,20 +261,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
     });
 
-    // ====== Form (demo salva local) ======
-    el.form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(el.form).entries());
-      if(!data.name || !data.email || !data.email.includes('@') || !data.topic || !data.msg){
-        alert('Preencha todos os campos obrigatórios.');
-        return;
-      }
-      const inbox = JSON.parse(localStorage.getItem('support_inbox')||'[]');
-      inbox.push({...data, at:new Date().toISOString()});
-      localStorage.setItem('support_inbox', JSON.stringify(inbox));
-      el.ok.style.display='block';
-      el.form.reset();
-    });
+    // ====== Form: validação e envio real ficam em forms.js (data-form="suporte") ======
     el.copyEmail.addEventListener('click', async ()=>{
       try{ await navigator.clipboard.writeText('flloydinn@gmail.com'); alert('E-mail copiado.'); }
       catch{ alert('Não foi possível copiar.'); }
@@ -334,7 +286,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     // Init
-    document.getElementById('year').textContent = new Date().getFullYear();
     updateStatus();
     renderFAQ();
   </script>

@@ -2,37 +2,117 @@
 <html lang="pt-br">
 <head>
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0VJ19JZXGY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0VJ19JZXGY');
-</script>
-
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TWBF6RH6');</script>
-<!-- End Google Tag Manager -->
+  <script src="analytics.js"></script>
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FLLOYDINN GAMEPLAY — Site Oficial</title>
   <meta name="description" content="Infinitas aventuras e zoeiras em diversos jogos. Bem-vindo ao hub oficial do canal Flloydinn Gameplay.">
-  <meta property="og:title" content="FLLOYDINN GAMEPLAY">
-  <meta property="og:description" content="Infinitas aventuras e zoeiras em diversos jogos.">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/">
+  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/og-image.jpg">
-  <link rel="icon" href="assets/favicon.png">
+  <meta property="og:title" content="Flloydinn Gameplay — Site Oficial">
+  <meta property="og:description" content="Infinitas aventuras e zoeiras em diversos jogos: vídeos, lives, TV 24/7, mini-games no navegador e a loja do canal.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Flloydinn Gameplay — Site Oficial">
+  <meta name="twitter:description" content="Infinitas aventuras e zoeiras em diversos jogos: vídeos, lives, TV 24/7, mini-games no navegador e a loja do canal.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
+  <style>
+    /* ====== Página inicial (específico do index; a base está em styles.css) ====== */
+    .container{width:min(1100px,calc(100% - 2rem))}
+    .btn{padding:.7rem 1rem;font-weight:600}
+    .btn--small{padding:.5rem .8rem}
+
+    /* Hero */
+    .hero{
+      position:relative; isolation:isolate;
+      background: radial-gradient(1200px 300px at 10% 10%, rgba(228,29,29,.25), transparent 60%);
+    }
+    .hero__grid{display:grid; grid-template-columns:1.2fr .8fr; gap:2rem; padding:4rem 0 3rem}
+    .hero__copy h1{
+      font-size:clamp(2rem, 4vw + 1rem, 4rem);
+      line-height:1.1; margin:0 0 .6rem;
+      text-shadow: 0 6px 30px rgba(228,29,29,.15);
+    }
+    .hero__copy h1 span{color:var(--brand)}
+    .hero__copy p{color:var(--muted); max-width:55ch}
+    .social{display:flex; gap:1rem; list-style:none; padding:0; margin:0}
+    .social a{font-size:.95rem; opacity:.9}
+    .hero__art .poster{border-radius:1rem; overflow:hidden; transform:perspective(800px) rotateY(-6deg);}
+    .hero__art .poster img{height:100%; object-fit:cover}
+    .hero__shade{
+      position:absolute; inset:0; z-index:-1;
+      background: radial-gradient(600px 200px at 90% 10%, rgba(255,255,255,.06), transparent 60%);
+    }
+
+    /* Seções */
+    .section{padding:4rem 0; border-top:1px solid var(--border)}
+    .section--alt{background:var(--bg-soft)}
+    .section-title{font-size:1.6rem; margin:.2rem 0 1rem}
+    .grid-2{display:grid; gap:2rem; grid-template-columns:1fr 1fr}
+    .features{padding-left:1rem}
+    .features li{margin:.3rem 0; color:var(--muted)}
+    .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem}
+    .card{background:var(--card); border:1px solid var(--border); padding:1.1rem; border-radius:.8rem; box-shadow:var(--shadow)}
+    .card h3{margin:.2rem 0 .4rem}
+
+    /* Galeria de jogos */
+    .gallery{display:grid; grid-template-columns:repeat(6,1fr); gap:1rem}
+    .tile{position:relative; overflow:hidden; border-radius:.8rem; border:1px solid var(--border); background:#0e0f12}
+    .tile img{width:100%; height:160px; object-fit:cover; filter:saturate(.9) contrast(1.05)}
+    .tile__title{position:absolute; left:.7rem; bottom:.6rem; background:rgba(0,0,0,.5); padding:.2rem .5rem; border-radius:.4rem; font-weight:600}
+    .tile--game{display:flex; flex-direction:column; transition:transform .15s ease, border-color .2s ease}
+    .tile--game:hover,.tile--game:focus-visible{transform:translateY(-3px); border-color:var(--brand)}
+    .tile--game img{height:120px}
+    .tile__body{display:grid; gap:.25rem; padding:.7rem .75rem .85rem}
+    .tile__name{font-size:.95rem; line-height:1.25}
+    .tile__desc{font-size:.82rem; line-height:1.35; color:var(--muted)}
+
+    /* Conteúdos */
+    .badges{display:flex; gap:.5rem; flex-wrap:wrap}
+    .badge{padding:.35rem .6rem; border:1px solid var(--border); border-radius:.6rem; font-size:.85rem; color:var(--muted)}
+    .embed .yt{width:100%; height:315px; border:1px solid var(--border); border-radius:.8rem}
+
+    /* Contato */
+    .form{display:grid; gap:.9rem; background:var(--card); border:1px solid var(--border); padding:1rem; border-radius:.8rem}
+    .form label{display:grid; gap:.4rem; font-weight:600}
+    .form input,.form textarea{
+      width:100%; padding:.8rem .9rem; border-radius:.6rem; border:1px solid var(--border); background:#0d0f14; color:var(--text);
+    }
+    .form__note{font-size:.85rem; color:var(--muted)}
+    .form__alert{margin-top:.5rem; min-height:1.2rem; font-weight:600}
+    .contact-list{list-style:none; padding:0; margin:.5rem 0 0; color:var(--muted)}
+    .contact-list li{margin:.25rem 0}
+
+    @media (max-width: 900px){
+      .hero__grid{grid-template-columns:1fr; padding:3rem 0 2rem}
+      .grid-2{grid-template-columns:1fr}
+      .cards{grid-template-columns:repeat(3, minmax(0,1fr));}
+      .gallery{grid-template-columns:repeat(3,1fr)}
+    }
+    @media (max-width: 640px){
+      .cards{grid-template-columns:1fr 1fr}
+      .gallery{grid-template-columns:1fr 1fr}
+      .embed .yt{height:240px}
+      .btn{padding:.65rem .9rem}
+    }
+  </style>
+  <script src="img-fallback.js"></script>
+  <script src="forms.js" defer></script>
 </head>
 <body>
 
@@ -42,28 +122,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
   
   <!-- Header / Navegação -->
-  <header class="site-header" id="topo">
-    <div class="container nav">
-      <a class="brand" href="#topo" aria-label="Flloydinn Gameplay">
-        <span class="logo">Flloyd<span>inn</span></span>
-      </a>
-      <nav class="menu" aria-label="principal">
-        <a href="#sobre">Sobre</a>
-        <a href="#jogos">Jogos</a>
-        <a href="#conteudos">Conteúdos</a>
-        <a href="#contato" class="btn btn--small">Contato</a>
-      </nav>
-      <button class="hamburger" id="hamburger" aria-label="Abrir menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="mobile-drawer" id="mobileDrawer" role="dialog" aria-modal="true" aria-label="Menu">
-      <a href="#sobre" class="drawer-link">Sobre</a>
-      <a href="#jogos" class="drawer-link">Jogos</a>
-      <a href="#conteudos" class="drawer-link">Conteúdos</a>
-      <a href="#contato" class="btn">Contato</a>
-    </div>
-  </header>
+  <site-header variant="home"></site-header>
 
   <!-- Hero -->
   <section class="hero">
@@ -83,7 +142,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="hero__art">
         <div class="poster shadow">
-          <img src="assets/banner-placeholder.jpg" alt="Banner do canal Flloydinn" loading="lazy">
+          <img src="assets/assets/banner-placeholder.jpg" alt="Banner do canal Flloydinn" data-fallback-src="assets/og-image.jpg">
         </div>
       </div>
     </div>
@@ -122,31 +181,49 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- Jogos / Destaques -->
   <section id="jogos" class="section section--alt">
     <div class="container">
-      <h2 class="section-title">Destaques recentes</h2>
+      <h2 class="section-title">Jogue agora no navegador</h2>
       <div class="gallery">
-        <a class="tile" href="#" aria-label="Jogo 1">
-          <img src="assets/game1.jpg" alt="Jogo 1">
-          <span class="tile__title">Aventura Insana</span>
+        <a class="tile tile--game" href="asteroid.html">
+          <img src="assets/game1.jpg" alt="" loading="lazy">
+          <span class="tile__body">
+            <strong class="tile__name">Space Courier 3D</strong>
+            <span class="tile__desc">Desvie de asteroides no espaço e bata seu recorde.</span>
+          </span>
         </a>
-        <a class="tile" href="#" aria-label="Jogo 2">
-          <img src="assets/game2.jpg" alt="Jogo 2">
-          <span class="tile__title">Coop Caótico</span>
+        <a class="tile tile--game" href="runner.html">
+          <img src="assets/game2.jpg" alt="" loading="lazy">
+          <span class="tile__body">
+            <strong class="tile__name">Neon Runner 3D</strong>
+            <span class="tile__desc">Parkour infinito com pulo duplo e dash.</span>
+          </span>
         </a>
-        <a class="tile" href="#" aria-label="Jogo 3">
-          <img src="assets/game3.jpg" alt="Jogo 3">
-          <span class="tile__title">Indie Surpresa</span>
+        <a class="tile tile--game" href="drifter.html">
+          <img src="assets/game3.jpg" alt="" loading="lazy">
+          <span class="tile__body">
+            <strong class="tile__name">Desert Drifter 3D</strong>
+            <span class="tile__desc">Hovercraft no deserto: boost e cristais.</span>
+          </span>
         </a>
-        <a class="tile" href="#" aria-label="Jogo 4">
-          <img src="assets/game4.jpg" alt="Jogo 4">
-          <span class="tile__title">Battle Royale</span>
+        <a class="tile tile--game" href="minigolf.html">
+          <img src="assets/game4.jpg" alt="" loading="lazy">
+          <span class="tile__body">
+            <strong class="tile__name">Galaxy MiniGolf 3D</strong>
+            <span class="tile__desc">Mini-golf neon: mire, dose a força e acerte.</span>
+          </span>
         </a>
-        <a class="tile" href="#" aria-label="Jogo 5">
-          <img src="assets/game5.jpg" alt="Jogo 5">
-          <span class="tile__title">Terror Noite</span>
+        <a class="tile tile--game" href="wildlands-online.html">
+          <img src="assets/game5.jpg" alt="" loading="lazy">
+          <span class="tile__body">
+            <strong class="tile__name">Wildlands Online</strong>
+            <span class="tile__desc">Mundo aberto 3D com multiplayer P2P.</span>
+          </span>
         </a>
-        <a class="tile" href="#" aria-label="Jogo 6">
-          <img src="assets/game6.jpg" alt="Jogo 6">
-          <span class="tile__title">Corrida Maluca</span>
+        <a class="tile tile--game" href="arcade.html">
+          <img src="assets/game6.jpg" alt="" loading="lazy">
+          <span class="tile__body">
+            <strong class="tile__name">Arcade</strong>
+            <span class="tile__desc">Mini-games de reação, mira e quiz nerd.</span>
+          </span>
         </a>
       </div>
     </div>
@@ -184,7 +261,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li><strong>YouTube:</strong> @flloydinn</li>
         </ul>
       </div>
-      <form class="form" id="contactForm" novalidate>
+      <!-- Envio real: endpoint em forms.js (FORM_CONFIG.contato) ou data-endpoint="https://formspree.io/f/..." aqui -->
+      <form class="form" id="contactForm" novalidate data-form="contato" data-subject="Contato pelo site" data-success="Mensagem enviada! Respondo assim que possível.">
+
         <label>Nome
           <input type="text" name="name" placeholder="Seu nome" required>
         </label>
@@ -195,19 +274,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <textarea name="message" rows="5" placeholder="Como posso ajudar?" required></textarea>
         </label>
         <button type="submit" class="btn">Enviar</button>
-<!--         <p class="form__note">Sem backend — configure um serviço como <a href="https://formspree.io" target="_blank" rel="noopener">Formspree</a> ou <a href="https://docs.google.com/forms/" target="_blank" rel="noopener">Google Forms</a>.</p> -->
-        <div class="form__alert" id="formAlert" role="status" aria-live="polite"></div>
+        <div id="formAlert" data-form-status role="status" aria-live="polite"></div>
       </form>
     </div>
   </section>
 
   <!-- Rodapé -->
-  <footer class="footer">
-    <div class="container footer__grid">
-      <p>© <span id="year"></span> Flloydinn Gameplay</p>
-      <a href="#topo" class="to-top" aria-label="Voltar ao topo">↑</a>
-    </div>
-  </footer>
+  <site-footer variant="home"></site-footer>
 
   <script src="script.js"></script>
 </body>

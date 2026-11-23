@@ -15,20 +15,5 @@
       "cover": "assets/cover-exemplo.jpg",
       "file": "exemplo-primeiro-post.md"
     }
-// {
-//   "slug": "meu-artigo",
-//   "title": "Título do meu artigo",
-//   "excerpt": "Resumo do artigo para listas e SEO.",
-//   "dateISO": "2025-09-11",
-//   "readMin": 5,
-//   "views": 0,
-//   "category": "Notícias",
-//   "tags": ["PC","Atualização"],
-//   "game": "Vários",
-//   "platform": "Multi",
-//   "author": "Redação",
-//   "cover": "assets/cover-exemplo.jpg",
-//   "file": "meu-artigo.md"
-// }
   ]
 }

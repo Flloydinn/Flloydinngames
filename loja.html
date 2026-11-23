@@ -2,64 +2,37 @@
 <html lang="pt-br">
 <head>
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0VJ19JZXGY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0VJ19JZXGY');
-</script>
-
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TWBF6RH6');</script>
-<!-- End Google Tag Manager -->  
+  <script src="analytics.js"></script>
   
   <meta charset="utf-8">
   <title>Flloydinn Gameplay — Loja</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Loja oficial do Flloydinn Gameplay: camisetas, canecas, adesivos e itens digitais. Pague com PIX.">
-  <link rel="icon" href="assets/favicon.png">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/loja.html">
+  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Loja Oficial Flloydinn Gameplay">
+  <meta property="og:description" content="Camisetas, canecas, adesivos e itens digitais oficiais do canal. Pagamento rápido via PIX.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/loja.html">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Loja Oficial Flloydinn Gameplay">
+  <meta name="twitter:description" content="Camisetas, canecas, adesivos e itens digitais oficiais do canal. Pagamento rápido via PIX.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
   <style>
-    :root{
-      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
-      --brand:#8f0000; --brand2:#b31212;
-      --card:#1a1a1a; --border:#24262b; --shadow:0 10px 30px rgba(0,0,0,.35);
-      --ok:#57d996; --warn:#ffb84d; --danger:#ff6b6b;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
-      line-height:1.6;
-    }
-    a{color:#fff;text-decoration:none}
-    img{max-width:100%;display:block}
-    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
-    /* Header */
-    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
-    .brand{font-weight:800;letter-spacing:.3px}
-    .brand span{color:var(--brand)}
-    .menu{display:flex;gap:.6rem}
-    .btn{
-      background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);
-      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
-      transition:transform .15s ease, opacity .2s ease;
-    }
-    .btn:hover{transform:translateY(-2px)}
-    .btn--ghost{background:transparent;border:1px solid var(--border)}
-    .btn--small{padding:.45rem .7rem;font-size:.9rem}
+    /* Utilitários desta página */
     .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
     /* Hero */
     .hero{border-bottom:1px solid var(--border);background:radial-gradient(900px 260px at 15% 5%, rgba(233,33,33,.22),transparent 60%)}
@@ -129,32 +102,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .qr{display:flex;align-items:center;justify-content:center;background:#0f1116;border:1px solid var(--border);border-radius:.6rem;padding:.6rem}
     .success{background:linear-gradient(135deg,#206a4f,#2db57f);padding:.8rem;border-radius:.6rem;font-weight:700}
     /* Footer */
-    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
     /* Responsive */
     @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.feature{grid-template-columns:1fr}}
     @media (max-width:900px){.toolbar__inner{grid-template-columns:1fr 1fr 1fr;row-gap:.6rem}.grid{grid-template-columns:repeat(2,1fr)}.cart{grid-template-columns:1fr}}
     @media (max-width:600px){.grid{grid-template-columns:1fr}}
   </style>
+  <script src="img-fallback.js"></script>
+  <script src="forms.js" defer></script>
 </head>
 <body>
   <!-- Header -->
-  <header class="site-header">
-
   <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TWBF6RH6"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-
-    <div class="container nav">
-      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
-      <nav class="menu" aria-label="principal">
-        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
-        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
-        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
-        <a class="btn btn--small" href="loja.html">Loja</a>
-      </nav>
-    </div>
-  </header>
+  <site-header></site-header>
 
   <!-- Hero -->
   <section class="hero">
@@ -286,21 +248,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
-  <footer>
-    <div class="container">© <span id="year"></span> Flloydinn Gameplay</div>
-  </footer>
+  <site-footer></site-footer>
 
-  <!-- ====== QRCode lib (minificada, MIT, baseada em Kazuhiko Arase) ====== -->
-  <script>
-/*!
- * QRCode for JavaScript (compact build)
- * (c) proj. based on Kazuhiko Arase MIT
- * Simplified for inline usage
- */
-(function(a){function b(a,b){this._el=a,this._htOption=b}function c(a,b){return new f(a,b)}function d(a){this.mode=k.MODE_8BIT_BYTE,this.data=a}function e(a,b){this.typeNumber=a,this.errorCorrectLevel=b,this.modules=null,this.moduleCount=0,this.dataList=[],this.dataCache=null}function f(a,b){var c=document.createElement("canvas");a.appendChild(c),this._elCanvas=c,this._oQRCode=new e(b||0,l.M),this._oQRCode.addData(" "),this._oQRCode.make(),this.makeImage("placeholder")}b.prototype.makeCode=function(a){this._htOption=this._htOption||{},this._htOption.text=a||"",this.clear(),this._oQRCode=new e(0,l.M),this._oQRCode.addData(this._htOption.text),this._oQRCode.make(),this.makeImage()},b.prototype.clear=function(){for(;this._el.hasChildNodes();)this._el.removeChild(this._el.lastChild)},b.prototype.makeImage=function(){var a=this._oQRCode,b=this._elCanvas,c=Math.max(200,Math.min(360,(this._htOption&&this._htOption.size)||280)),d=4; b.width=b.height=c;var e=c/a.getModuleCount(),f=b.getContext("2d");f.clearRect(0,0,c,c),f.fillStyle="#fff",f.fillRect(0,0,c,c),f.fillStyle="#000";for(var g=0;g<a.getModuleCount();g++)for(var h=0;h<a.getModuleCount();h++)a.isDark(g,h)&&f.fillRect(Math.round(h*e),Math.round(g*e),Math.ceil(e),Math.ceil(e))},a.QRCode=b;
-var g=function(){var a=0,b=1;return{glog:function(c){if(c<1)throw new Error("glog"),0;return a[c]},gexp:function(c){for(;b<=c;)a[b]=1,a[b+1]=2,b+=2;return a[c]}}}(),h=function(){var a=0;return{getBCHTypeInfo:function(b){for(var c=b<<10;h.getBCHDigit(c)-h.getBCHDigit(1335)>=0;)c^=1335<<h.getBCHDigit(c)-h.getBCHDigit(1335);return b<<10|c},getBCHTypeNumber:function(b){for(var c=b<<12;h.getBCHDigit(c)-h.getBCHDigit(7973)>=0;)c^=7973<<h.getBCHDigit(c)-h.getBCHDigit(7973);return b<<12|c},getBCHDigit:function(b){var c=0;for(;b!=0;)c++,b>>>=1;return c}}}(),i={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7},j={L:1,M:0,Q:3,H:2},k={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},l={L:1,M:0,Q:3,H:2};d.prototype={getLength:function(){return this.data.length},write:function(a){for(var b=0;b<this.data.length;b++)a.put(this.data.charCodeAt(b),8)}};var m=function(){var a=function(a){this.buffer=[],this.length=0,this.put(a)},b=a.prototype;return b.get=function(a){return 1==(this.buffer[a>>>3]>>>7-(7&a)&1)},b.put=function(a,b){for(var c=0;c<b;c++)this.putBit(1==(a>>>b-c-1&1))},b.putBit=function(a){this.buffer.push(a?1:0),this.length++},a}(),n=function(){var a=function(){this.buffer=[],this.length=0};return a.prototype={put:function(a,b){for(var c=0;c<b;c++)this.putBit(1==(a>>>b-c-1&1))},getLengthInBits:function(){return this.length},putBit:function(a){var b=this.length>>>3;this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>7&(this.length&7)),this.length++},getBuffer:function(){return this.buffer}},a}(),o=function(){var a=function(a,b){this.totalCount=a,this.dataCount=b};return{RS_BLOCK_TABLE:[1,26,19,2,26,16,4,26,13],getRSBlocks:function(){return[ new a(26,19) ]}}}(),p=function(){var a=function(){this.buffer=[],this.length=0};return a.prototype.put=function(a,b){for(var c=0;c<b;c++)this.putBit(1==(a>>>b-c-1&1))},a.prototype.getLengthInBits=function(){return this.length},a.prototype.putBit=function(a){var b=this.length>>>3;this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>7&(this.length&7)),this.length++},a.prototype.getBuffer=function(){return this.buffer},a}();e.prototype={addData:function(a){this.dataList.push(new d(a)),this.dataCache=null},isDark:function(a,b){if(this.modules[a][b]!=null)return this.modules[a][b];var c=this._calcPattern(a,b);return this.modules[a][b]=c},_calcPattern:function(){return!1},getModuleCount:function(){return this.moduleCount},make:function(){this.typeNumber=4;var a=this.dataList[0];this.moduleCount=33,this.modules=new Array(this.moduleCount);for(var b=0;b<this.moduleCount;b++){this.modules[b]=new Array(this.moduleCount);for(var c=0;c<this.moduleCount;c++)this.modules[b][c]=null}var d=new m;d.put(k.MODE_8BIT_BYTE,4),d.put(a.getLength(),8),a.write(d);for(var e=new n,f=0;f<d.length;f++)e.putBit(d.get(f));this.dataCache=e.getBuffer()}};
-})(window);
-  </script>
+  <!-- ====== QR Code: qrcode-generator 1.4.4 (Kazuhiko Arase, MIT) — versão completa, com Reed-Solomon e
+       escolha automática de tamanho. Se o CDN falhar, o "copia e cola" continua funcionando. ====== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"
+          integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
     // ======== Dados / Produtos ========
@@ -476,76 +430,111 @@ var g=function(){var a=0,b=1;return{glog:function(c){if(c<1)throw new Error("glo
     };
 
     // ======== PIX (BR Code EMV + QR) ========
-    // Ajuste sua CHAVE PIX e dados do recebedor abaixo:
+    // ┌──────────────────────────────────────────────────────────────────────┐
+    // │ >>> CONFIGURE AQUI os dados do recebedor PIX <<<                      │
+    // │ key:  sua chave PIX — e-mail, CPF/CNPJ (só números), telefone no      │
+    // │       formato +55DDDNUMERO, ou chave aleatória (EVP).                 │
+    // │ name: nome do recebedor (máx. 25; acentos são removidos).             │
+    // │ city: cidade do recebedor (máx. 15; acentos são removidos).           │
+    // │ description: texto curto opcional que aparece no app (pode ficar ''). │
+    // │ IMPORTANTE: antes de publicar, gere um PIX de valor baixo e LEIA o QR │
+    // │ e o "copia e cola" no app do seu banco: confira nome, chave e valor.  │
+    // └──────────────────────────────────────────────────────────────────────┘
     const PIX_MERCHANT = {
-      key: 'flloydinn@gmail.com', // sua chave PIX (e-mail, CPF/CNPJ, telefone ou EVP)
-      name: 'Flloydinn',          // nome do recebedor (até 25 caracteres)
-      city: 'SANTOS',             // cidade (maiúsculas, sem acento)
-      description: 'Loja Flloydinn' // descrição opcional curta
+      key: 'flloydinn@gmail.com',
+      name: 'Flloydinn',
+      city: 'SANTOS',
+      description: 'Loja Flloydinn'
     };
 
-    function emvTag(id, value){
-      const len = String(value.length).padStart(2,'0');
-      return id + len + value;
+    // Texto aceito pelo BR Code: sem acentos e sem símbolos especiais
+    function pixText(value, max){
+      return String(value || '')
+        .normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^A-Za-z0-9 .,\-@_\/+:]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, max);
     }
+    function normalizePixKey(key){
+      const k = String(key || '').trim();
+      if(k.includes('@')) return k.toLowerCase();                    // e-mail
+      if(/^\+\d/.test(k)) return '+' + k.replace(/\D/g, '');          // telefone +55...
+      if(/^[\d.\-\/\s]+$/.test(k)) return k.replace(/\D/g, '');       // CPF/CNPJ
+      return k.toLowerCase();                                         // chave aleatória (EVP)
+    }
+    // Campo EMV: ID (2) + tamanho (2) + valor (máx. 99)
+    function emvTag(id, value){
+      value = String(value);
+      if(value.length > 99) throw new Error(`Campo PIX ${id} passou de 99 caracteres.`);
+      return id + String(value.length).padStart(2, '0') + value;
+    }
+    // CRC16-CCITT-FALSE (poly 0x1021, init 0xFFFF), exigido pelo BR Code
     function crc16(str){
-      // CRC16-IBM (CCITT false poly 0x1021) usado no BR Code com init 0xFFFF
       let crc = 0xFFFF;
-      for(let i=0;i<str.length;i++){
+      for(let i = 0; i < str.length; i++){
         crc ^= str.charCodeAt(i) << 8;
-        for(let j=0;j<8;j++){
-          if((crc & 0x8000) !== 0){ crc = (crc << 1) ^ 0x1021; }
-          else { crc <<= 1; }
+        for(let j = 0; j < 8; j++){
+          crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
           crc &= 0xFFFF;
         }
       }
-      return crc.toString(16).toUpperCase().padStart(4,'0');
+      return crc.toString(16).toUpperCase().padStart(4, '0');
     }
+    // BR Code estático (010211) com valor e identificador do pedido
     function buildPixBRCode(amount, txid){
-      // Campos fixos
-      const gui = 'br.gov.bcb.pix';
-      // 00 Payload Format Indicator
-      const id00 = emvTag('00','01');
-      // 01 Point of Initiation Method (12 = dynamic; 11 = static). Vamos usar 12 para indicar singular por transação.
-      const id01 = emvTag('01','12');
-      // 26 Merchant Account Information: 00 GUI, 01 chave, 02 descr
-      const mai00 = emvTag('00', gui);
-      const mai01 = emvTag('01', PIX_MERCHANT.key);
-      const mai02 = PIX_MERCHANT.description ? emvTag('02', PIX_MERCHANT.description.substring(0,50)) : '';
-      const id26 = emvTag('26', mai00 + mai01 + mai02);
-      // 52 Merchant Category Code (0000 para não especificado)
-      const id52 = emvTag('52','0000');
-      // 53 Transaction Currency (986 = BRL)
-      const id53 = emvTag('53','986');
-      // 54 Amount (com ponto)
-      const id54 = emvTag('54', amount.toFixed(2));
-      // 58 Country Code
-      const id58 = emvTag('58','BR');
-      // 59 Merchant Name (max 25)
-      const id59 = emvTag('59', PIX_MERCHANT.name.substring(0,25));
-      // 60 Merchant City
-      const id60 = emvTag('60', PIX_MERCHANT.city.substring(0,15));
-      // 62 Additional Data Field Template: 05 = txid (até 25)
-      const adf05 = emvTag('05', txid.substring(0,25));
-      const id62 = emvTag('62', adf05);
-      // 63 CRC (placeholder)
-      const payloadNoCrc = id00+id01+id26+id52+id53+id54+id58+id59+id60+id62+'6304';
-      const crc = crc16(payloadNoCrc);
-      const id63 = '63'+'04'+crc;
-      return payloadNoCrc + crc;
+      const key = normalizePixKey(PIX_MERCHANT.key);
+      const name = pixText(PIX_MERCHANT.name, 25).toUpperCase();
+      const city = pixText(PIX_MERCHANT.city, 15).toUpperCase();
+      if(!key) throw new Error('Chave PIX não configurada.');
+      if(!name || !city) throw new Error('Nome e cidade do recebedor são obrigatórios.');
+      if(!(amount > 0)) throw new Error('Valor do PIX inválido.');
+      // Campo 26 tem no máx. 99: GUI (18) + chave (4+n) + descrição (4+m) -> encurta a descrição para caber
+      const room = 99 - 18 - (4 + key.length) - 4;
+      const info = room > 0 ? pixText(PIX_MERCHANT.description, Math.min(40, room)) : '';
+      const tx = String(txid || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 25) || '***';
+      const mai = emvTag('00', 'br.gov.bcb.pix') + emvTag('01', key) + (info ? emvTag('02', info) : '');
+      const payload =
+        emvTag('00', '01') +              // Payload Format Indicator
+        emvTag('01', '11') +              // 11 = QR estático (chave fixa)
+        emvTag('26', mai) +               // Conta PIX (GUI + chave + descrição)
+        emvTag('52', '0000') +            // Merchant Category Code
+        emvTag('53', '986') +             // Moeda: BRL
+        emvTag('54', amount.toFixed(2)) + // Valor
+        emvTag('58', 'BR') +
+        emvTag('59', name) +
+        emvTag('60', city) +
+        emvTag('62', emvTag('05', tx)) +  // txid (aparece no extrato)
+        '6304';
+      return payload + crc16(payload);
     }
 
-    // QR code
-    let QR;
-    function ensureQR(){
-      if(!QR){ QR = new QRCode(document.getElementById('qrcode'), { text:'', size:280 }); }
-    }
+    // QR code (qrcode-generator: tamanho automático, correção de erro nível M)
     function drawQR(text){
-      ensureQR();
-      // limpa e redesenha
-      const container = document.getElementById('qrcode');
-      container.innerHTML = '';
-      QR = new QRCode(container, { text, size:280 });
+      const box = document.getElementById('qrcode');
+      box.innerHTML = '';
+      if(typeof window.qrcode !== 'function'){
+        box.innerHTML = '<p class="note" style="margin:0;text-align:center">Não foi possível carregar o gerador de QR Code.<br>Use o código “copia e cola” abaixo.</p>';
+        return false;
+      }
+      const qr = qrcode(0, 'M');
+      qr.addData(text, 'Byte');
+      qr.make();
+      const n = qr.getModuleCount(), margin = 4;
+      const scale = Math.max(4, Math.ceil(320 / (n + margin * 2)));
+      const size = (n + margin * 2) * scale;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = size;
+      canvas.setAttribute('role', 'img');
+      canvas.setAttribute('aria-label', 'QR Code PIX para pagamento');
+      canvas.style.cssText = 'display:block;width:min(280px,100%);height:auto;image-rendering:pixelated;border-radius:.4rem';
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#000';
+      for(let r = 0; r < n; r++) for(let c = 0; c < n; c++)
+        if(qr.isDark(r, c)) ctx.fillRect((c + margin) * scale, (r + margin) * scale, scale, scale);
+      box.appendChild(canvas);
+      return true;
     }
     // baixar QR (canvas to dataURL)
     function downloadQR(){
@@ -562,48 +551,97 @@ var g=function(){var a=0,b=1;return{glog:function(c){if(c<1)throw new Error("glo
       const subtotal = state.cart.reduce((s,i)=>s+i.price*i.qty,0);
       let discount = 0; if(state.cupom==='FLL10') discount = +(subtotal*0.10).toFixed(2);
       let shipping = subtotal - discount >= state.freeAt || subtotal===0 ? 0 : state.shipping;
-      return subtotal - discount + shipping;
+      return Math.round((subtotal - discount + shipping) * 100) / 100;
     }
     let lastTx = null;
     $('#genPix').onclick=()=>{
       if(state.cart.length===0) return alert('Seu carrinho está vazio.');
       const name = $('#custName').value.trim();
       const email= $('#custEmail').value.trim();
-      if(!name || !email || !email.includes('@')) return alert('Preencha nome e e-mail válidos.');
+      if(!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Preencha nome e e-mail válidos.');
       const total = cartTotal();
       const txid = uuid();
-      const payload = buildPixBRCode(total, txid);
+      let payload;
+      try{ payload = buildPixBRCode(total, txid); }
+      catch(err){ console.error('[PIX]', err); return alert('Não foi possível gerar o PIX: ' + err.message); }
       lastTx = {txid, total, name, email, payload, at:new Date().toISOString(), items: clone(state.cart)};
       $('#pixCode').textContent = payload;
       drawQR(payload);
+      $('#ok').style.display = 'none';
     };
 
     $('#copyPix').onclick= async ()=>{
       const code = $('#pixCode').textContent.trim();
       if(!code || code.startsWith('O código')) return alert('Gere o PIX primeiro.');
-      try{ await navigator.clipboard.writeText(code); alert('Código PIX copiado.'); }catch{ alert('Não foi possível copiar.'); }
+      try{
+        if(window.FlloydForms) await FlloydForms.copyText(code); else await navigator.clipboard.writeText(code);
+        alert('Código PIX copiado.');
+      }catch{ alert('Não foi possível copiar. Selecione o código e copie manualmente.'); }
     };
     $('#dlQR').onclick=downloadQR;
 
-    // Finalizar (simulação)
-    $('#finish').onclick=()=>{
-      if(!lastTx) return alert('Gere o PIX antes de concluir.');
-      // Aqui você poderia validar via backend o recebimento efetivo. Como é estático, apenas simulamos.
-      const orders = JSON.parse(localStorage.getItem('shop_orders')||'[]');
-      orders.push(lastTx);
-      localStorage.setItem('shop_orders', JSON.stringify(orders));
-      $('#ok').style.display='block';
-      // limpa carrinho
+    // ======== Concluir pedido ========
+    // Envia o resumo do pedido pelo endpoint "pedidos" do forms.js (Formspree/Web3Forms).
+    // Sem endpoint configurado, NÃO finge envio: guarda no navegador e oferece mandar o resumo por e-mail.
+    function orderSummary(tx){
+      const itens = tx.items.map(i => {
+        const opts = Object.entries(i.opts||{}).map(([k,v])=>`${k}: ${v}`).join(', ');
+        return `${i.qty}x ${i.title}${opts ? ` (${opts})` : ''} — ${fmt(i.price*i.qty)}`;
+      }).join('\n');
+      return { pedido: tx.txid, nome: tx.name, email: tx.email, total: fmt(tx.total), itens, codigo_pix: tx.payload, data: new Date(tx.at).toLocaleString('pt-BR') };
+    }
+    function clearCheckout(){
       state.cart = []; persistCart(); updateMini(); renderCart();
-      // limpa formulário
       $('#custName').value=''; $('#custEmail').value='';
-      // mantém o QR/BR Code para o usuário conferir
-      flashBar('Pedido registrado. Verifique seu e-mail.');
+      // mantém o QR/BR Code na tela para o cliente conferir
+    }
+    function showOrderMsg(type, html){
+      const box = $('#ok');
+      if(window.FlloydForms) FlloydForms.ensureStyles();
+      box.className = type === 'ok' ? 'success' : 'fstatus is-on fstatus--' + type;
+      box.innerHTML = html;
+      box.style.display = 'block';
+    }
+    $('#finish').onclick = async ()=>{
+      if(!lastTx) return alert('Gere o PIX antes de concluir.');
+      const btn = $('#finish');
+      const tx = lastTx;
+      const summary = orderSummary(tx);
+      const orders = JSON.parse(localStorage.getItem('shop_orders')||'[]');
+      orders.push(tx); localStorage.setItem('shop_orders', JSON.stringify(orders));
+
+      const F = window.FlloydForms;
+      const email = F ? F.FALLBACK_EMAIL : 'flloydinn@gmail.com';
+      const text = F ? F.toText('Pedido ' + tx.txid, Object.entries(summary).map(([k,v])=>({label:k, value:v}))) : '';
+      const fallbackHtml = (msg) => `<p>${msg}</p>` + (F ? `<div class="fstatus__actions">
+          <a class="btn btn--small" href="${F.mailtoHref('Pedido ' + tx.txid + ' - comprovante PIX', text).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">Enviar resumo por e-mail</a>
+          <button type="button" class="btn btn--ghost btn--small" id="copyOrder">Copiar resumo</button></div>` : '');
+      const bindCopy = () => { const b = document.getElementById('copyOrder'); if(b) b.onclick = () => F.copyText(text).then(()=> b.textContent='Copiado ✓', ()=> b.textContent='Não foi possível copiar'); };
+
+      if(!F || !F.getEndpoint('pedidos')){
+        showOrderMsg('info', fallbackHtml(`Pedido <strong>${tx.txid}</strong> registrado. Para confirmarmos, envie o comprovante do PIX com o resumo para <strong>${email}</strong>.`));
+        bindCopy(); clearCheckout(); lastTx = null;
+        return;
+      }
+
+      btn.disabled = true; const label = btn.textContent; btn.textContent = 'Enviando pedido…';
+      try{
+        await F.send('pedidos', summary, { subject: `Novo pedido ${tx.txid} - ${fmt(tx.total)}` });
+        showOrderMsg('ok', `Pedido <strong>${tx.txid}</strong> recebido! A confirmação chega no seu e-mail depois que verificarmos o PIX.`);
+        try{ if(window.gtag) gtag('event','purchase',{transaction_id: tx.txid, value: tx.total, currency:'BRL'}); }catch{}
+        clearCheckout(); lastTx = null;
+        flashBar('Pedido enviado!');
+      }catch(err){
+        // mantém carrinho e dados para tentar de novo
+        showOrderMsg('err', fallbackHtml(`Não foi possível enviar o pedido agora (${err.message}). Tente “Concluir pedido” de novo ou envie o resumo por e-mail.`));
+        bindCopy();
+      }finally{
+        btn.disabled = false; btn.textContent = label;
+      }
     };
 
     // ======== Init ========
     function init(){
-      document.getElementById('year').textContent = new Date().getFullYear();
       renderProducts(); updateMini();
     }
     init();

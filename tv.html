@@ -2,64 +2,36 @@
 <html lang="pt-br">
 <head>
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0VJ19JZXGY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0VJ19JZXGY');
-</script>
-
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TWBF6RH6');</script>
-<!-- End Google Tag Manager -->
+  <script src="analytics.js"></script>
   
   <meta charset="utf-8">
   <title>Flloydinn Gameplay — TV (Canal 24/7)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Canal 24/7 do Flloydinn: vídeos do YouTube em programação contínua e sincronizada.">
-  <link rel="icon" href="assets/favicon.png">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/tv.html">
+  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Flloydinn TV — Canal 24/7">
+  <meta property="og:description" content="Vídeos do canal Flloydinn em programação contínua e sincronizada. Sintonize e assista junto com a galera.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/tv.html">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Flloydinn TV — Canal 24/7">
+  <meta name="twitter:description" content="Vídeos do canal Flloydinn em programação contínua e sincronizada. Sintonize e assista junto com a galera.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
   <style>
-    :root{
-      --bg:#0b0b0c; --bg-soft:#121316; --text:#E8E8EA; --muted:#A6A6AD;
-      --brand:#8f0000; --brand2:#b31212; --card:#1a1a1a; --border:#24262b;
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#0b0b0c 0%, #0d0e12 40%, #0b0b0c 100%);
-      line-height:1.6;
-    }
-    a{color:#fff;text-decoration:none}
-    img{max-width:100%;display:block}
-    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
-
-    /* Header */
-    .site-header{position:sticky;top:0;z-index:60;background:rgba(11,11,12,.7);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
-    .brand{font-weight:800;letter-spacing:.3px}
-    .brand span{color:var(--brand)}
-    .menu{display:flex;gap:.6rem}
-    .btn{
-      background:linear-gradient(135deg,var(--brand) 0%, var(--brand2) 100%);
-      color:#fff;border:0;border-radius:.6rem;padding:.6rem .9rem;font-weight:700;box-shadow:var(--shadow);cursor:pointer;
-      transition:transform .15s ease, opacity .2s ease;
-    }
-    .btn:hover{transform:translateY(-2px)}
-    .btn--ghost{background:transparent;border:1px solid var(--border)}
-    .btn--small{padding:.45rem .7rem;font-size:.9rem}
 
     /* Player area */
     .tv-wrap{position:relative;border-bottom:1px solid var(--border)}
@@ -96,9 +68,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .desc{padding:.9rem;color:var(--muted)}
     .small{font-size:.9rem;color:var(--muted)}
 
-    footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
   </style>
+  <script src="img-fallback.js"></script>
 </head>
 <body>
 
@@ -108,18 +80,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
   
   <!-- Header -->
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="index.html">Flloyd<span>inn</span> Gameplay</a>
-      <nav class="menu" aria-label="principal">
-        <a class="btn btn--ghost btn--small" href="index.html">Início</a>
-        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
-        <a class="btn btn--ghost btn--small" href="blognews.html">Blog</a>
-        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
-        <a class="btn btn--small" href="tv.html">TV</a>
-      </nav>
-    </div>
-  </header>
+  <site-header></site-header>
 
   <!-- TV -->
   <section class="tv-wrap">
@@ -172,9 +133,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </main>
 
-  <footer>
-    <div class="container">© <span id="year"></span> Flloydinn Gameplay • Canal TV experimental</div>
-  </footer>
+  <site-footer note="• Canal TV experimental"></site-footer>
 
   <!-- YouTube IFrame API -->
   <script>
@@ -184,12 +143,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const PLAYLIST_JSON_URL = 'tv/playlist.json'; // opcional; se não existir, usamos fallback
     const REFRESH_JSON_MS = 5 * 60 * 1000;
 
-    // Fallback inicial (edite se quiser; será substituído pelo JSON quando existir)
+    // Fallback inicial (usado só se tv/playlist.json não carregar).
+    // Mantenha apenas vídeos reais do canal, com "dur" = duração exata em segundos.
     let PLAYLIST = [
-      { id: 'CYbAoKRh8JA', title: 'Canal Trailer • Flloydinn', dur: 120 },
-      { id: 'dQw4w9WgXcQ', title: 'Gameplay — Clássico', dur: 212 }, // substitua por vídeos do canal
-      { id: 'kxopViU98Xo', title: 'Highlights — Coop', dur: 180 }
+      { id: 'CYbAoKRh8JA', title: 'Canal Trailer • Flloydinn', dur: 120 }
     ];
+
+    // ID de vídeo do YouTube válido: 11 caracteres [A-Za-z0-9_-], e não um placeholder
+    // como "xxxxxxxxxxx" (mesmo caractere repetido).
+    const isValidYTId = id => /^[A-Za-z0-9_-]{11}$/.test(id) && !/^(.)\1{10}$/.test(id);
 
     // ====== Utils ======
     const $ = s => document.querySelector(s);
@@ -197,13 +159,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const sumDur = arr => arr.reduce((s,v)=> s + (v.dur||0), 0);
     const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
 
-    function nowBRT(){ return new Date(new Date().toLocaleString('en-US', { timeZone: TIMEZONE })); }
-
     function pickCurrentByTime(){
       const total = sumDur(PLAYLIST);
       if(!total) return {index:0, offset:0, loopStart: new Date(EPOCH)};
-      const now = nowBRT();
-      const elapsed = Math.floor((now - EPOCH)/1000); // segs
+      // EPOCH e Date.now() são instantes absolutos (UTC): todos os visitantes,
+      // em qualquer fuso, calculam a mesma posição. O fuso só afeta a exibição (fmtClock).
+      const elapsed = Math.floor((Date.now() - EPOCH)/1000); // segs
       let t = ((elapsed % total) + total) % total; // posição dentro do loop
       let idx = 0;
       while(idx < PLAYLIST.length && t >= (PLAYLIST[idx].dur||0)){
@@ -342,13 +303,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const r = await fetch(PLAYLIST_JSON_URL, {cache:'no-store'});
         if(!r.ok) throw 0;
         const data = await r.json();
-        if(Array.isArray(data) && data.length){
-          PLAYLIST = data.filter(x=>x.id && x.dur>0).map(x=>({
-            id:String(x.id), title:String(x.title||'Sem título'), dur:Number(x.dur)
-          }));
-          buildGuide();
-          syncToSchedule(true);
-        }
+        if(!Array.isArray(data)) return;
+        const valid = data
+          .filter(x => x && isValidYTId(String(x.id||'')) && Number(x.dur) > 0)
+          .map(x => ({ id:String(x.id), title:String(x.title||'Sem título'), dur:Number(x.dur) }));
+        const skipped = data.length - valid.length;
+        if(skipped) console.warn(`[TV] ${skipped} item(ns) ignorado(s) em ${PLAYLIST_JSON_URL}: ID inválido/placeholder ou "dur" ausente.`);
+        if(!valid.length) return; // mantém a playlist atual em vez de esvaziar a grade
+        // Só recarrega o player se a playlist realmente mudou (evita cortar o vídeo a cada 5 min)
+        const changed = JSON.stringify(valid) !== JSON.stringify(PLAYLIST);
+        PLAYLIST = valid;
+        buildGuide();
+        if(changed) syncToSchedule(true);
       }catch(e){
         // silencioso: mantém fallback
       }
@@ -356,7 +322,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     setInterval(tryLoadJSON, REFRESH_JSON_MS);
 
     // ====== Inicialização ======
-    document.getElementById('year').textContent = new Date().getFullYear();
     ensureYT();
     buildGuide();
     tryLoadJSON();
