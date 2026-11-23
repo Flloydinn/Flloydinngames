@@ -33,10 +33,31 @@
   <script src="layout.js"></script>
   <style>
 
-    /* Player area */
-    .tv-wrap{position:relative;border-bottom:1px solid var(--border)}
-    .player{position:relative;aspect-ratio:16/9;background:#000}
-    #player{position:absolute;inset:0}
+    /* Player area
+       --tv-chrome = altura do header + controles + faixa "NO AR" (medida por JS; 200px até medir).
+       Modo padrão: o player cabe na tela junto com os controles (bordas pretas nas laterais em telas largas).
+       Modo cinema (.is-cinema): largura total. Tela cheia: a área da TV ocupa a tela inteira. */
+    .tv-wrap{--tv-chrome:200px;position:relative;border-bottom:1px solid var(--border);background:#000}
+    .player{
+      position:relative;width:100%;margin:0 auto;aspect-ratio:16/9;background:#000;
+      max-width:max(calc((100vh - var(--tv-chrome)) * 16 / 9), 60%);
+      max-width:max(calc((100svh - var(--tv-chrome)) * 16 / 9), 60%);
+    }
+    .tv-wrap.is-cinema .player{max-width:none}
+    /* a IFrame API troca <div id="player"> por <iframe id="player" width="640" height="360">:
+       sem isto o iframe fica 640x360 no canto (inset:0 não estica iframe/img) */
+    #player, .player iframe{position:absolute;inset:0;width:100% !important;height:100% !important;border:0;display:block}
+
+    /* Tela cheia da área da TV: player ocupa o espaço que sobra acima dos controles */
+    .tv-wrap:fullscreen{display:flex;flex-direction:column;width:100vw;height:100vh;border:0}
+    .tv-wrap:fullscreen .player{flex:1 1 auto;min-height:0;max-width:none;aspect-ratio:auto}
+    .tv-wrap:-webkit-full-screen{display:flex;flex-direction:column;width:100vw;height:100vh;border:0}
+    .tv-wrap:-webkit-full-screen .player{flex:1 1 auto;min-height:0;max-width:none;aspect-ratio:auto}
+    .btn[aria-pressed="true"]{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.08)}
+    /* em telas estreitas o player já usa a largura toda: modo cinema não muda nada */
+    @media (max-width:900px){ #btnCinema{display:none} }
+    /* no celular o aviso de áudio vira só o botão, para não cobrir o vídeo */
+    @media (max-width:640px){ .overlay .pill{padding:.35rem;background:rgba(15,17,22,.7)} .overlay .pill > span{display:none} }
     .overlay{
       position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;
     }
@@ -47,7 +68,8 @@
     }
     .live{position:absolute;left:12px;top:12px;display:flex;gap:.5rem;align-items:center;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.2rem .5rem}
     .dot{width:8px;height:8px;border-radius:999px;background:#ff4a4a;box-shadow:0 0 10px #ff4a4a}
-    .player .now{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .55rem}
+    .player .now{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .55rem;
+      max-width:calc(100% - 200px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .player .now strong{color:#fff}
 
     /* Controls bottom */
@@ -131,6 +153,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="controls">
       <div class="row">
         <button id="btnUnmute2" class="btn btn--small">Ativar áudio</button>
+        <button id="btnCinema" class="btn btn--ghost btn--small" aria-pressed="false">Modo cinema</button>
         <button id="btnFS" class="btn btn--ghost btn--small">Tela cheia</button>
         <span class="tag is-sync" id="syncTag" role="status" aria-live="polite">Conectando…</span>
       </div>
@@ -331,6 +354,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       const cur = pickCurrentByTime();
       playingId = PLAYLIST[cur.index].id;
       player = new YT.Player('player', {
+        width: '100%', height: '100%', // sem isto a API cria o iframe com 640x360 fixos
         videoId: playingId,
         playerVars: { autoplay:1, controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1, rel:0, iv_load_policy:3, start: Math.floor(cur.offset) },
         events: { onReady, onStateChange, onError }
@@ -417,10 +441,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     $('#btnUnmute').onclick = unmute;
     $('#btnUnmute2').onclick = unmute;
+    // ====== Tamanho do player: modo cinema + tela cheia da área da TV ======
+    const tvWrap = $('.tv-wrap');
+    // mede header + controles + faixa "NO AR" para o player caber na tela junto com eles
+    function measureChrome(){
+      const h = sel => document.querySelector(sel)?.getBoundingClientRect().height || 0;
+      tvWrap.style.setProperty('--tv-chrome', Math.ceil(h('.site-header') + h('.controls') + h('.nowbar') + 2) + 'px');
+    }
+    measureChrome();
+    window.addEventListener('resize', measureChrome);
+    if('ResizeObserver' in window) new ResizeObserver(measureChrome).observe($('.nowbar'));
+
+    const btnCinema = $('#btnCinema');
+    function setCinema(on){
+      tvWrap.classList.toggle('is-cinema', on);
+      btnCinema.setAttribute('aria-pressed', String(on));
+      btnCinema.textContent = on ? 'Ajustar à tela' : 'Modo cinema';
+      try{ localStorage.setItem('tv_cinema', on ? '1' : '0'); }catch{}
+    }
+    btnCinema.onclick = () => setCinema(!tvWrap.classList.contains('is-cinema'));
+    try{ setCinema(localStorage.getItem('tv_cinema') === '1'); }catch{ setCinema(false); }
+
+    // tela cheia só da área da TV (player + controles + faixa), não da página inteira
+    const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+    const canFS = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+    if(!canFS) $('#btnFS').hidden = true; // ex.: iPhone (só permite tela cheia de <video>)
     $('#btnFS').onclick = ()=>{
-      const el = document.documentElement;
-      if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
+      if(!fsEl()){ (tvWrap.requestFullscreen || tvWrap.webkitRequestFullscreen)?.call(tvWrap); }
+      else { (document.exitFullscreen || document.webkitExitFullscreen)?.call(document); }
     };
+    const onFsChange = () => { $('#btnFS').textContent = fsEl() ? 'Sair da tela cheia' : 'Tela cheia'; };
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
 
     // ====== Playlist (tv/playlist.json) ======
     function applyPlaylist(list, meta){
