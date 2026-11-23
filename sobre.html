@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <script src="analytics.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sobre o Flloydinn — o projeto, o hub e os bastidores</title>
+  <meta name="description" content="A história do projeto Flloydinn, a proposta do hub digital do canal Flloydinn Gameplay e os bastidores de como o site funciona, com números reais do canal.">
+  <!-- SEO: canonical + Open Graph + Twitter Card -->
+  <link rel="canonical" href="https://flloydinn.netlify.app/sobre.html">
+  <meta property="og:site_name" content="Flloydinn">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sobre o Flloydinn — o projeto, o hub e os bastidores">
+  <meta property="og:description" content="A história do projeto Flloydinn, a proposta do hub digital do canal Flloydinn Gameplay e os bastidores de como o site funciona, com números reais do canal.">
+  <meta property="og:url" content="https://flloydinn.netlify.app/sobre.html">
+  <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sobre o Flloydinn — o projeto, o hub e os bastidores">
+  <meta name="twitter:description" content="A história do projeto Flloydinn, a proposta do hub digital do canal Flloydinn Gameplay e os bastidores de como o site funciona, com números reais do canal.">
+  <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta name="twitter:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="layout.js"></script>
+  <script src="engage.js"></script>
+  <style>
+    .container{width:min(1100px,calc(100% - 2rem))}
+    .sobre-intro{display:grid;grid-template-columns:1.2fr .8fr;gap:1.5rem;align-items:start}
+    .sobre-intro p{margin:0 0 .8rem;color:var(--muted)}
+    .sobre-intro p strong{color:var(--text)}
+    .src{margin:.6rem 0 0;font-size:.82rem;color:var(--muted);text-align:right}
+    .src a{color:var(--muted);text-decoration:underline}
+    .timeline{list-style:none;margin:0;padding:0 0 0 1.2rem;border-left:2px solid #2a0000;display:grid;gap:1rem}
+    .timeline li{position:relative;padding-left:.6rem}
+    .timeline li::before{content:"";position:absolute;left:-1.62rem;top:.35rem;width:12px;height:12px;border-radius:3px;background:var(--brand);box-shadow:0 0 0 3px #0b0b0c}
+    .timeline time{display:block;font-size:.8rem;font-weight:800;letter-spacing:.04em;color:#ff5c5c;text-transform:uppercase}
+    .timeline p{margin:.15rem 0 0;color:var(--muted)}
+    .timeline strong{color:var(--text)}
+    .info-card .ic{font-size:1.3rem}
+    .info-card a.more{margin-top:auto;color:var(--text);font-weight:700;font-size:.9rem;text-decoration:underline;text-underline-offset:3px}
+    @media (max-width:900px){ .sobre-intro{grid-template-columns:1fr} }
+  </style>
+  <script src="img-fallback.js"></script>
+  <script type="application/ld+json" id="ld-main">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://flloydinn.netlify.app/#org",
+      "name": "Flloydinn",
+      "alternateName": [
+        "Flloydinn Gameplay",
+        "FLLOYDINN GAMEPLAY"
+      ],
+      "url": "https://flloydinn.netlify.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://flloydinn.netlify.app/assets/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
+      "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "sameAs": [
+        "https://www.youtube.com/@flloydinn",
+        "https://www.youtube.com/@flloydinnesporteclube"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://flloydinn.netlify.app/#website",
+      "url": "https://flloydinn.netlify.app/",
+      "name": "Flloydinn",
+      "alternateName": "Flloydinn Gameplay",
+      "inLanguage": "pt-BR",
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://flloydinn.netlify.app/videos.html?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "AboutPage",
+      "@id": "https://flloydinn.netlify.app/sobre.html#webpage",
+      "url": "https://flloydinn.netlify.app/sobre.html",
+      "name": "Sobre o Flloydinn — o projeto, o hub e os bastidores",
+      "description": "A história do projeto Flloydinn, a proposta do hub digital do canal Flloydinn Gameplay e os bastidores de como o site funciona, com números reais do canal.",
+      "inLanguage": "pt-BR",
+      "isPartOf": {
+        "@id": "https://flloydinn.netlify.app/#website"
+      },
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      },
+      "about": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <site-header></site-header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Sobre &amp; bastidores</span>
+        <h1>Sobre o <span>Flloydinn</span></h1>
+        <p>O Flloydinn é o projeto por trás do canal <strong>Flloydinn Gameplay</strong>: gameplay leve, zoeira e comunidade. Este site é o hub que junta tudo em um lugar só.</p>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="numTitle">
+      <div class="container">
+        <h2 class="film-title" id="numTitle">O canal em números</h2>
+        <div class="stat-row">
+          <div class="stat"><strong data-stat="subscribers">64</strong><span>inscritos</span></div>
+          <div class="stat"><strong data-stat="videos">54</strong><span>vídeos publicados</span></div>
+          <div class="stat"><strong data-stat="views">2.083</strong><span>visualizações</span></div>
+          <div class="stat"><strong data-stat="joined">2020</strong><span>no YouTube desde</span></div>
+        </div>
+        <p class="src" id="statSrc">Dados públicos do <a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">canal no YouTube</a>.</p>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="propTitle">
+      <div class="container">
+        <h2 class="film-title" id="propTitle">A proposta do hub</h2>
+        <div class="cards-3">
+          <article class="info-card lift"><span class="ic" aria-hidden="true">📺</span><h3>TV 24/7</h3><p>Os vídeos do canal passando sem parar, sincronizados para todo mundo no horário de Brasília.</p><a class="more" href="tv.html">Ligar a TV</a></article>
+          <article class="info-card lift"><span class="ic" aria-hidden="true">🎞</span><h3>Vídeos e cortes</h3><p>Todo o catálogo com busca e filtros, mais os momentos rápidos em formato curto.</p><a class="more" href="videos.html">Ver vídeos</a></article>
+          <article class="info-card lift"><span class="ic" aria-hidden="true">🕹</span><h3>Jogos no navegador</h3><p>Arcade e jogos 3D grátis, sem instalar nada, com recordes salvos no seu navegador.</p><a class="more" href="arcade.html">Ir para o Arcade</a></article>
+          <article class="info-card lift"><span class="ic" aria-hidden="true">📰</span><h3>Blog</h3><p>Análises, notícias e bastidores de games.</p><a class="more" href="blog.html">Ler o blog</a></article>
+          <article class="info-card lift"><span class="ic" aria-hidden="true">📅</span><h3>Agenda</h3><p>Lives e estreias com lembrete para o calendário.</p><a class="more" href="agenda.html">Ver agenda</a></article>
+          <article class="info-card lift"><span class="ic" aria-hidden="true">⚽</span><h3>Ecossistema</h3><p>Flloydinn Esporte Clube e Cortes do Flloydinn completam o projeto.</p><a class="more" href="canais.html">Conhecer os canais</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="bastTitle">
+      <div class="container sobre-intro">
+        <div>
+          <h2 class="film-title" id="bastTitle">Bastidores: como o site funciona</h2>
+          <p><strong>Vídeos sempre em dia.</strong> Uma rotina automática consulta o canal todos os dias e atualiza o catálogo, a grade da TV e os números do canal. Nenhuma chave fica exposta no site.</p>
+          <p><strong>A TV é um relógio.</strong> A programação é calculada a partir de um marco fixo no tempo, então todo mundo vê o mesmo vídeo no mesmo segundo, em qualquer fuso.</p>
+          <p><strong>Jogos direto no navegador.</strong> Os jogos são feitos com HTML, CSS e JavaScript (os 3D usam Three.js) e funcionam também no celular, com controles por toque.</p>
+          <p><strong>Sem login, sem rastros desnecessários.</strong> Recordes, favoritos e o "continuar explorando" ficam salvos só no seu navegador.</p>
+        </div>
+        <div>
+          <h2 class="film-title">Linha do tempo</h2>
+          <ol class="timeline">
+            <li><time datetime="2020-02-29">29 de fev. de 2020</time><p><strong>O canal nasce</strong> no YouTube.</p></li>
+            <li><time datetime="2021">2021</time><p><strong>Séries de gameplay</strong> com Red Dead Online, Fortnite, Realm Royale e Predator.</p></li>
+            <li><time datetime="2022">2022</time><p><strong>Zoeira no Máfia III</strong> e vídeo de Ano-Novo.</p></li>
+            <li><time datetime="2025">2025</time><p><strong>Shorts</strong> com momentos rápidos das gameplays.</p></li>
+            <li><time datetime="2026">Hoje</time><p><strong>O hub Flloydinn</strong>: TV 24/7, vídeos, jogos, loja e o ecossistema de canais.</p></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container" style="display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between">
+        <p style="margin:0;color:var(--muted)">Quer sugerir um jogo, indicar um corte ou fechar uma parceria?</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem"><a class="btn btn--small" href="index.html#participar">Participar</a><a class="btn btn--ghost btn--small" href="parcerias.html">Parcerias</a></div>
+      </div>
+    </section>
+  </main>
+
+  <site-footer></site-footer>
+
+  <script>
+    fetch('data/canal.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(d => {
+      const st = d && d.stats; if(!st) return;
+      document.querySelectorAll('[data-stat]').forEach(el => {
+        const k = el.dataset.stat, v = st[k];
+        if(k === 'joined'){ if(v) el.textContent = String(v).slice(0, 4); return; }
+        if(Number.isFinite(Number(v)) && v !== null) el.textContent = Number(v).toLocaleString('pt-BR');
+      });
+      const upd = d.updated ? new Date(d.updated).toLocaleDateString('pt-BR') : '';
+      if(upd) document.getElementById('statSrc').insertAdjacentText('beforeend', ' Atualizado em ' + upd + '.');
+    }).catch(() => {});
+  </script>
+</body>
+</html>

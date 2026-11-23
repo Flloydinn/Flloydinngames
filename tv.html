@@ -32,6 +32,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
 
     /* Player area
@@ -124,6 +125,9 @@
 
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
     @media (max-width:640px){.nowbar{grid-template-columns:1fr}.nowbar__next{text-align:left}.player .now{display:none}}
+    .upnext .tz-line{margin:-.4rem .9rem .7rem;display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center}
+    .tz-note{font-size:.85rem;color:var(--muted)}
+    .upnext h3.film-title{padding-bottom:.6rem}
   </style>
   <script src="img-fallback.js"></script>
   <script type="application/ld+json" id="ld-main">
@@ -240,7 +244,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <main class="container guide">
     <div class="grid">
       <section class="card upnext">
-        <h3>Guia de Programação</h3>
+        <h3 class="film-title">Guia de Programação</h3>
+        <p class="tz-line"><span class="brt">Horários em horário de Brasília (BRT, UTC−3)</span> <span class="tz-note" data-tz-note hidden></span></p>
         <p id="tvNotice" class="notice" role="status"></p>
         <div id="guide" class="list"></div>
       </section>

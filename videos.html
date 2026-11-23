@@ -30,6 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
     body{line-height:1.55} /* ajuste desta página sobre styles.css */
     a{color:var(--brand-2)} /* ajuste desta página sobre styles.css */
@@ -135,6 +136,17 @@
     .meta--stack{display:block}
     .meta__game{display:block;color:var(--text);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .meta__stats{display:block;font-size:.8rem}
+    /* Abas de formato */
+    .format-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .6rem}
+    .format-tabs button{font:inherit;font-size:.88rem;font-weight:700;padding:.4rem .8rem;border-radius:999px;cursor:pointer;
+      color:var(--muted);background:transparent;border:1px solid var(--border);transition:color .15s ease, border-color .15s ease, background .15s ease}
+    .format-tabs button:hover{color:var(--text);border-color:#4a4d55}
+    .format-tabs button[aria-pressed="true"]{color:#fff;background:var(--brand);border-color:var(--brand)}
+    .format-tabs small{opacity:.75;font-weight:600}
+    .actions .icon-btn{padding:.45rem}
+    .card{transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease}
+    .card:hover,.card:focus-within{transform:translateY(-3px);border-color:rgba(255,92,92,.45);box-shadow:0 14px 30px -14px rgba(143,0,0,.6)}
+    @media (prefers-reduced-motion: reduce){ .card{transition:none} .card:hover,.card:focus-within{transform:none} .card:hover .thumb img{transform:none} }
     /* Skeletons */
     .skeleton{position:relative;overflow:hidden;background:#141519}
     .skeleton::after{
@@ -251,6 +263,7 @@
       </div>
     </div>
     <div class="container section" aria-label="Categorias">
+      <div id="formats" class="format-tabs" role="group" aria-label="Formato"></div>
       <div id="chips" class="filters" role="listbox" aria-label="Categorias por jogo"></div>
       <p class="legend" id="legend"></p>
       <p class="notice" id="dataNotice" role="status" hidden></p>
@@ -318,8 +331,6 @@
     const fmtDur = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
       return (h ? h + ':' + String(m).padStart(2,'0') : m) + ':' + String(x).padStart(2,'0'); };
     const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-    const saved = (() => { try { return new Set(JSON.parse(localStorage.getItem('fll_saved_videos') || '[]')); } catch { return new Set(); } })();
-    const persistSaved = () => { try { localStorage.setItem('fll_saved_videos', JSON.stringify([...saved])); } catch {} };
 
     /** Normaliza um item do JSON; descarta qualquer coisa sem ID válido. A thumb é montada a partir do ID. */
     function normalize(v){
@@ -437,7 +448,10 @@
       const pageItems = items.slice(start, end);
 
       if(pageItems.length===0){
-        elGrid.innerHTML = `<div class="empty">Nenhum resultado encontrado. Tente ajustar filtros ou termos de busca.</div>`;
+        elGrid.innerHTML = window.FlloydEngage ? FlloydEngage.stateCard({ icon: '🔎', title: 'Nada encontrado com esses filtros',
+          text: state.q ? `Nenhum vídeo combina com “${state.q}”. Tente outro termo ou limpe os filtros.` : 'Tente outra combinação de formato, jogo ou duração.',
+          actions: [{ label: 'Limpar filtros', id: 'clearAll' }, { label: 'Ver vídeos recentes', id: 'showRecent' }] })
+          : `<div class="empty">Nenhum resultado encontrado. Tente ajustar filtros ou termos de busca.</div>`;
         elLegend.textContent = "";
         elPrev.disabled = true; elNext.disabled = true;
         return;
@@ -448,7 +462,6 @@
         const play = v.embeddable
           ? `<button class="thumb__play" type="button" data-play="${v.id}" aria-label="Assistir: ${t}">${PLAY_SVG}</button>`
           : `<a class="thumb__play" href="${ytUrl(v.id)}" target="_blank" rel="noopener" aria-label="Abrir no YouTube: ${t}">${PLAY_SVG}</a>`;
-        const isSaved = saved.has(v.id);
         return `
         <article class="card" data-id="${v.id}">
           <div class="thumb">
@@ -472,12 +485,14 @@
               ${v.embeddable
                 ? `<button class="btn btn--play" data-play="${v.id}" aria-label="Assistir ${t}">Assistir</button>`
                 : `<a class="btn btn--play" href="${ytUrl(v.id)}" target="_blank" rel="noopener">Abrir no YouTube</a>`}
-              <button class="btn btn--save btn--small${isSaved ? ' is-saved' : ''}" data-save="${v.id}" aria-pressed="${isSaved}">${isSaved ? 'Salvo' : 'Salvar'}</button>
+              <button type="button" class="icon-btn" data-fav data-fav-type="video" data-fav-id="${v.id}" data-fav-title="${t}" data-fav-url="videos.html?v=${v.id}" data-fav-img="${v.thumb}" aria-pressed="false" title="Favoritar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.6 4.5c2.1 0 3.6 1.2 4.4 2.5.8-1.3 2.3-2.5 4.4-2.5 3.6 0 5.7 3.8 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg></button>
+              <button type="button" class="icon-btn" data-share data-share-type="video" data-share-url="videos.html?v=${v.id}" data-share-title="${t}" aria-label="Compartilhar: ${t}" title="Compartilhar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></button>
             </div>
           </div>
         </article>`;
       }).join('');
 
+      if(window.FlloydEngage) FlloydEngage.refresh(elGrid);
       const total = items.length;
       elLegend.textContent = `Exibindo ${start+1} a ${Math.min(end,total)} de ${total} ${total === 1 ? 'vídeo' : 'vídeos'}`;
       elPrev.disabled = state.page===1;
@@ -488,17 +503,37 @@
     elGrid.addEventListener('click', e => {
       const play = e.target.closest('button[data-play]');
       if(play){ const v = VIDEOS.find(x => x.id === play.dataset.play); if(v) openModal(v); return; }
-      const save = e.target.closest('[data-save]');
-      if(save){
-        const id = save.dataset.save;
-        saved.has(id) ? saved.delete(id) : saved.add(id);
-        persistSaved();
-        const on = saved.has(id);
-        save.textContent = on ? 'Salvo' : 'Salvar';
-        save.classList.toggle('is-saved', on);
-        save.setAttribute('aria-pressed', String(on));
+      if(e.target.closest('#clearAll, #showRecent')){
+        Object.assign(state, { q:'', type:'all', duration:'all', category:'todas', page:1, sort:'recent' });
+        elQ.value = ''; elType.value = 'all'; elDuration.value = 'all'; elSort.value = 'recent';
+        update();
       }
     });
+
+    // ===== Abas rápidas de formato (espelham o select "tipo") =====
+    const FORMAT_TABS = [['all', 'Todos'], ['video', 'Gameplays'], ['short', 'Shorts/Clipes'], ['live', 'Lives']];
+    function renderFormats(){
+      const el = document.getElementById('formats'); if(!el) return;
+      const counts = VIDEOS.reduce((c, v) => (c[v.type] = (c[v.type] || 0) + 1, c), {});
+      el.innerHTML = FORMAT_TABS.filter(([k]) => k === 'all' || counts[k]).map(([k, label]) =>
+        `<button type="button" data-format="${k}" aria-pressed="${state.type === k}">${label} <small>${k === 'all' ? VIDEOS.length : counts[k]}</small></button>`).join('');
+    }
+    document.getElementById('formats').addEventListener('click', e => {
+      const b = e.target.closest('[data-format]'); if(!b) return;
+      state.type = b.dataset.format; elType.value = state.type; state.page = 1; update();
+    });
+
+    // vídeos salvos na versão antiga ("Salvar") viram favoritos, uma vez só
+    function migrateSaved(){
+      let old; try{ old = JSON.parse(localStorage.getItem('fll_saved_videos') || 'null'); }catch{ old = null; }
+      if(!Array.isArray(old)) return;
+      try{
+        const favs = JSON.parse(localStorage.getItem('fll_favs') || '[]');
+        old.forEach(id => { const v = VIDEOS.find(x => x.id === id);
+          if(v && !favs.some(f => f.type === 'video' && f.id === id)) favs.push({ type:'video', id, title:v.title, url:`videos.html?v=${id}`, img:v.thumb, at:Date.now() }); });
+        localStorage.setItem('fll_favs', JSON.stringify(favs)); localStorage.removeItem('fll_saved_videos');
+      }catch{}
+    }
 
     // ===== Modal Player (iframe só é criado aqui, no clique) =====
     const modal = document.getElementById('modal');
@@ -568,6 +603,7 @@
 
     // ===== Update =====
     function update(){
+      renderFormats();
       renderChips();
       renderSkeletons(6);
       requestAnimationFrame(()=>{ renderGrid(applyFilters()); pushURL(); });
@@ -605,8 +641,13 @@
           : 'Mostrando uma seleção de vídeos: a lista do canal não carregou agora. Tente recarregar a página.';
         elNotice.hidden = false;
       }
+      migrateSaved();
       setupFilters();
       update();
+      // link compartilhado: videos.html?v=ID abre o player direto
+      const vid = new URLSearchParams(location.search).get('v');
+      const target = vid && VIDEOS.find(x => x.id === vid);
+      if(target && target.embeddable) openModal(target);
     })();
   </script>
 </body>

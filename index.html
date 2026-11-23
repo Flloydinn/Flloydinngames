@@ -32,6 +32,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
     /* ====== Página inicial (específico do index; a base está em styles.css) ====== */
     .container{width:min(1100px,calc(100% - 2rem))}
@@ -126,6 +127,41 @@
     .contact-list{list-style:none; padding:0; margin:.5rem 0 0; color:var(--muted)}
     .contact-list li{margin:.25rem 0}
 
+    /* Em destaque / Próxima parada */
+    .highlights{padding:1.8rem 0 2.2rem;border-top:1px solid var(--border);background:linear-gradient(180deg,#0e0e10,transparent)}
+    .hl-head{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .hl-title{margin:0;font-size:1.25rem}
+    .hl-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .hl-card{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:.8rem;padding:.6rem;border-radius:.9rem;background:var(--card);border:1px solid var(--border);min-width:0}
+    .hl-media{position:relative;display:block;aspect-ratio:16/9;border-radius:.6rem;overflow:hidden;background:#0b0b0c}
+    .hl-media img{width:100%;height:100%;object-fit:cover}
+    .hl-play{position:absolute;inset:0;display:grid;place-items:center;font-size:.9rem;color:#fff;background:rgba(0,0,0,.25)}
+    .hl-media--tv{display:grid;place-items:center;background:var(--film-holes) 0 4px/14px 4px repeat-x, var(--film-holes) 0 calc(100% - 4px)/14px 4px repeat-x, radial-gradient(circle at 50% 50%, #3a0000, #0b0b0c 70%)}
+    .hl-live{font-size:.68rem;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--brand);padding:.15rem .4rem;border-radius:.3rem}
+    .hl-body{display:grid;gap:.1rem;min-width:0}
+    .hl-kicker{font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#ff5c5c}
+    .hl-name{font-size:.98rem;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .hl-meta{font-size:.82rem;color:var(--muted)}
+    .continue-band{border-top:1px solid var(--border)}
+    /* Esporte & Bastidores */
+    .channels__intro{margin:-.2rem 0 1rem;color:var(--muted);max-width:70ch}
+    .channels__intro strong{color:var(--text)}
+    .channels__more{margin:1rem 0 0;font-size:.92rem;display:flex;flex-wrap:wrap;gap:.4rem .8rem}
+    .channels__more a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+    .channels__more a:hover{color:var(--text)}
+    .channel__desc a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
+    .sport-chips{display:flex;flex-wrap:wrap;gap:.35rem;list-style:none;margin:.5rem 0 0;padding:0}
+    .sport-chips li{font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:#111214;color:var(--text)}
+    /* Como participar */
+    .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .step{position:relative;display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1rem 1rem;border-radius:.9rem;background:var(--card);border:1px solid var(--border)}
+    .step h3{margin:.2rem 0 0;font-size:1.05rem}
+    .step p{margin:0;color:var(--muted);font-size:.92rem;flex:1}
+    .step p strong{color:var(--text)}
+    .step__n{display:grid;place-items:center;width:30px;height:30px;border-radius:.5rem;font-weight:800;background:var(--brand);color:#fff}
+    .step .btn{align-self:flex-start}
+    .step__actions{display:flex;flex-wrap:wrap;gap:.5rem}
+    @media (max-width: 900px){ .hl-grid,.steps{grid-template-columns:1fr} }
     /* Outros canais do projeto */
     .section--compact{padding:2.5rem 0}
     .channels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
@@ -282,11 +318,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="hero__shade"></div>
   </section>
 
+  <!-- Em destaque / Próxima parada (script.js atualiza com os dados reais; o HTML abaixo é a reserva) -->
+  <section class="highlights" aria-labelledby="hlTitle">
+    <div class="container">
+      <div class="hl-head">
+        <span class="eyebrow">Próxima parada</span>
+        <h2 id="hlTitle" class="hl-title">Em destaque agora</h2>
+      </div>
+      <div class="hl-grid">
+        <a class="hl-card lift" id="hlVideo" href="videos.html">
+          <span class="hl-media"><img src="https://i.ytimg.com/vi/qUu9A3DCDIQ/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="hl-play" aria-hidden="true">▶</span></span>
+          <span class="hl-body"><span class="hl-kicker">Vídeo em destaque</span><strong class="hl-name">ZOANDO NO MÁFIA III</strong><span class="hl-meta">Gameplay • 18:32</span></span>
+        </a>
+        <a class="hl-card lift" id="hlGame" href="asteroid.html">
+          <span class="hl-media"><img src="assets/games/space-courier.svg" alt="" width="640" height="360" loading="lazy" decoding="async"></span>
+          <span class="hl-body"><span class="hl-kicker">Jogo do dia no Arcade</span><strong class="hl-name">Space Courier 3D</strong><span class="hl-meta">Grátis no navegador</span></span>
+        </a>
+        <a class="hl-card lift" id="hlNext" href="tv.html">
+          <span class="hl-media hl-media--tv" aria-hidden="true"><span class="hl-live">● AO VIVO 24/7</span></span>
+          <span class="hl-body"><span class="hl-kicker">Agora na TV 24/7</span><strong class="hl-name">Os vídeos do canal, sem parar</strong><span class="hl-meta">Horário de Brasília (BRT)</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Continuar explorando (engage.js: histórico e favoritos deste navegador; some quando vazio) -->
+  <section class="continue-band" data-continue hidden aria-label="Continuar explorando"></section>
+
   <!-- Sobre -->
   <section id="sobre" class="section">
     <div class="container grid-2">
       <div>
-        <h2 class="section-title">Sobre o canal</h2>
+        <h2 class="section-title film-title">Sobre o canal</h2>
         <p>Sou o Flloydinn. Aqui o foco é se divertir: desafios, multiplayer com a galera e momentos épicos — sem frescura. Tudo editado para ritmo e risada.</p>
         <ul class="features">
           <li>Uploads semanais e lives especiais</li>
@@ -314,7 +377,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- Jogos / Destaques -->
   <section id="jogos" class="section section--alt">
     <div class="container">
-      <h2 class="section-title">Jogue agora no navegador</h2>
+      <h2 class="section-title film-title">Jogue agora no navegador</h2>
       <div class="gallery">
         <a class="tile tile--game" href="asteroid.html" style="--accent:#7b2cbf">
           <span class="tile__media">
@@ -384,7 +447,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section id="conteudos" class="section">
     <div class="container grid-2">
       <div>
-        <h2 class="section-title">Conteúdos</h2>
+        <h2 class="section-title film-title">Conteúdos</h2>
         <p>Do curto ao longo: shorts, highlights e séries de gameplay. Quer sugerir um jogo? Manda no contato.</p>
         <div class="badges">
           <span class="badge">Shorts</span>
@@ -406,29 +469,60 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
-  <!-- Outros canais do projeto -->
+  <!-- Esporte & Bastidores: ecossistema de canais -->
   <section id="canais" class="section section--compact" aria-labelledby="canaisTitle">
     <div class="container">
-      <h2 class="section-title" id="canaisTitle">Outros canais do projeto</h2>
+      <span class="eyebrow">Ecossistema Flloydinn</span>
+      <h2 class="section-title film-title" id="canaisTitle">Esporte &amp; Bastidores</h2>
+      <p class="channels__intro">Do controle ao estádio: o gameplay continua no canal principal, o esporte ganha casa no <strong>Flloydinn Esporte Clube</strong> e os melhores momentos viram <strong>cortes</strong> rápidos para assistir em qualquer lugar.</p>
       <div class="channels">
         <!-- Cortes: link ainda não publicado. Quando existir, troque o <span class="channel__cta"> por
              <a class="btn btn--ghost btn--small channel__cta" href="https://www.youtube.com/@HANDLE" target="_blank" rel="noopener">Ver canal</a>
-             e remova o selo "Em breve". -->
-        <article class="channel" style="--accent:#ff2bd6">
+             e remova o selo "Em breve" (mesma troca em canais.html). -->
+        <article class="channel lift" style="--accent:#ff5c5c">
           <span class="channel__mark" aria-hidden="true">✂</span>
           <div class="channel__body">
             <h3 class="channel__name">Cortes do Flloydinn <span class="channel__soon">Em breve</span></h3>
-            <p class="channel__desc">Os melhores momentos dos vídeos e lives em clipes curtos, direto ao ponto.</p>
+            <p class="channel__desc">Os melhores momentos dos vídeos e lives em clipes curtos. Enquanto o canal não estreia, veja os <a href="cortes.html">momentos rápidos aqui no site</a>.</p>
           </div>
           <span class="btn btn--ghost btn--small channel__cta" aria-disabled="true">Em breve</span>
         </article>
-        <article class="channel" style="--accent:#2ec27e">
+        <article class="channel lift" style="--accent:#b31212">
           <span class="channel__mark" aria-hidden="true">⚽</span>
           <div class="channel__body">
             <h3 class="channel__name">Flloydinn Esporte Clube</h3>
-            <p class="channel__desc">Futebol e muito mais: Fórmula 1, NBA, Super Bowl e Olimpíadas.</p>
+            <p class="channel__desc">Futebol e muito mais, com o mesmo jeito leve do canal de games.</p>
+            <ul class="sport-chips" aria-label="Modalidades"><li>Futebol</li><li>Fórmula 1</li><li>NBA</li><li>Super Bowl</li><li>Olimpíadas</li></ul>
           </div>
           <a class="btn btn--ghost btn--small channel__cta" href="https://www.youtube.com/@flloydinnesporteclube" target="_blank" rel="noopener" aria-label="Ver o canal Flloydinn Esporte Clube no YouTube">Ver canal</a>
+        </article>
+      </div>
+      <p class="channels__more"><a href="canais.html">Conheça todos os canais do projeto →</a> <span aria-hidden="true">•</span> <a href="sobre.html">Sobre o projeto e bastidores →</a></p>
+    </div>
+  </section>
+
+  <!-- Como participar da comunidade -->
+  <section id="participar" class="section section--compact" aria-labelledby="partTitle">
+    <div class="container">
+      <h2 class="section-title film-title" id="partTitle">Como participar da comunidade</h2>
+      <div class="steps">
+        <article class="step lift">
+          <span class="step__n" aria-hidden="true">1</span>
+          <h3>Sugira um jogo</h3>
+          <p>Tem um jogo que merece gameplay? Coop, indie esquecido ou clássico: manda que a gente avalia.</p>
+          <a class="btn btn--small" href="#contato" data-prefill="Sugestão de jogo para gameplay: ">Sugerir jogo</a>
+        </article>
+        <article class="step lift">
+          <span class="step__n" aria-hidden="true">2</span>
+          <h3>Indique um momento para os cortes</h3>
+          <p>Viu uma cena que merece virar clipe? Envie o link do vídeo e o minuto do momento.</p>
+          <a class="btn btn--ghost btn--small" href="#contato" data-prefill="Momento para os cortes (link do vídeo + minuto): ">Indicar momento</a>
+        </article>
+        <article class="step lift">
+          <span class="step__n" aria-hidden="true">3</span>
+          <h3>Acompanhe a programação</h3>
+          <p>Lives, estreias e a TV 24/7 seguem o <strong>horário de Brasília (BRT, UTC−3)</strong>. Agora: <span class="brt" data-brt-clock>--:-- BRT</span></p>
+          <div class="step__actions"><a class="btn btn--ghost btn--small" href="agenda.html">Ver agenda</a><a class="btn btn--ghost btn--small" href="tv.html">Ligar a TV 24/7</a></div>
         </article>
       </div>
     </div>
@@ -438,7 +532,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section id="contato" class="section section--alt">
     <div class="container grid-2">
       <div>
-        <h2 class="section-title">Bora trocar uma ideia</h2>
+        <h2 class="section-title film-title">Bora trocar uma ideia</h2>
         <p>Parcerias, sugestões e convites: preencha o formulário. Respondo assim que possível.</p>
         <ul class="contact-list">
           <li><strong>E-mail:</strong> flloydinn@gmail.com</li>

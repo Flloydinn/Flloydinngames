@@ -30,6 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
 
     /* Utilitários desta página */
@@ -288,9 +289,12 @@
   </section>
 
   <!-- Recordes e controles de todos os jogos (renderizado por JS a partir de GAMES) -->
+  <!-- Continuar explorando: histórico e favoritos deste navegador (engage.js) -->
+  <section data-continue hidden aria-label="Continuar explorando"></section>
+
   <section class="container section" id="recordes" aria-labelledby="recTitle">
     <div class="hub-head">
-      <h2 id="recTitle">Seus recordes e controles</h2>
+      <h2 id="recTitle" class="film-title">Seus recordes e controles</h2>
       <p class="meta">Os recordes ficam salvos <strong>neste navegador</strong> (sem login). Cada jogo mostra os controles de teclado e de toque.</p>
     </div>
     <div class="hub" id="gamesHub"></div>
@@ -708,10 +712,13 @@
             <div class="gcard__actions">
               <a class="btn btn--small" href="${g.href}">${g.href.startsWith('#') ? 'Jogar aqui' : 'Jogar'}</a>
               ${g.reset && r != null ? `<button type="button" class="btn btn--ghost btn--small" data-reset="${g.id}">Zerar recorde</button>` : ''}
+              <button type="button" class="icon-btn" data-fav data-fav-type="game" data-fav-id="${g.id}" data-fav-title="${escHTML(g.name)}" data-fav-url="${g.href.startsWith('#') ? 'arcade.html' + g.href : g.href}" data-fav-img="${g.img}" aria-pressed="false" title="Favoritar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.6 4.5c2.1 0 3.6 1.2 4.4 2.5.8-1.3 2.3-2.5 4.4-2.5 3.6 0 5.7 3.8 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg></button>
+              <button type="button" class="icon-btn" data-share data-share-type="game" data-share-url="${g.href.startsWith('#') ? 'arcade.html' + g.href : g.href}" data-share-title="${escHTML(g.name)} — jogue grátis no navegador" aria-label="Compartilhar: ${escHTML(g.name)}" title="Compartilhar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></button>
             </div>
           </div>
         </article>`;
       }).join('');
+      if(window.FlloydEngage) FlloydEngage.refresh(el);
     }
     document.addEventListener('click', e => {
       const b = e.target.closest('[data-reset]'); if(!b) return;

@@ -36,6 +36,9 @@
   var HOME_EXTRA_DRAWER = [{ label: 'Sobre', href: '#sobre' }]; // só na gaveta do index
 
   var FOOTER_LINKS = [
+    { label: 'Sobre',   href: 'sobre.html' },
+    { label: 'Canais',  href: 'canais.html' },
+    { label: 'Cortes',  href: 'cortes.html' },
     { label: 'Arcade',  href: 'arcade.html' },
     { label: 'Setup',   href: 'setup.html' },
     { label: 'FAQ',     href: 'faq.html' },

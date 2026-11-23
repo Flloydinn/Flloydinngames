@@ -30,6 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
     /* Hero destaque */
     .hero{border-bottom:1px solid var(--border);background:radial-gradient(900px 260px at 15% 5%, rgba(233,33,33,.22),transparent 60%)}
@@ -385,24 +386,29 @@
       const end = start + state.perPage;
       const pageItems = items.slice(start,end);
       if(pageItems.length===0){
-        el.grid.innerHTML = `<div class="empty">Nada por aqui com esses filtros. Tente limpar a busca ou escolher outro período.</div>`;
+        el.grid.innerHTML = window.FlloydEngage ? FlloydEngage.stateCard({ icon:'📰', title:'Nenhum post com esses filtros',
+          text:'Tente limpar a busca ou escolher outro período. Enquanto isso, os vídeos mais recentes estão esperando.',
+          actions:[{ label:'Ver vídeos recentes', href:'videos.html' }, { label:'Ir para o Arcade', href:'arcade.html' }] })
+          : `<div class="empty">Nada por aqui com esses filtros. Tente limpar a busca ou escolher outro período.</div>`;
         el.legend.textContent = '';
         el.prev.disabled = true; el.next.disabled = true;
         return;
       }
+      const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       el.grid.innerHTML = pageItems.map(p=>`
-        <article class="post">
-          <a class="media" href="post.html?slug=${encodeURIComponent(p.slug)}" aria-label="${p.title}">
-            <img src="${p.cover}" alt="${p.title}">
+        <article class="post lift">
+          <a class="media" href="post.html?slug=${encodeURIComponent(p.slug)}" aria-label="${esc(p.title)}">
+            <img src="${esc(p.cover)}" alt="${esc(p.title)}">
           </a>
           <div class="body">
-            <span class="badge">${p.category||'Post'}</span>
-            <h3 class="title">${p.title}</h3>
+            <span class="badge">${esc(p.category||'Post')}</span>
+            <h3 class="title">${esc(p.title)}</h3>
             <p class="meta">${fmtDate(p.dateISO)} • ${readLabel(p.readMin)}${p.views?` • ${p.views.toLocaleString('pt-BR')} leituras`:''}</p>
             <p class="excerpt">${p.excerpt||''}</p>
             <div class="badges">${(p.tags||[]).map(t=>`<span class="badge">#${t}</span>`).join('')}</div>
             <div class="actions">
-              <a class="btn btn--read" href="post.html?slug=${encodeURIComponent(p.slug)}" aria-label="Ler ${p.title}">Ler</a>
+              <a class="btn btn--read" href="post.html?slug=${encodeURIComponent(p.slug)}" aria-label="Ler ${esc(p.title)}">Ler</a>
+              <button type="button" class="icon-btn" data-share data-share-type="article" data-share-url="post.html?slug=${encodeURIComponent(p.slug)}" data-share-title="${esc(p.title)}" aria-label="Compartilhar: ${esc(p.title)}" title="Compartilhar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></button>
             </div>
           </div>
         </article>
@@ -486,7 +492,9 @@
       }catch(err){
         console.error(err);
         // fallback visual
-        $('#grid').innerHTML = `<div class="empty">Erro ao carregar <code>posts/index.json</code>. Verifique se o arquivo existe e está acessível.</div>`;
+        $('#grid').innerHTML = window.FlloydEngage ? FlloydEngage.stateCard({ icon:'⚠', title:'Não foi possível carregar os posts',
+          text:'A lista do blog não respondeu agora. Tente novamente em instantes.', actions:[{ label:'Tentar novamente', href:'blog.html' }, { label:'Ver vídeos recentes', href:'videos.html' }] })
+          : `<div class="empty">Erro ao carregar os posts.</div>`;
         $('#sideCards').innerHTML = '';
         $('#featTitle').textContent = 'Não foi possível carregar os posts';
         $('#featExcerpt').textContent = 'Confirme a estrutura /posts/index.json e tente novamente.';

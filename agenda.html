@@ -30,6 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
 
     /* Utilitários desta página */
@@ -90,6 +91,8 @@
       .toolbar__inner .searchbox{grid-column:1/-1}
       .toolbar__inner .select, .toolbar__inner .btn{width:100%}
     }
+    .tz-line{margin:.2rem 0 .7rem;display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center}
+    .tz-note{font-size:.85rem;color:var(--muted)}
   </style>
   <script src="img-fallback.js"></script>
   <script type="application/ld+json" id="ld-main">
@@ -163,7 +166,8 @@
   <section class="hero">
     <div class="container hero__grid">
       <div class="feature">
-        <h1>Agenda & Eventos</h1>
+        <h1 class="film-title">Agenda & Eventos</h1>
+        <p class="tz-line"><span class="brt" data-brt-now>Horário de Brasília (BRT, UTC−3)</span> <span class="tz-note" data-tz-note hidden></span></p>
         <div class="next" id="nextWrap">
           <span class="tag">PRÓXIMO</span>
           <div id="nextTitle" class="pill">Carregando…</div>
@@ -384,7 +388,7 @@
     function renderNext(){
       const ev = findNext();
       if(!ev){
-        $('#nextTitle').textContent = 'Sem próximos eventos';
+        $('#nextTitle').textContent = 'Nenhum evento agendado';
         $('#nextWhen').textContent = '';
         ['cdD','cdH','cdM','cdS'].forEach(id=>{ $('#'+id).textContent='--'; });
         return;
@@ -485,7 +489,15 @@
         .slice(0,10);
 
       const box = $('#upcoming');
-      if(list.length===0){ box.innerHTML = `<div class="empty">Nada por aqui com esses filtros.</div>`; return; }
+      if(list.length===0){
+        const anyFuture = EVENTS.some(e => new Date(e.end) >= new Date());
+        box.innerHTML = window.FlloydEngage ? FlloydEngage.stateCard(anyFuture
+          ? { icon:'🔎', title:'Nada com esses filtros', text:'Há eventos agendados, mas nenhum combina com a busca ou o tipo escolhido.' }
+          : { icon:'📅', title:'Nenhum evento agendado agora', text:'Assim que a próxima live ou estreia for marcada, ela aparece aqui no horário de Brasília. Enquanto isso:',
+              actions:[{ label:'Ver vídeos recentes', href:'videos.html' }, { label:'Ligar a TV 24/7', href:'tv.html' }] })
+          : `<div class="empty">Nada por aqui com esses filtros.</div>`;
+        return;
+      }
       box.innerHTML = list.map(ev=>`
         <article class="item">
           <div>
@@ -571,11 +583,10 @@
     }
     function showAgendaError(){
       $('#nextTitle').textContent = 'Agenda indisponível no momento';
-      $('#upcoming').innerHTML = `<div class="empty">Não foi possível carregar a agenda agora.
-        <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.6rem">
-          <button class="btn btn--small" id="retryAgenda" type="button">Tentar de novo</button>
-          <a class="btn btn--ghost btn--small" href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">Avisos no YouTube</a>
-        </div></div>`;
+      $('#upcoming').innerHTML = window.FlloydEngage ? FlloydEngage.stateCard({ icon:'⚠', title:'Não foi possível carregar a agenda',
+          text:'Os eventos não responderam agora. Tente de novo ou veja os avisos no canal.',
+          actions:[{ label:'Tentar novamente', id:'retryAgenda' }, { label:'Avisos no YouTube', href:'https://www.youtube.com/@flloydinn' }] })
+        : `<div class="empty">Não foi possível carregar a agenda agora. <button class="btn btn--small" id="retryAgenda" type="button">Tentar de novo</button></div>`;
       $('#retryAgenda').onclick = init;
     }
 

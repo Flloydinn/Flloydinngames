@@ -32,6 +32,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="layout.js"></script>
+  <script src="engage.js"></script>
   <style>
     /* Utilitários desta página */
     .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
@@ -743,8 +744,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       persistCart();
     }
     function showProductsError(){
-      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">Não foi possível carregar os produtos agora.
-        <div style="margin-top:.6rem"><button class="btn btn--small" id="retryProducts" type="button">Tentar de novo</button></div></div>`;
+      grid.innerHTML = window.FlloydEngage ? FlloydEngage.stateCard({ icon:'🛒', title:'Não foi possível carregar os produtos',
+          text:'Os preços e itens não responderam agora. Para sua segurança, o PIX só é gerado com os preços atualizados.',
+          actions:[{ label:'Tentar novamente', id:'retryProducts' }, { label:'Ver vídeos recentes', href:'videos.html' }] })
+        : `<div class="empty" style="grid-column:1/-1">Não foi possível carregar os produtos agora. <button class="btn btn--small" id="retryProducts" type="button">Tentar de novo</button></div>`;
       $('#retryProducts').onclick = init;
     }
 
