@@ -39,7 +39,8 @@
     { label: 'Arcade',  href: 'arcade.html' },
     { label: 'Setup',   href: 'setup.html' },
     { label: 'FAQ',     href: 'faq.html' },
-    { label: 'YouTube', href: 'https://www.youtube.com/@flloydinn', external: true }
+    { label: 'YouTube', href: 'https://www.youtube.com/@flloydinn', external: true },
+    { label: 'Esporte Clube', href: 'https://www.youtube.com/@flloydinnesporteclube', external: true }
   ];
 
   // arquivo -> item do menu que fica destacado

@@ -1,0 +1,16 @@
+# Redirecionamentos do Netlify (https://docs.netlify.com/routing/redirects/)
+# A primeira regra que casar vence; "!" força a regra mesmo que o arquivo exista.
+
+# Blog antigo -> blog atual
+/oblog.html      /blog.html   301
+/oblog           /blog.html   301
+
+# Arquivos internos do repositório: não publicar
+/posts/MODELO.md /404.html    404!
+/scripts/*       /404.html    404!
+/.github/*       /404.html    404!
+/tv/tv.config.json /404.html  404!
+/tv/LEIAME.md    /404.html    404!
+
+# Qualquer outra URL inexistente -> página 404 amigável (precisa ser a última regra)
+/*               /404.html    404

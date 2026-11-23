@@ -77,6 +77,13 @@
     .ok{display:none;background:linear-gradient(135deg,#206a4f,#2db57f);padding:.7rem;border-radius:.6rem;font-weight:700}
 
     @media (max-width:990px){.hero__grid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+    /* Celular: busca e abas empilhadas, abas quebram linha (sem rolagem lateral) */
+    .toolbar__inner > *{min-width:0}
+    @media (max-width:640px){
+      .toolbar__inner{grid-template-columns:1fr}
+      .tabs{justify-content:flex-start}
+      .inline{grid-template-columns:1fr}
+    }
   </style>
   <script src="img-fallback.js"></script>
   <script src="forms.js" defer></script>

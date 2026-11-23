@@ -5,10 +5,11 @@
  * Uma única busca no YouTube gera dois arquivos:
  *   tv/playlist.json  -> grade da TV 24/7 (tv.html): só vídeos que tocam no player (sem Shorts)
  *   data/videos.json  -> catálogo do canal (videos.html e destaque do index.html)
+ *   data/canal.json   -> métricas públicas do canal (parcerias.html e cards do index.html)
  *
  *   node scripts/tv-playlist.mjs sync              # atualiza os dois arquivos
  *   node scripts/tv-playlist.mjs sync --dry        # mostra o resultado sem gravar
- *   node scripts/tv-playlist.mjs sync --only tv    # (ou --only videos) atualiza só um
+ *   node scripts/tv-playlist.mjs sync --only tv    # (ou --only videos | --only canal) atualiza só um
  *   node scripts/tv-playlist.mjs sync --stats      # grava também se só as visualizações mudaram
  *   node scripts/tv-playlist.mjs check             # valida os dois arquivos (offline)
  *   node scripts/tv-playlist.mjs check --online    # confere se os vídeos da TV existem e permitem incorporação
@@ -32,6 +33,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILES = {
   tv: path.join(ROOT, 'tv', 'playlist.json'),
   videos: path.join(ROOT, 'data', 'videos.json'),
+  canal: path.join(ROOT, 'data', 'canal.json'),
   config: path.join(ROOT, 'tv', 'tv.config.json'),
 };
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
@@ -106,7 +108,7 @@ const decodeXml = s => String(s).replace(/&amp;/g, '&').replace(/&lt;/g, '<').re
 /** Fonte 1: YouTube Data API v3 (≈ 1 + páginas + lotes de 50 unidades de cota; a cota grátis é 10.000/dia). */
 async function fromApi(cfg, key) {
   const API = 'https://www.googleapis.com/youtube/v3';
-  const ch = await http(`${API}/channels?part=contentDetails,snippet&${cfg.channelId ? 'id=' + cfg.channelId : 'forHandle=' + encodeURIComponent(cfg.handle)}&key=${key}`);
+  const ch = await http(`${API}/channels?part=contentDetails,snippet,statistics&${cfg.channelId ? 'id=' + cfg.channelId : 'forHandle=' + encodeURIComponent(cfg.handle)}&key=${key}`);
   const channel = ch.items?.[0];
   if (!channel) throw new Error('canal não encontrado (confira channelId/handle em tv/tv.config.json)');
   const uploads = channel.contentDetails.relatedPlaylists.uploads;
@@ -139,7 +141,39 @@ async function fromApi(cfg, key) {
       });
     }
   }
-  return { items, skipped, channelTitle: channel.snippet.title, complete: true };
+  const st = channel.statistics || {};
+  const stats = {
+    subscribers: st.hiddenSubscriberCount ? null : Number(st.subscriberCount),
+    views: Number(st.viewCount), videos: Number(st.videoCount),
+    joined: String(channel.snippet.publishedAt || '').slice(0, 10) || null,
+  };
+  return { items, skipped, channelTitle: channel.snippet.title, complete: true, stats };
+}
+
+/** Número no formato do YouTube em pt-BR: "2.083", "1,2 mil", "3,4 mi" -> 2083, 1200, 3400000 */
+function parsePtNumber(txt) {
+  const m = /([\d.,]+)\s*(mil|mi|bi)?/i.exec(String(txt || ''));
+  if (!m) return null;
+  const mult = { mil: 1e3, mi: 1e6, bi: 1e9 }[String(m[2] || '').toLowerCase()] || 1;
+  const n = mult > 1 ? Number(m[1].replace(/\./g, '').replace(',', '.')) : Number(m[1].replace(/[.,]/g, ''));
+  return Number.isFinite(n) ? Math.round(n * mult) : null;
+}
+const MESES = { jan: 1, fev: 2, mar: 3, abr: 4, mai: 5, jun: 6, jul: 7, ago: 8, set: 9, out: 10, nov: 11, dez: 12 };
+/** Estatísticas públicas da página "Sobre" do canal (sem chave; best-effort: null se não conseguir ler). */
+async function aboutStats(cfg) {
+  try {
+    const html = await http(`https://www.youtube.com/channel/${cfg.channelId}/about?hl=pt-BR`, { json: false, headers: { Cookie: 'CONSENT=YES+cb; SOCS=CAI' } });
+    const get = k => { const m = new RegExp(`"${k}":(?:\\{"content":)?"([^"]+)"`).exec(html); return m ? m[1] : null; };
+    const subs = get('subscriberCountText'), views = get('viewCountText'), vids = get('videoCountText'), joined = get('joinedDateText');
+    const jm = /(\d{1,2}) de (\w{3})\.? de (\d{4})/.exec(joined || '');
+    const stats = {
+      subscribers: subs ? parsePtNumber(subs) : null,
+      views: views ? parsePtNumber(views) : null,
+      videos: vids ? parsePtNumber(vids) : null,
+      joined: jm && MESES[jm[2].toLowerCase()] ? `${jm[3]}-${String(MESES[jm[2].toLowerCase()]).padStart(2, '0')}-${jm[1].padStart(2, '0')}` : null,
+    };
+    return Object.values(stats).some(v => v != null) ? stats : null;
+  } catch (e) { log('  aviso: estatísticas do canal não lidas (' + e.message + ')'); return null; }
 }
 
 /** Fonte 2: RSS público + duração da página pública do vídeo (sem chave; best-effort). */
@@ -180,7 +214,7 @@ async function fromRss(cfg, known) {
       tags: uniq([...(k?.tags || []), ...hashtags(e.title + ' ' + e.description)]).slice(0, 10),
     });
   }
-  return { items, skipped, channelTitle, complete: false };
+  return { items, skipped, channelTitle, complete: false, stats: await aboutStats(cfg) };
 }
 
 // ---------------------------------------------------------------------
@@ -212,8 +246,8 @@ function buildCatalog(pool, cfg) {
 
 /** grava só se a lista mudou (ignora o carimbo "updated"; visualizações só contam com --stats) */
 async function writeIfChanged(file, current, next, keys) {
-  const pick = list => JSON.stringify(videosOf(list).map(v => keys.map(k => v[k])));
-  const same = pick(current) === pick(next.videos) && current.source === next.source && JSON.stringify(current.channel) === JSON.stringify(next.channel);
+  const pick = typeof keys === 'function' ? keys : (d => JSON.stringify(videosOf(d).map(v => keys.map(k => v[k]))));
+  const same = pick(current) === pick(next) && current.source === next.source && JSON.stringify(current.channel) === JSON.stringify(next.channel);
   if (same && current.updated) next.updated = current.updated;
   const text = JSON.stringify(next, null, 2) + '\n';
   if (flag('dry')) { console.log(`--- ${rel(file)}\n` + text.slice(0, 1500) + (text.length > 1500 ? '\n…' : '')); return false; }
@@ -273,12 +307,42 @@ async function sync() {
   if (only !== 'tv') await writeIfChanged(FILES.videos, curCat, {
     channel, source: srcName, updated: now, count: catalog.length, videos: catalog,
   }, ['id', 'title', 'dur', 'type', 'game', 'embeddable', 'description', ...(flag('stats') ? ['views'] : [])]);
+
+  // métricas públicas do canal (data/canal.json). Se não der para ler uma métrica, mantém a anterior.
+  if (only === 'tv' || only === 'videos') return;
+  const curCanal = await readJSON(FILES.canal, {});
+  const prev = curCanal.stats || {};
+  const fresh = r.stats || {};
+  const pickStat = k => (fresh[k] != null ? fresh[k] : (prev[k] != null ? prev[k] : null));
+  const withViews = catalog.filter(v => Number.isFinite(v.views));
+  const yearAgo = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+  const canal = {
+    _sobre: 'Gerado por scripts/tv-playlist.mjs. Dados públicos do YouTube (sem chaves). Usado em parcerias.html e index.html.',
+    channel: { ...channel, url: `https://www.youtube.com/${cfg.handle || 'channel/' + cfg.channelId}` },
+    source: srcName,
+    updated: now,
+    statsSource: r.stats ? (source === 'api' ? 'youtube-api' : 'pagina-sobre') : (curCanal.statsSource || null),
+    stats: { subscribers: pickStat('subscribers'), videos: pickStat('videos'), views: pickStat('views'), joined: pickStat('joined') },
+    catalog: {
+      count: catalog.length,
+      lastUpload: catalog[0]?.published || null,
+      uploadsLast12m: catalog.filter(v => (v.published || '') >= yearAgo).length,
+      avgViews: withViews.length ? Math.round(withViews.reduce((s, v) => s + v.views, 0) / withViews.length) : null,
+    },
+  };
+  if (!r.stats) log('  aviso: métricas do canal indisponíveis nesta execução; mantidos os valores anteriores.');
+  await writeIfChanged(FILES.canal, curCanal, canal, d => JSON.stringify([
+    d.stats?.subscribers, d.stats?.videos, d.stats?.joined, d.catalog?.count, d.catalog?.lastUpload,
+    ...(flag('stats') ? [d.stats?.views, d.catalog?.avgViews] : []),
+  ]));
 }
 
 async function check() {
   let errors = [];
   const tv = validate(await readJSON(FILES.tv), 'tv/playlist.json');
   const cat = validate(await readJSON(FILES.videos, { videos: [] }), 'data/videos.json');
+  const canal = await readJSON(FILES.canal, null);
+  if (canal && !(canal.stats && typeof canal.stats === 'object')) errors.push('data/canal.json: sem "stats"');
   for (const r of [tv, cat]) { r.warnings.forEach(w => log('aviso:', w)); errors.push(...r.errors); }
   if (flag('online')) {
     for (const v of tv.list) {

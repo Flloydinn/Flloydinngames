@@ -1,0 +1,24 @@
+{
+  "_sobre": "Gerado por scripts/tv-playlist.mjs. Dados públicos do YouTube (sem chaves). Usado em parcerias.html e index.html.",
+  "channel": {
+    "id": "UCZs7v1mWuMmcssEFk9sW7PA",
+    "handle": "@flloydinn",
+    "title": "FLLOYDINN GAMEPLAY",
+    "url": "https://www.youtube.com/@flloydinn"
+  },
+  "source": "rss",
+  "updated": "2026-11-23T18:24:39.093Z",
+  "statsSource": "pagina-sobre",
+  "stats": {
+    "subscribers": 64,
+    "videos": 54,
+    "views": 2083,
+    "joined": "2020-02-29"
+  },
+  "catalog": {
+    "count": 15,
+    "lastUpload": "2025-03-19",
+    "uploadsLast12m": 0,
+    "avgViews": 67
+  }
+}

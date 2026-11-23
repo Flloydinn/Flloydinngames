@@ -1,0 +1,80 @@
+{
+  "_sobre": "Produtos da loja (loja.html). price em reais (número, ponto decimal). img: caminho em assets/ ou URL https. options opcionais: { \"tamanho\": [...], \"cor\": [...] }.",
+  "currency": "BRL",
+  "updated": "2026-11-23",
+  "products": [
+    {
+      "id": "tee1",
+      "title": "Camiseta Logo Clássico",
+      "desc": "Algodão 100 por cento • Unissex • Modelagem confortável",
+      "price": 89.9,
+      "category": "camisetas",
+      "img": "assets/camiseta.jpg",
+      "options": {
+        "tamanho": [
+          "P",
+          "M",
+          "G",
+          "GG"
+        ],
+        "cor": [
+          "Preta",
+          "Branca"
+        ]
+      }
+    },
+    {
+      "id": "tee2",
+      "title": "Camiseta Pixel Edition",
+      "desc": "Estampa exclusiva do canal • Edição limitada",
+      "price": 99.9,
+      "category": "camisetas",
+      "img": "assets/camiseta2.jpg",
+      "options": {
+        "tamanho": [
+          "P",
+          "M",
+          "G",
+          "GG"
+        ],
+        "cor": [
+          "Preta"
+        ]
+      }
+    },
+    {
+      "id": "mug1",
+      "title": "Caneca Flloydinn 350 ml",
+      "desc": "Cerâmica com estampa resistente • Pode ir à lava-louças",
+      "price": 49.9,
+      "category": "canecas",
+      "img": "assets/caneca.jpg"
+    },
+    {
+      "id": "stk1",
+      "title": "Kit Adesivos",
+      "desc": "Kit com 6 adesivos vinílicos de alta durabilidade",
+      "price": 29.9,
+      "category": "adesivos",
+      "img": "assets/adesivos.jpg"
+    },
+    {
+      "id": "wp1",
+      "title": "Pack Wallpapers 4K",
+      "desc": "10 artes exclusivas em 3840x2160 (download digital)",
+      "price": 19.9,
+      "category": "digitais",
+      "img": "assets/wallpapers.jpg",
+      "digital": true
+    },
+    {
+      "id": "wp2",
+      "title": "Wallpaper Animado",
+      "desc": "1 vídeo loop em 4K para desktop (download digital)",
+      "price": 14.9,
+      "category": "digitais",
+      "img": "assets/wallpaper-animado.jpg",
+      "digital": true
+    }
+  ]
+}

@@ -88,6 +88,23 @@
     /* Footer */
 
     @media (max-width:1000px){.hero__grid{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
+    /* Hub de recordes e controles */
+    .hub-head h2{margin:.2rem 0 .3rem}
+    .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:.8rem}
+    .gcard{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+    .gcard__media{aspect-ratio:16/9;background:#0f1116;overflow:hidden}
+    .gcard__media img{width:100%;height:100%;object-fit:cover}
+    .gcard__body{padding:.8rem .9rem 1rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
+    .gcard__title{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:0;font-size:1.05rem}
+    .gcard__rec{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;background:#0f1116;border:1px solid var(--border);border-radius:.6rem;padding:.45rem .6rem}
+    .gcard__rec strong{font-size:1.05rem;color:#fff;font-variant-numeric:tabular-nums;text-align:right}
+    .gcard__rec.is-new{border-color:var(--ok);box-shadow:0 0 0 2px rgba(87,217,150,.25)}
+    .gcard__ctrl{display:grid;gap:.3rem;margin:0;font-size:.86rem;color:var(--muted)}
+    .gcard__ctrl div{display:grid;grid-template-columns:4.6rem 1fr;gap:.4rem}
+    .gcard__ctrl dt{color:var(--text);font-weight:700}
+    .gcard__ctrl dd{margin:0;overflow-wrap:anywhere}
+    .gcard__actions{display:flex;gap:.5rem;margin-top:auto;flex-wrap:wrap}
+    kbd{font:600 .78rem/1 ui-monospace,Consolas,monospace;background:#1d2027;border:1px solid #33363f;border-bottom-width:2px;border-radius:.3rem;padding:.1rem .3rem;color:#fff}
   </style>
   <script src="img-fallback.js"></script>
 </head>
@@ -190,6 +207,15 @@
     </div>
   </section>
 
+  <!-- Recordes e controles de todos os jogos (renderizado por JS a partir de GAMES) -->
+  <section class="container section" id="recordes" aria-labelledby="recTitle">
+    <div class="hub-head">
+      <h2 id="recTitle">Seus recordes e controles</h2>
+      <p class="meta">Os recordes ficam salvos <strong>neste navegador</strong> (sem login). Cada jogo mostra os controles de teclado e de toque.</p>
+    </div>
+    <div class="hub" id="gamesHub"></div>
+  </section>
+
   <!-- Leaderboard + CTAs -->
   <section class="container section">
     <div class="grid-2">
@@ -255,6 +281,7 @@
         parryArena.className='box center big'; parryArena.innerHTML=`<span class="go">GG!</span>`;
         parryRound.textContent='finalizado'; parryAvg.textContent=fmtMs(avg);
         state.score.parry = Math.round(avg); updateScore(); drawShare();
+        recordBest('parry', Math.round(avg));
         return;
       }
       parryRound.textContent = `round ${r}/5`;
@@ -337,6 +364,7 @@
         const acc = state.aim.shots ? (state.aim.hits/state.aim.shots) : 0;
         state.score.aim = {hits:state.aim.hits, acc:Math.round(acc*100)};
         updateScore(); drawShare();
+        recordBest('aim', state.score.aim);
       }
     }
     $('#aimStart').addEventListener('click', aimStart);
@@ -378,6 +406,7 @@
         qOps.innerHTML = '';
         state.score.quiz = state.quiz.correct;
         updateScore(); drawShare();
+        recordBest('quiz', state.quiz.correct);
         clearInterval(state.quiz.timer); qT.textContent='—';
         return;
       }
@@ -434,7 +463,7 @@
     function saveLB(arr){ localStorage.setItem('arcade_lb', JSON.stringify(arr)); }
     function renderLB(){
       const list = loadLB().sort((a,b)=> b.total - a.total).slice(0,10);
-      $('#lb').innerHTML = list.length? list.map((r,i)=>`<div class="item"><span>${i+1}. ${r.nick}</span><strong>${r.total} pts</strong></div>`).join('') : `<div class="item"><span>—</span><strong>Sem registros</strong></div>`;
+      $('#lb').innerHTML = list.length? list.map((r,i)=>`<div class="item"><span>${i+1}. ${escHTML(r.nick)}</span><strong>${Number(r.total)||0} pts</strong></div>`).join('') : `<div class="item"><span>—</span><strong>Sem registros</strong></div>`;
     }
     $('#saveScore').addEventListener('click', ()=>{
       const nick = ($('#nick').value||'Player').slice(0,18);
@@ -535,8 +564,86 @@
       });
     })();
 
+
+    // ====== Recordes locais por jogo + controles (hub) ======
+    const escHTML = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const lsGet = k => { try{ return localStorage.getItem(k); }catch{ return null; } };
+    const lsSet = (k, v) => { try{ localStorage.setItem(k, v); }catch{} };
+    const lsDel = k => { try{ localStorage.removeItem(k); }catch{} };
+    const BEST_KEY = 'arcade_best';
+    const loadBest = () => { try{ return JSON.parse(lsGet(BEST_KEY) || '{}') || {}; }catch{ return {}; } };
+    let lastNew = null;
+    /** grava só partidas jogadas aqui (o placar vindo de link compartilhado NÃO passa por aqui) */
+    function recordBest(game, v){
+      const b = loadBest(); let isNew = false;
+      if(game === 'parry' && v > 0 && (!b.parry || v < b.parry)){ b.parry = v; isNew = true; }
+      if(game === 'aim' && v && (!b.aim || v.hits > b.aim.hits || (v.hits === b.aim.hits && v.acc > b.aim.acc))){ b.aim = v; isNew = true; }
+      if(game === 'quiz' && (b.quiz == null || v > b.quiz)){ b.quiz = v; isNew = true; }
+      if(isNew){ lsSet(BEST_KEY, JSON.stringify(b)); lastNew = game; }
+      renderHub();
+      return isNew;
+    }
+    const num = k => Number(lsGet(k) || 0);
+    const drifterSave = () => { try{ return JSON.parse(lsGet('drifter_save') || 'null') || {}; }catch{ return {}; } };
+    const K = (...keys) => keys.map(k => `<kbd>${k}</kbd>`).join(' ');
+    const resetArcade = key => () => { const b = loadBest(); delete b[key]; lsSet(BEST_KEY, JSON.stringify(b)); };
+    // controles conferidos com o texto de ajuda e os botões virtuais de cada jogo
+    const GAMES = [
+      { id:'parry', name:'Parry!', tag:'Reação', href:'#parry', img:'assets/games/arcade.svg',
+        rec: () => { const b = loadBest(); return b.parry ? `${b.parry} ms` : null; }, recLabel:'Melhor média (menor é melhor)',
+        kb: 'Clique quando aparecer <em>PAROU? PARRY!</em>', touch: 'Toque na área do jogo', reset: resetArcade('parry') },
+      { id:'aim', name:'Aim Trainer', tag:'Mira', href:'#aim', img:'assets/games/arcade.svg',
+        rec: () => { const b = loadBest(); return b.aim ? `${b.aim.hits} acertos • ${b.aim.acc}%` : null; }, recLabel:'Melhor partida (15s)',
+        kb: 'Mouse: clique nos círculos', touch: 'Toque nos círculos', reset: resetArcade('aim') },
+      { id:'quiz', name:'Boss Quiz', tag:'Trivia', href:'#quiz', img:'assets/games/arcade.svg',
+        rec: () => { const b = loadBest(); return b.quiz != null ? `${b.quiz}/5 acertos` : null; }, recLabel:'Melhor resultado',
+        kb: 'Clique na resposta (20s por pergunta)', touch: 'Toque na resposta', reset: resetArcade('quiz') },
+      { id:'asteroid', name:'Space Courier 3D', tag:'3D', href:'asteroid.html', img:'assets/games/space-courier.svg',
+        rec: () => num('arcade_space_best') ? `${num('arcade_space_best')} pts` : null, recLabel:'Maior pontuação',
+        kb: `${K('W','A','S','D')}/setas mover • mouse mira • ${K('Espaço')}/clique atira • ${K('Shift')} boost`, touch: 'Joystick à esquerda • ● atirar • ⚡ boost', reset: () => lsDel('arcade_space_best') },
+      { id:'runner', name:'Neon Runner 3D', tag:'3D', href:'runner.html', img:'assets/games/neon-runner.svg',
+        rec: () => num('runner_best') ? `${num('runner_best')} m` : null, recLabel:'Maior distância',
+        kb: `${K('W','A','S','D')}/setas • mouse olha • ${K('Espaço')} pulo (duplo) • ${K('Shift')} dash • ${K('P')} pausa • ${K('R')} reinicia`, touch: 'Joystick à esquerda • ⤒ pular • ⚡ dash', reset: () => lsDel('runner_best') },
+      { id:'drifter', name:'Desert Drifter 3D', tag:'3D', href:'drifter.html', img:'assets/games/desert-drifter.svg',
+        rec: () => { const d = drifterSave(); return d.bestLap ? `${Number(d.bestLap).toFixed(1)}s • ${d.crystals || 0} cristais` : (d.crystals ? `${d.crystals} cristais` : null); }, recLabel:'Melhor volta • cristais',
+        kb: `${K('W','A','S','D')}/setas pilotar • ${K('Shift')} boost • ${K('Espaço')} freio • ${K('M')} mapa • ${K('H')} farol • ${K('P')} pausa`, touch: 'Joystick à esquerda • ⚡ boost • ■ freio', reset: () => lsDel('drifter_save') },
+      { id:'minigolf', name:'Galaxy MiniGolf 3D', tag:'3D', href:'minigolf.html', img:'assets/games/galaxy-minigolf.svg',
+        rec: () => num('minigolf_best') ? `${num('minigolf_best')} tacadas` : null, recLabel:'Curso completo (menos é melhor)',
+        kb: `Arraste com o mouse para mirar e dar força • ${K('R')} reinicia • ${K('N')} próximo • ${K('O')} câmera • ${K('P')} pausa`, touch: 'Arraste para mirar e solte para bater • ⛳ tacada • R reinicia', reset: () => lsDel('minigolf_best') },
+      { id:'wildlands', name:'Wildlands Online', tag:'Multiplayer', href:'wildlands-online.html', img:'assets/games/wildlands-online.svg',
+        rec: () => null, recLabel:'Mundo aberto (sem placar)', none: () => { const n = lsGet('nick'); return n ? `Jogando como ${n}` : 'Explore com amigos'; },
+        kb: `${K('W','A','S','D')} mover • ${K('Espaço')} pular • ${K('Shift')} correr • ${K('Enter')} chat • ${K('M')} mapa • ${K('P')} pausa`, touch: 'Joystick à esquerda • ⤒ pular • 🗺️ mapa', reset: null },
+    ];
+    function renderHub(){
+      const el = document.getElementById('gamesHub'); if(!el) return;
+      el.innerHTML = GAMES.map(g => {
+        const r = g.rec();
+        const recText = r != null ? escHTML(r) : (g.none ? escHTML(g.none()) : 'Sem recorde ainda');
+        return `<article class="gcard" data-game="${g.id}">
+          <div class="gcard__media"><img src="${g.img}" alt="" loading="lazy" decoding="async" width="640" height="360"></div>
+          <div class="gcard__body">
+            <h3 class="gcard__title">${escHTML(g.name)} <span class="tag">${escHTML(g.tag)}</span></h3>
+            <div class="gcard__rec${lastNew === g.id ? ' is-new' : ''}"><span class="meta">${escHTML(g.recLabel)}</span><strong data-rec>${recText}</strong></div>
+            <dl class="gcard__ctrl"><div><dt>Teclado</dt><dd>${g.kb}</dd></div><div><dt>Toque</dt><dd>${g.touch}</dd></div></dl>
+            <div class="gcard__actions">
+              <a class="btn btn--small" href="${g.href}">${g.href.startsWith('#') ? 'Jogar aqui' : 'Jogar'}</a>
+              ${g.reset && r != null ? `<button type="button" class="btn btn--ghost btn--small" data-reset="${g.id}">Zerar recorde</button>` : ''}
+            </div>
+          </div>
+        </article>`;
+      }).join('');
+    }
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-reset]'); if(!b) return;
+      const g = GAMES.find(x => x.id === b.dataset.reset);
+      if(g && g.reset && confirm(`Zerar o recorde de ${g.name} neste navegador?`)){ g.reset(); lastNew = null; renderHub(); }
+    });
+    // recordes de outros jogos podem mudar em outra aba / ao voltar para a página
+    window.addEventListener('storage', renderHub);
+    window.addEventListener('pageshow', renderHub);
+
     // Init
-    parryResetUI(); aimResetUI(); quizResetUI(); renderLB(); drawShare();
+    parryResetUI(); aimResetUI(); quizResetUI(); renderLB(); drawShare(); renderHub();
   </script>
 </body>
 </html>

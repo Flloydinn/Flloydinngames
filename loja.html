@@ -106,6 +106,14 @@
     @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.feature{grid-template-columns:1fr}}
     @media (max-width:900px){.toolbar__inner{grid-template-columns:1fr 1fr 1fr;row-gap:.6rem}.grid{grid-template-columns:repeat(2,1fr)}.cart{grid-template-columns:1fr}}
     @media (max-width:600px){.grid{grid-template-columns:1fr}}
+    /* Celular: barra de filtros em 2 colunas, busca na largura toda e selects que encolhem (sem rolagem lateral) */
+    .toolbar__inner > *{min-width:0}
+    .select{max-width:100%;min-width:0}
+    @media (max-width:640px){
+      .toolbar__inner{grid-template-columns:1fr 1fr}
+      .toolbar__inner .searchbox{grid-column:1/-1}
+      .toolbar__inner .select, .toolbar__inner .btn{width:100%}
+    }
   </style>
   <script src="img-fallback.js"></script>
   <script src="forms.js" defer></script>
@@ -258,14 +266,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <script>
     // ======== Dados / Produtos ========
-    const PRODUCTS = [
-      {id:'tee1', title:'Camiseta Logo Clássico', desc:'Algodão 100 por cento • Unissex • Modelagem confortável', price:89.90, category:'camisetas', img:'assets/camiseta.jpg', options:{tamanho:['P','M','G','GG'], cor:['Preta','Branca']}},
-      {id:'tee2', title:'Camiseta Pixel Edition', desc:'Estampa exclusiva do canal • Edição limitada', price:99.90, category:'camisetas', img:'assets/camiseta2.jpg', options:{tamanho:['P','M','G','GG'], cor:['Preta']}},
-      {id:'mug1', title:'Caneca Flloydinn 350 ml', desc:'Cerâmica com estampa resistente • Pode ir à lava-louças', price:49.90, category:'canecas', img:'assets/caneca.jpg'},
-      {id:'stk1', title:'Kit Adesivos', desc:'Kit com 6 adesivos vinílicos de alta durabilidade', price:29.90, category:'adesivos', img:'assets/adesivos.jpg'},
-      {id:'wp1', title:'Pack Wallpapers 4K', desc:'10 artes exclusivas em 3840x2160 (download digital)', price:19.90, category:'digitais', img:'assets/wallpapers.jpg', digital:true},
-      {id:'wp2', title:'Wallpaper Animado', desc:'1 vídeo loop em 4K para desktop (download digital)', price:14.90, category:'digitais', img:'assets/wallpaper-animado.jpg', digital:true}
-    ];
+    // Produtos: carregados de data/produtos.json (edite o JSON, não este arquivo)
+    let PRODUCTS = [];
+    let productsLoaded = false;
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
     // ======== Estado ========
     const state = {
@@ -306,15 +310,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         return `
         <article class="product" data-id="${p.id}">
           <div class="p-media">
-            <img src="${p.img}" alt="${p.title}" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(300px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+            <img src="${esc(p.img)}" alt="${esc(p.title)}" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(300px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
           </div>
           <div class="p-body">
-            <div class="p-title">${p.title} ${p.digital?'<span class="tag">DIGITAL</span>':''}</div>
-            <p class="p-desc">${p.desc}</p>
+            <div class="p-title">${esc(p.title)} ${p.digital?'<span class="tag">DIGITAL</span>':''}</div>
+            <p class="p-desc">${esc(p.desc)}</p>
             <div class="price">${fmt(p.price)}</div>
             <div class="options" data-opt>
-              ${sizes.length? `<div data-name="tamanho">${sizes.map((s,i)=>`<button class="opt ${i===0?'is-on':''}" data-val="${s}">${s}</button>`).join('')}</div>`:''}
-              ${colors.length? `<div data-name="cor">${colors.map((c,i)=>`<button class="opt ${i===0?'is-on':''}" data-val="${c}">${c}</button>`).join('')}</div>`:''}
+              ${sizes.length? `<div data-name="tamanho">${sizes.map((s,i)=>`<button class="opt ${i===0?'is-on':''}" data-val="${esc(s)}">${esc(s)}</button>`).join('')}</div>`:''}
+              ${colors.length? `<div data-name="cor">${colors.map((c,i)=>`<button class="opt ${i===0?'is-on':''}" data-val="${esc(c)}">${esc(c)}</button>`).join('')}</div>`:''}
             </div>
             <div class="p-actions">
               <button class="btn btn--add" data-add="${p.id}">Adicionar</button>
@@ -383,10 +387,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }else{
         list.innerHTML = state.cart.map(i=>`
           <div class="item">
-            <img src="${i.img}" alt="${i.title}">
+            <img src="${esc(i.img)}" alt="${esc(i.title)}">
             <div>
-              <h4>${i.title} ${i.digital?'<span class="tag">DIGITAL</span>':''}</h4>
-              ${Object.keys(i.opts||{}).length? `<div class="note">${Object.entries(i.opts).map(([k,v])=>`${k}: ${v}`).join(' • ')}</div>`:''}
+              <h4>${esc(i.title)} ${i.digital?'<span class="tag">DIGITAL</span>':''}</h4>
+              ${Object.keys(i.opts||{}).length? `<div class="note">${Object.entries(i.opts).map(([k,v])=>`${esc(k)}: ${esc(v)}`).join(' • ')}</div>`:''}
               <div class="note">${fmt(i.price)} cada</div>
               <div class="qty" style="margin-top:.3rem">
                 <button data-dec="${i.key}">−</button>
@@ -555,6 +559,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     let lastTx = null;
     $('#genPix').onclick=()=>{
+      if(!productsLoaded) return alert('Os preços ainda não foram carregados. Recarregue a página e tente de novo.');
       if(state.cart.length===0) return alert('Seu carrinho está vazio.');
       const name = $('#custName').value.trim();
       const email= $('#custEmail').value.trim();
@@ -640,9 +645,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     };
 
+    // ======== Dados: data/produtos.json ========
+    const SAFE_IMG = /^(assets\/[\w\/.-]+|https:\/\/[^\s"'<>]+)$/;
+    const strList = a => Array.isArray(a) ? a.filter(x => typeof x === 'string' && x.trim()).map(String) : [];
+    function normalizeProduct(p){
+      if(!p || !/^[\w-]{1,40}$/.test(String(p.id)) || typeof p.title !== 'string' || !p.title.trim()) return null;
+      const price = Math.round(Number(p.price) * 100) / 100;
+      if(!(price > 0) || !isFinite(price)) return null;
+      const opts = {};
+      if(p.options){ const t = strList(p.options.tamanho), c = strList(p.options.cor); if(t.length) opts.tamanho = t; if(c.length) opts.cor = c; }
+      return { id: String(p.id), title: p.title, desc: String(p.desc || ''), price, category: String(p.category || 'outros').toLowerCase(),
+               img: SAFE_IMG.test(String(p.img || '')) ? String(p.img) : '', digital: !!p.digital, ...(Object.keys(opts).length ? { options: opts } : {}) };
+    }
+    async function loadProducts(){
+      const r = await fetch('data/produtos.json', { cache: 'no-cache' });
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      const d = await r.json();
+      const list = (Array.isArray(d) ? d : (d.products || [])).map(normalizeProduct).filter(Boolean);
+      if(!list.length) throw new Error('nenhum produto válido');
+      return list;
+    }
+    const CAT_LABEL = { camisetas:'Camisetas', canecas:'Canecas', adesivos:'Adesivos', digitais:'Digitais' };
+    function renderCategories(){
+      const sel = $('#cat'); const cats = [...new Set(PRODUCTS.map(p => p.category))];
+      sel.innerHTML = '<option value="todas">Todas as categorias</option>' +
+        cats.map(c => `<option value="${esc(c)}">${esc(CAT_LABEL[c] || c.charAt(0).toUpperCase() + c.slice(1))}</option>`).join('');
+      if(!cats.includes(state.cat)) state.cat = 'todas';
+      sel.value = state.cat;
+    }
+    /** o carrinho salvo no navegador passa a usar o preço/título atuais do JSON (nunca um preço antigo) */
+    function repriceCart(){
+      state.cart = state.cart.filter(i => getProductById(i.id));
+      state.cart.forEach(i => { const p = getProductById(i.id); i.price = p.price; i.title = p.title; i.img = p.img; i.digital = p.digital; });
+      persistCart();
+    }
+    function showProductsError(){
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">Não foi possível carregar os produtos agora.
+        <div style="margin-top:.6rem"><button class="btn btn--small" id="retryProducts" type="button">Tentar de novo</button></div></div>`;
+      $('#retryProducts').onclick = init;
+    }
+
     // ======== Init ========
-    function init(){
-      renderProducts(); updateMini();
+    async function init(){
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Carregando produtos…</div>';
+      updateMini();
+      try{
+        PRODUCTS = await loadProducts(); productsLoaded = true;
+        renderCategories(); repriceCart(); renderProducts(); updateMini();
+      }catch(err){
+        console.warn('[loja]', err); productsLoaded = false; showProductsError();
+      }
     }
     init();
   </script>

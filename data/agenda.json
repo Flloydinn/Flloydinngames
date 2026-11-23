@@ -1,0 +1,61 @@
+{
+  "_sobre": "Agenda do canal (agenda.html). Datas em ISO 8601 com fuso, ex.: 2026-12-05T20:00:00-03:00. type/color: live | launch | tour | rec.",
+  "updated": "2026-11-23",
+  "events": [
+    {
+      "id": "live-rogue",
+      "title": "Live — Roguelike Surpresa",
+      "type": "live",
+      "game": "Indie Surprise",
+      "start": "2025-09-11T20:00:00-03:00",
+      "end": "2025-09-11T22:00:00-03:00",
+      "where": "YouTube @flloydinn",
+      "desc": "Runs rápidas e desafios da comunidade. Traga seu loadout!",
+      "color": "live"
+    },
+    {
+      "id": "live-coop",
+      "title": "Live — Coop Caótico",
+      "type": "live",
+      "game": "Chaos Co-op",
+      "start": "2025-09-18T20:00:00-03:00",
+      "end": "2025-09-18T22:00:00-03:00",
+      "where": "YouTube @flloydinn",
+      "desc": "Jogue com a gente—sorteios no chat.",
+      "color": "live"
+    },
+    {
+      "id": "launch-dungeon",
+      "title": "Lançamento — Dungeon Rush",
+      "type": "launch",
+      "game": "Dungeon Rush",
+      "start": "2025-09-20T10:00:00-03:00",
+      "end": "2025-09-20T12:00:00-03:00",
+      "where": "PC/Steam",
+      "desc": "Primeiras impressões + guia inicial.",
+      "color": "launch"
+    },
+    {
+      "id": "tour-mario",
+      "title": "Torneio da Comunidade",
+      "type": "tour",
+      "game": "Race Kart",
+      "start": "2025-09-28T16:00:00-03:00",
+      "end": "2025-09-28T18:00:00-03:00",
+      "where": "Discord + Live",
+      "desc": "Eliminatórias rápidas, final ao vivo.",
+      "color": "tour"
+    },
+    {
+      "id": "rec-serie1",
+      "title": "Gravação — Série Episódio 3",
+      "type": "rec",
+      "game": "Indie Surprise",
+      "start": "2025-09-14T19:00:00-03:00",
+      "end": "2025-09-14T21:00:00-03:00",
+      "where": "Estúdio",
+      "desc": "Sessão fechada de captação.",
+      "color": "rec"
+    }
+  ]
+}

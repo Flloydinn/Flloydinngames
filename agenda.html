@@ -81,6 +81,14 @@
     .actions{display:flex;gap:.5rem;flex-wrap:wrap}
 
     @media (max-width:1000px){.hero__grid{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.toolbar__inner{grid-template-columns:1fr 1fr 1fr;row-gap:.6rem}}
+    /* Celular: barra de filtros em 2 colunas, busca na largura toda e selects que encolhem (sem rolagem lateral) */
+    .toolbar__inner > *{min-width:0}
+    .select{max-width:100%;min-width:0}
+    @media (max-width:640px){
+      .toolbar__inner{grid-template-columns:1fr 1fr}
+      .toolbar__inner .searchbox{grid-column:1/-1}
+      .toolbar__inner .select, .toolbar__inner .btn{width:100%}
+    }
   </style>
   <script src="img-fallback.js"></script>
 </head>
@@ -200,20 +208,8 @@
 
     // ====== Dataset de eventos (edite à vontade) ======
     // status atual: 11/09/2025
-    const EVENTS = [
-      // Lives
-      { id:'live-rogue',    title:'Live — Roguelike Surpresa', type:'live',   game:'Indie Surprise', start:'2025-09-11T20:00:00-03:00', end:'2025-09-11T22:00:00-03:00', where:'YouTube @flloydinn', desc:'Runs rápidas e desafios da comunidade. Traga seu loadout!', color:'live' },
-      { id:'live-coop',     title:'Live — Coop Caótico',       type:'live',   game:'Chaos Co-op',     start:'2025-09-18T20:00:00-03:00', end:'2025-09-18T22:00:00-03:00', where:'YouTube @flloydinn', desc:'Jogue com a gente—sorteios no chat.', color:'live' },
-
-      // Lançamentos (cobertura)
-      { id:'launch-dungeon', title:'Lançamento — Dungeon Rush', type:'launch', game:'Dungeon Rush', start:'2025-09-20T10:00:00-03:00', end:'2025-09-20T12:00:00-03:00', where:'PC/Steam', desc:'Primeiras impressões + guia inicial.', color:'launch' },
-
-      // Torneio
-      { id:'tour-mario',    title:'Torneio da Comunidade', type:'tour',  game:'Race Kart', start:'2025-09-28T16:00:00-03:00', end:'2025-09-28T18:00:00-03:00', where:'Discord + Live', desc:'Eliminatórias rápidas, final ao vivo.', color:'tour' },
-
-      // Gravações
-      { id:'rec-serie1',    title:'Gravação — Série Episódio 3', type:'rec', game:'Indie Surprise', start:'2025-09-14T19:00:00-03:00', end:'2025-09-14T21:00:00-03:00', where:'Estúdio', desc:'Sessão fechada de captação.', color:'rec' }
-    ];
+    // Eventos: carregados de data/agenda.json (edite o JSON, não este arquivo)
+    let EVENTS = [];
 
     // ====== Estado / UI ======
     const state = {
@@ -430,8 +426,8 @@
       box.innerHTML = list.map(ev=>`
         <article class="item">
           <div>
-            <strong>${ev.title}</strong>
-            <div class="meta">${fmtDateTime(ev.start)} • ${ev.where || 'Online'}</div>
+            <strong>${esc(ev.title)}</strong>
+            <div class="meta">${fmtDateTime(ev.start)} • ${esc(ev.where || 'Online')}</div>
           </div>
           <div style="display:flex;gap:.4rem">
             <button class="btn btn--ghost btn--small" data-view="${ev.id}">Ver</button>
@@ -467,7 +463,7 @@
     function openDayModal(y,m,d,events){
       const t = `${pad(d)}/${pad(m+1)}/${y}`;
       $('#mTitle').textContent = `Eventos em ${t}`;
-      $('#mInfo').innerHTML = events.map(ev=>`• ${fmtDateTime(ev.start)} — ${ev.title}`).join(' | ');
+      $('#mInfo').innerHTML = events.map(ev=>`• ${fmtDateTime(ev.start)} — ${esc(ev.title)}`).join(' | ');
       $('#mDesc').textContent = 'Selecione um evento na grade para baixar .ics individual.';
       $('#mIcs').onclick = ()=> {
         const parts = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Flloydinn//Agenda//PT-BR','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
@@ -496,10 +492,37 @@
       renderNext();
     }
 
+    // ====== Dados: data/agenda.json ======
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const EV_TYPES = ['live', 'launch', 'tour', 'rec'];
+    const validEvent = e => e && /^[\w-]{1,60}$/.test(String(e.id)) && typeof e.title === 'string' && e.title.trim() &&
+      !isNaN(Date.parse(e.start)) && !isNaN(Date.parse(e.end));
+    async function loadEvents(){
+      const r = await fetch('data/agenda.json', { cache: 'no-cache' });
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      const d = await r.json();
+      return (Array.isArray(d) ? d : (d.events || [])).filter(validEvent).map(e => {
+        const type = EV_TYPES.includes(e.type) ? e.type : 'live';
+        return { ...e, id: String(e.id), type, color: EV_TYPES.includes(e.color) ? e.color : type };
+      });
+    }
+    function showAgendaError(){
+      $('#nextTitle').textContent = 'Agenda indisponível no momento';
+      $('#upcoming').innerHTML = `<div class="empty">Não foi possível carregar a agenda agora.
+        <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.6rem">
+          <button class="btn btn--small" id="retryAgenda" type="button">Tentar de novo</button>
+          <a class="btn btn--ghost btn--small" href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">Avisos no YouTube</a>
+        </div></div>`;
+      $('#retryAgenda').onclick = init;
+    }
+
     // Init
-    (function init(){
-      renderAll();
-    })();
+    async function init(){
+      $('#upcoming').innerHTML = '<div class="empty">Carregando agenda…</div>';
+      try{ EVENTS = await loadEvents(); renderAll(); }
+      catch(err){ console.warn('[agenda]', err); EVENTS = []; renderAll(); showAgendaError(); }
+    }
+    init();
   </script>
 </body>
 </html>

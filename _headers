@@ -1,0 +1,39 @@
+# Cabeçalhos HTTP do Netlify (https://docs.netlify.com/routing/headers/)
+
+# Segurança básica em todas as respostas
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+# Imagens, ícones e capas: nomes não têm hash, então cache de 1 semana (não "immutable")
+/assets/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# CSS/JS sem versão no nome: o navegador revalida a cada visita (resposta 304 rápida via ETag),
+# para um deploy novo nunca misturar HTML novo com script antigo
+/styles.css
+  Cache-Control: public, max-age=0, must-revalidate
+/script.js
+  Cache-Control: public, max-age=0, must-revalidate
+/layout.js
+  Cache-Control: public, max-age=0, must-revalidate
+/analytics.js
+  Cache-Control: public, max-age=0, must-revalidate
+/forms.js
+  Cache-Control: public, max-age=0, must-revalidate
+/img-fallback.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Dados atualizados pelo GitHub Actions: sempre frescos
+/data/*
+  Cache-Control: public, max-age=0, must-revalidate
+/tv/playlist.json
+  Cache-Control: public, max-age=0, must-revalidate
+/posts/index.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Markdown bruto dos posts: o conteúdo indexável é post.html?slug=... (evita conteúdo duplicado)
+/posts/*
+  X-Robots-Tag: noindex

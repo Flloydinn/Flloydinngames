@@ -52,6 +52,24 @@ if (header) {
   });
 })();
 
+// Números do canal nos cards "Sobre" (data/canal.json, gerado pelo script de sincronização).
+// Se o JSON não carregar, ficam os valores escritos no HTML.
+(function channelStats() {
+  const els = document.querySelectorAll('[data-canal]');
+  if (!els.length) return;
+  fetch('data/canal.json', { cache: 'no-cache' })
+    .then(r => (r.ok ? r.json() : null))
+    .then(d => {
+      const st = d && d.stats;
+      if (!st) return;
+      els.forEach(el => {
+        const v = Number(st[el.dataset.canal]);
+        if (Number.isFinite(v) && v > 0) el.textContent = v.toLocaleString('pt-BR');
+      });
+    })
+    .catch(() => {});
+})();
+
 // Rolagem suave para âncoras internas (#sobre, #jogos, #contato…)
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {

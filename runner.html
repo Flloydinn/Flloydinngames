@@ -281,7 +281,7 @@ function groundYUnder(){
 function isOnGround(){ return player.position.y <= groundYUnder()+0.001; }
 
 // UI
-function setToast(t){ HUD.toast.textContent=t; HUD.toast.style.display='block'; setTimeout(()=> HUD.toast.style.display='none', 700); }
+let _toastTimer = 0;
 function updateHUD(){
   HUD.dist.textContent = `${Math.floor(state.dist)} m`;
   HUD.speed.textContent = Math.round(state.forward);

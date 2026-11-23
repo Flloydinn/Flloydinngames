@@ -51,6 +51,8 @@
     .kpi{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1rem;text-align:center}
     .kpi h3{margin:.2rem 0;font-size:1.6rem}
     .kpi p{margin:0;color:var(--muted)}
+    .kpis__src{grid-column:1/-1;margin:-.3rem 0 0;font-size:.82rem;color:var(--muted);text-align:right}
+    .kpis__src a{color:var(--muted);text-decoration:underline}
     /* Audience */
     .section{padding:1.2rem 0;border-top:1px solid var(--border)}
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -126,10 +128,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- KPIs -->
   <section class="container kpis" aria-label="Métricas do canal">
-    <div class="kpi"><h3 data-count="60">0</h3><p>Inscritos +</p></div>
-    <div class="kpi"><h3 data-count="55">0</h3><p>Vídeos publicados</p></div>
-    <div class="kpi"><h3 data-count="12">0</h3><p>Média vídeos/mês</p></div>
-    <div class="kpi"><h3 data-count="4.8">0</h3><p>Engajamento ★</p></div>
+    <!-- valores reais de reserva; atualizados por data/canal.json (gerado por scripts/tv-playlist.mjs) -->
+    <div class="kpi"><h3 data-count="64" data-stat="subscribers">64</h3><p>Inscritos</p></div>
+    <div class="kpi"><h3 data-count="54" data-stat="videos">54</h3><p>Vídeos publicados</p></div>
+    <div class="kpi"><h3 data-count="2083" data-stat="views">2.083</h3><p>Visualizações no canal</p></div>
+    <div class="kpi"><h3 data-count="2020" data-stat="joined" data-format="year">2020</h3><p>No YouTube desde</p></div>
+    <p class="kpis__src" id="kpiSrc">Dados públicos do canal no YouTube.</p>
   </section>
 
   <!-- Audiência -->
@@ -294,8 +298,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     "@context":"https://schema.org",
     "@type":"Organization",
     "name":"Flloydinn Gameplay",
-    "url":"https://seusite.exemplo",
-    "logo":"https://seusite.exemplo/assets/favicon.png",
+    "url":"https://flloydinn.netlify.app/",
+    "logo":"https://flloydinn.netlify.app/assets/apple-touch-icon.png",
     "sameAs":["https://www.youtube.com/@flloydinn"]
   }
   </script>
@@ -305,18 +309,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     // KPIs - contadores animados
     const counters = document.querySelectorAll('[data-count]');
+    const fmtKpi = (el, v) => el.dataset.format === 'year' ? String(Math.round(v)) : Math.round(v).toLocaleString('pt-BR');
     const animateCount = (el, target, dur=900)=>{
-      const start = 0; const t0 = performance.now();
-      const dec = String(target).includes('.') ? 1 : 0;
+      if(!Number.isFinite(target)) return;
+      const t0 = performance.now();
+      const from = el.dataset.format === 'year' ? Math.max(0, target - 15) : 0;
       function tick(t){
         const p = Math.min(1, (t - t0)/dur);
-        const val = (start + (target-start)*p).toFixed(dec);
-        el.textContent = val.replace('.', ',');
+        el.textContent = fmtKpi(el, from + (target - from) * p);
         if(p<1) requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
     };
-    counters.forEach(el=> animateCount(el, Number(el.dataset.count)));
+    // métricas reais (data/canal.json); se não carregar, ficam os valores do HTML
+    fetch('data/canal.json', { cache: 'no-cache' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const st = d && d.stats;
+        if(st){
+          counters.forEach(el => {
+            const k = el.dataset.stat; let v = st[k];
+            if(k === 'joined' && v) v = Number(String(v).slice(0, 4));
+            if(Number.isFinite(Number(v)) && v !== null) el.dataset.count = String(Number(v));
+          });
+          const upd = d.updated ? new Date(d.updated).toLocaleDateString('pt-BR') : '';
+          const src = document.getElementById('kpiSrc');
+          if(src) src.innerHTML = `Dados públicos do <a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">canal no YouTube</a>${upd ? ' • atualizado em ' + upd : ''}.`;
+        }
+      })
+      .catch(() => {})
+      .finally(() => counters.forEach(el => animateCount(el, Number(el.dataset.count))));
 
     // Logos: auto-scroll leve
     const logos = document.getElementById('logos');
