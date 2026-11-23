@@ -3,25 +3,26 @@
 <head>
   <script src="analytics.js"></script>
   <meta charset="utf-8">
-  <title>Flloydinn Gameplay — Blog de Notícias</title>
+  <title>Blog Flloydinn — notícias, análises e bastidores de games</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Blog de notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
+  <meta name="description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay: lançamentos, indies e dicas para jogar melhor.">
   <!-- SEO: canonical + Open Graph + Twitter Card -->
   <link rel="canonical" href="https://flloydinn.netlify.app/blog.html">
-  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:site_name" content="Flloydinn">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Blog do Flloydinn Gameplay">
-  <meta property="og:description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
+  <meta property="og:title" content="Blog Flloydinn — notícias, análises e bastidores de games">
+  <meta property="og:description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay: lançamentos, indies e dicas para jogar melhor.">
   <meta property="og:url" content="https://flloydinn.netlify.app/blog.html">
   <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Blog do Flloydinn Gameplay">
-  <meta name="twitter:description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay.">
+  <meta name="twitter:title" content="Blog Flloydinn — notícias, análises e bastidores de games">
+  <meta name="twitter:description" content="Notícias de games, análises e bastidores do canal Flloydinn Gameplay: lançamentos, indies e dicas para jogar melhor.">
   <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta name="twitter:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,6 +95,68 @@
     @media (max-width:700px){.grid{grid-template-columns:1fr}.toolbar__inner{grid-template-columns:1fr}}
   </style>
   <script src="img-fallback.js"></script>
+  <script type="application/ld+json" id="ld-main">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://flloydinn.netlify.app/#org",
+      "name": "Flloydinn",
+      "alternateName": [
+        "Flloydinn Gameplay",
+        "FLLOYDINN GAMEPLAY"
+      ],
+      "url": "https://flloydinn.netlify.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://flloydinn.netlify.app/assets/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
+      "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "sameAs": [
+        "https://www.youtube.com/@flloydinn",
+        "https://www.youtube.com/@flloydinnesporteclube"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://flloydinn.netlify.app/#website",
+      "url": "https://flloydinn.netlify.app/",
+      "name": "Flloydinn",
+      "alternateName": "Flloydinn Gameplay",
+      "inLanguage": "pt-BR",
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://flloydinn.netlify.app/videos.html?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Blog",
+      "@id": "https://flloydinn.netlify.app/blog.html#blog",
+      "url": "https://flloydinn.netlify.app/blog.html",
+      "name": "Blog Flloydinn",
+      "description": "Notícias de games, análises e bastidores do canal Flloydinn Gameplay: lançamentos, indies e dicas para jogar melhor.",
+      "inLanguage": "pt-BR",
+      "isPartOf": {
+        "@id": "https://flloydinn.netlify.app/#website"
+      },
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <!-- Header -->

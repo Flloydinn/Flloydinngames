@@ -3,25 +3,26 @@
 <head>
   <script src="analytics.js"></script>
   <meta charset="utf-8">
-  <title>Flloydinn Gameplay — Agenda & Eventos</title>
+  <title>Agenda Flloydinn — lives, estreias e eventos do canal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Agenda de lives, lançamentos e eventos do Flloydinn Gameplay.">
+  <meta name="description" content="Próximas lives, estreias e eventos do Flloydinn Gameplay, com contagem regressiva e lembrete para adicionar ao seu calendário.">
   <!-- SEO: canonical + Open Graph + Twitter Card -->
   <link rel="canonical" href="https://flloydinn.netlify.app/agenda.html">
-  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:site_name" content="Flloydinn">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Agenda de lives e eventos — Flloydinn">
-  <meta property="og:description" content="Próximas lives, estreias e eventos do canal Flloydinn Gameplay. Adicione ao seu calendário com um clique.">
+  <meta property="og:title" content="Agenda Flloydinn — lives, estreias e eventos do canal">
+  <meta property="og:description" content="Próximas lives, estreias e eventos do Flloydinn Gameplay, com contagem regressiva e lembrete para adicionar ao seu calendário.">
   <meta property="og:url" content="https://flloydinn.netlify.app/agenda.html">
   <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Agenda de lives e eventos — Flloydinn">
-  <meta name="twitter:description" content="Próximas lives, estreias e eventos do canal Flloydinn Gameplay. Adicione ao seu calendário com um clique.">
+  <meta name="twitter:title" content="Agenda Flloydinn — lives, estreias e eventos do canal">
+  <meta name="twitter:description" content="Próximas lives, estreias e eventos do Flloydinn Gameplay, com contagem regressiva e lembrete para adicionar ao seu calendário.">
   <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta name="twitter:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,6 +92,68 @@
     }
   </style>
   <script src="img-fallback.js"></script>
+  <script type="application/ld+json" id="ld-main">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://flloydinn.netlify.app/#org",
+      "name": "Flloydinn",
+      "alternateName": [
+        "Flloydinn Gameplay",
+        "FLLOYDINN GAMEPLAY"
+      ],
+      "url": "https://flloydinn.netlify.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://flloydinn.netlify.app/assets/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
+      "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "sameAs": [
+        "https://www.youtube.com/@flloydinn",
+        "https://www.youtube.com/@flloydinnesporteclube"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://flloydinn.netlify.app/#website",
+      "url": "https://flloydinn.netlify.app/",
+      "name": "Flloydinn",
+      "alternateName": "Flloydinn Gameplay",
+      "inLanguage": "pt-BR",
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://flloydinn.netlify.app/videos.html?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://flloydinn.netlify.app/agenda.html#webpage",
+      "url": "https://flloydinn.netlify.app/agenda.html",
+      "name": "Agenda Flloydinn — lives, estreias e eventos do canal",
+      "description": "Próximas lives, estreias e eventos do Flloydinn Gameplay, com contagem regressiva e lembrete para adicionar ao seu calendário.",
+      "inLanguage": "pt-BR",
+      "isPartOf": {
+        "@id": "https://flloydinn.netlify.app/#website"
+      },
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <!-- Header -->
@@ -516,10 +579,31 @@
       $('#retryAgenda').onclick = init;
     }
 
+    // ====== Dados estruturados (JSON-LD): só eventos futuros e públicos ======
+    function setLD(id, data){ let el = document.getElementById(id); if(!data){ if(el) el.remove(); return; } if(!el){ el = document.createElement('script'); el.type = 'application/ld+json'; el.id = id; document.head.appendChild(el); } el.textContent = JSON.stringify(data).replace(/</g, '\\u003c'); }
+    function setEventsLD(list){
+      const now = Date.now();
+      const evs = list.filter(e => e.type !== 'rec' && Date.parse(e.end) > now).slice(0, 20).map(e => {
+        const online = /youtube|discord|live|online|steam|pc/i.test(e.where || '') || e.type === 'live';
+        return {
+          "@type": "Event", "name": e.title, "description": e.desc || e.title,
+          "startDate": e.start, "endDate": e.end,
+          "eventStatus": "https://schema.org/EventScheduled",
+          "eventAttendanceMode": online ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
+          "location": online ? { "@type": "VirtualLocation", "url": "https://www.youtube.com/@flloydinn" } : { "@type": "Place", "name": e.where || "A definir" },
+          "organizer": { "@type": "Organization", "@id": "https://flloydinn.netlify.app/#org", "name": "Flloydinn", "url": "https://flloydinn.netlify.app/" },
+          "image": ["https://flloydinn.netlify.app/assets/og-flloydinn.jpg"],
+          "isAccessibleForFree": true,
+          "url": "https://flloydinn.netlify.app/agenda.html#" + encodeURIComponent(e.id),
+        };
+      });
+      setLD('ld-events', evs.length ? { "@context": "https://schema.org", "@graph": evs } : null);
+    }
+
     // Init
     async function init(){
       $('#upcoming').innerHTML = '<div class="empty">Carregando agenda…</div>';
-      try{ EVENTS = await loadEvents(); renderAll(); }
+      try{ EVENTS = await loadEvents(); renderAll(); setEventsLD(EVENTS); }
       catch(err){ console.warn('[agenda]', err); EVENTS = []; renderAll(); showAgendaError(); }
     }
     init();

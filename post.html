@@ -3,23 +3,24 @@
 <head>
   <script src="analytics.js"></script>
   <meta charset="utf-8">
-  <title>Flloydinn Gameplay — Post</title>
+  <title>Artigo — Blog Flloydinn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Artigo do blog de games do Flloydinn Gameplay">
+  <meta name="description" content="Artigos, análises e notícias de games do blog do canal Flloydinn Gameplay.">
   <!-- SEO: canonical + Open Graph + Twitter Card -->
-  <meta property="og:site_name" content="Flloydinn Gameplay">
+  <meta property="og:site_name" content="Flloydinn">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Blog do Flloydinn Gameplay">
-  <meta property="og:description" content="Artigos, análises e notícias de games do canal Flloydinn Gameplay.">
+  <meta property="og:title" content="Artigo — Blog Flloydinn">
+  <meta property="og:description" content="Artigos, análises e notícias de games do blog do canal Flloydinn Gameplay.">
   <meta property="og:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Blog do Flloydinn Gameplay">
-  <meta name="twitter:description" content="Artigos, análises e notícias de games do canal Flloydinn Gameplay.">
+  <meta name="twitter:title" content="Artigo — Blog Flloydinn">
+  <meta name="twitter:description" content="Artigos, análises e notícias de games do blog do canal Flloydinn Gameplay.">
   <meta name="twitter:image" content="https://flloydinn.netlify.app/assets/og-flloydinn.jpg">
+  <meta name="twitter:image:alt" content="Logo Flloydinn em letras brancas e vermelhas sobre fundo escuro">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,6 +71,54 @@
     @media (max-width:980px){.article{grid-template-columns:1fr}}
   </style>
   <script src="img-fallback.js"></script>
+  <script type="application/ld+json" id="ld-main">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://flloydinn.netlify.app/#org",
+      "name": "Flloydinn",
+      "alternateName": [
+        "Flloydinn Gameplay",
+        "FLLOYDINN GAMEPLAY"
+      ],
+      "url": "https://flloydinn.netlify.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://flloydinn.netlify.app/assets/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
+      "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "sameAs": [
+        "https://www.youtube.com/@flloydinn",
+        "https://www.youtube.com/@flloydinnesporteclube"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://flloydinn.netlify.app/#website",
+      "url": "https://flloydinn.netlify.app/",
+      "name": "Flloydinn",
+      "alternateName": "Flloydinn Gameplay",
+      "inLanguage": "pt-BR",
+      "publisher": {
+        "@id": "https://flloydinn.netlify.app/#org"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://flloydinn.netlify.app/videos.html?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <!-- Header -->
@@ -177,18 +226,70 @@
       if(!el){ el = document.createElement(create); document.head.appendChild(el); }
       Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, v));
     }
+    const DEFAULT_OG_IMG = `${SITE_BASE}/assets/og-flloydinn.jpg`;
+    /** capa do post em URL absoluta, só se for um caminho seguro do próprio site (ou https) */
+    function absCover(c){
+      c = String(c || '').trim();
+      if(/^https:\/\/[^\s"'<>]+$/.test(c)) return c;
+      if(/^(assets|posts)\/[\w\/.-]+\.(jpe?g|png|webp)$/i.test(c)) return `${SITE_BASE}/${c}`;
+      return '';
+    }
+    function setOgImage(src){
+      setHeadTag('meta[property="og:image"]', 'meta', { property:'og:image', content:src });
+      setHeadTag('meta[name="twitter:image"]', 'meta', { name:'twitter:image', content:src });
+      if(src === DEFAULT_OG_IMG){
+        setHeadTag('meta[property="og:image:width"]', 'meta', { property:'og:image:width', content:'1200' });
+        setHeadTag('meta[property="og:image:height"]', 'meta', { property:'og:image:height', content:'630' });
+      } else {
+        // tamanho da capa é desconhecido: remove width/height da imagem padrão para não declarar errado
+        document.head.querySelectorAll('meta[property="og:image:width"],meta[property="og:image:height"]').forEach(m => m.remove());
+      }
+    }
+    /** JSON-LD BlogPosting do artigo carregado (substitui o anterior, se houver) */
+    function setPostLD(post, url, image){
+      const ld = {
+        "@context":"https://schema.org", "@type":"BlogPosting",
+        "@id": url + "#article", "mainEntityOfPage": url, "url": url,
+        "headline": String(post.title).slice(0, 110),
+        "description": post.excerpt || undefined,
+        "image": [image],
+        "datePublished": /^\d{4}-\d{2}-\d{2}/.test(post.dateISO || '') ? post.dateISO : undefined,
+        "inLanguage": "pt-BR",
+        "author": { "@type": "Person", "name": post.author || "Flloydinn" },
+        "publisher": { "@type": "Organization", "@id": `${SITE_BASE}/#org`, "name": "Flloydinn",
+                       "logo": { "@type": "ImageObject", "url": `${SITE_BASE}/assets/apple-touch-icon.png` } },
+        "isPartOf": { "@type": "Blog", "@id": `${SITE_BASE}/blog.html#blog`, "name": "Blog Flloydinn" },
+        "keywords": Array.isArray(post.tags) && post.tags.length ? post.tags.join(', ') : undefined,
+        "articleSection": post.category || undefined,
+        "about": post.game ? { "@type": "VideoGame", "name": post.game } : undefined,
+      };
+      let el = document.getElementById('ld-post');
+      if(!el){ el = document.createElement('script'); el.type = 'application/ld+json'; el.id = 'ld-post'; document.head.appendChild(el); }
+      el.textContent = JSON.stringify(ld).replace(/</g, '\\u003c');
+    }
     function applyPostSEO(post){
       const url = `${SITE_BASE}/post.html?slug=${encodeURIComponent(post.slug)}`;
-      const title = `${post.title} — Flloydinn Gameplay`;
+      const title = `${post.title} — Blog Flloydinn`;
       const desc = post.excerpt || '';
       setHeadTag('link[rel="canonical"]', 'link', { rel:'canonical', href:url });
       setHeadTag('meta[property="og:url"]', 'meta', { property:'og:url', content:url });
       setHeadTag('meta[property="og:title"]', 'meta', { property:'og:title', content:title });
       setHeadTag('meta[name="twitter:title"]', 'meta', { name:'twitter:title', content:title });
+      setHeadTag('meta[property="og:image:alt"]', 'meta', { property:'og:image:alt', content:`Capa: ${post.title}` });
       if(desc){
         setHeadTag('meta[name="description"]', 'meta', { name:'description', content:desc });
         setHeadTag('meta[property="og:description"]', 'meta', { property:'og:description', content:desc });
         setHeadTag('meta[name="twitter:description"]', 'meta', { name:'twitter:description', content:desc });
+      }
+      if(post.dateISO) setHeadTag('meta[property="article:published_time"]', 'meta', { property:'article:published_time', content:post.dateISO });
+      // og:image = capa do post se ela existir de fato; senão, a imagem padrão da marca
+      setOgImage(DEFAULT_OG_IMG);
+      setPostLD(post, url, DEFAULT_OG_IMG);
+      const cover = absCover(post.cover);
+      if(cover){
+        const probe = new Image();
+        probe.onload = () => { if(probe.naturalWidth > 0){ setOgImage(cover); setPostLD(post, url, cover); } };
+        probe.src = cover.replace(SITE_BASE + '/', '');
       }
     }
     // Slug ausente/inexistente: não indexar a página de erro
@@ -213,7 +314,7 @@
       }
 
       // Meta
-      document.title = `${post.title} — Flloydinn Gameplay`;
+      document.title = `${post.title} — Blog Flloydinn`;
       applyPostSEO(post);
       $('#category').textContent = post.category || 'Artigo';
       $('#title').textContent = post.title;

@@ -32,9 +32,25 @@ if (header) {
       const v = list
         .filter(x => x && ID_RE.test(String(x.id)) && x.type !== 'short' && x.embeddable !== false)
         .sort((a, b) => String(b.published || '').localeCompare(String(a.published || '')))[0];
-      if (v && !btn.dataset.played) setVideo(String(v.id), String(v.title || 'Vídeo do canal'));
+      if (v && !btn.dataset.played) { setVideo(String(v.id), String(v.title || 'Vídeo do canal')); setFeaturedLD(v); }
     })
     .catch(() => { /* mantém o vídeo reserva do HTML */ });
+
+  // JSON-LD do vídeo em destaque (mantém os dados estruturados iguais ao vídeo exibido)
+  function setFeaturedLD(v) {
+    const el = document.getElementById('ld-featured');
+    if (!el || !/^\d{4}-\d{2}-\d{2}$/.test(String(v.published || ''))) return;
+    const s = Math.max(1, Math.round(Number(v.dur) || 0)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+    const id = String(v.id);
+    el.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'VideoObject', '@id': `https://www.youtube.com/watch?v=${id}`,
+      name: String(v.title), description: String(v.description || v.title),
+      thumbnailUrl: [`https://i.ytimg.com/vi/${id}/hqdefault.jpg`], uploadDate: v.published,
+      duration: 'PT' + (h ? h + 'H' : '') + (m ? m + 'M' : '') + (x || (!h && !m) ? x + 'S' : ''),
+      embedUrl: `https://www.youtube.com/embed/${id}`, url: `https://www.youtube.com/watch?v=${id}`,
+      inLanguage: 'pt-BR', publisher: { '@id': 'https://flloydinn.netlify.app/#org' },
+    }).replace(/</g, '\\u003c');
+  }
 
   btn.addEventListener('click', () => {
     const id = btn.dataset.ytId;
