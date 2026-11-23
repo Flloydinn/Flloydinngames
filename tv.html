@@ -47,8 +47,8 @@
     }
     .live{position:absolute;left:12px;top:12px;display:flex;gap:.5rem;align-items:center;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.2rem .5rem}
     .dot{width:8px;height:8px;border-radius:999px;background:#ff4a4a;box-shadow:0 0 10px #ff4a4a}
-    .now{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .55rem}
-    .now strong{color:#fff}
+    .player .now{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:.6rem;padding:.25rem .55rem}
+    .player .now strong{color:#fff}
 
     /* Controls bottom */
     .controls{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem; background:rgba(11,11,12,.6); border-top:1px solid var(--border)}
@@ -64,11 +64,43 @@
     .list{display:grid;gap:.6rem;padding:0 .9rem .9rem}
     .item{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center;background:#0f1116;border:1px solid var(--border);border-radius:.6rem;padding:.6rem}
     .item .meta{color:var(--muted);font-size:.9rem}
-    .upnext .item.now{outline:2px solid rgba(255,255,255,.12)}
+    .upnext .item.is-now{outline:2px solid rgba(255,255,255,.12)}
     .desc{padding:.9rem;color:var(--muted)}
     .small{font-size:.9rem;color:var(--muted)}
 
+    /* Status da sincronização */
+    .tag.is-ok{border-color:rgba(87,217,150,.45);color:var(--ok)}
+    .tag.is-sync{border-color:rgba(255,184,77,.45);color:var(--warn)}
+    .tag.is-warn{border-color:rgba(255,107,107,.45);color:var(--danger)}
+
+    /* Faixa "no ar / a seguir" + progresso */
+    .nowbar{display:grid;grid-template-columns:1fr auto;gap:.4rem 1rem;align-items:center;padding:.7rem .8rem .8rem;background:rgba(11,11,12,.6);border-top:1px solid var(--border)}
+    .nowbar__title{font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .nowbar__next{color:var(--muted);font-size:.9rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:46ch}
+    .nowbar__next strong{color:var(--text);font-weight:600}
+    .progress{grid-column:1/-1;display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+    .progress__track{flex:1;height:4px;background:#22252c;border-radius:99px;overflow:hidden}
+    .progress__bar{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .9s linear}
+    .onair{font-size:.7rem;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--brand);border-radius:.35rem;padding:.1rem .4rem;margin-right:.45rem;vertical-align:.1em}
+
+    /* Tela de aviso sobre o player (vídeo indisponível / intervalo / sem player) */
+    .slate{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;text-align:center;padding:1.5rem;
+      background:radial-gradient(600px 260px at 50% 40%, rgba(143,0,0,.28), transparent 70%), #07080a;color:var(--text)}
+    .slate.is-on{display:flex}
+    .slate strong{font-size:clamp(1.1rem,2.5vw,1.6rem)}
+    .slate span{color:var(--muted)}
+
+    /* Guia */
+    .item a{color:#fff}
+    .item a:hover{text-decoration:underline}
+    .item .mini{height:3px;background:#22252c;border-radius:99px;margin-top:.4rem;overflow:hidden}
+    .item .mini i{display:block;height:100%;background:var(--brand2)}
+    .notice{margin:0 .9rem .9rem;padding:.6rem .75rem;border:1px solid rgba(255,184,77,.35);background:rgba(255,184,77,.06);border-radius:.6rem;color:#ffe2a8;font-size:.9rem;display:none}
+    .notice.is-on{display:block}
+    .stats{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}
+
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+    @media (max-width:640px){.nowbar{grid-template-columns:1fr}.nowbar__next{text-align:left}.player .now{display:none}}
   </style>
   <script src="img-fallback.js"></script>
 </head>
@@ -88,6 +120,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div id="player"></div>
       <div class="live"><span class="dot"></span><span>AO VIVO (linear)</span></div>
       <div class="now small">Agora: <strong id="nowTitle">—</strong> • <span id="nowClock">--:--</span></div>
+      <div id="slate" class="slate" role="status" aria-live="polite"><strong id="slateTitle"></strong><span id="slateText"></span></div>
       <div id="overlay" class="overlay" style="display:none">
         <div class="pill">
           <span>Áudio está <strong>mutado</strong> para iniciar automaticamente.</span>
@@ -99,11 +132,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="row">
         <button id="btnUnmute2" class="btn btn--small">Ativar áudio</button>
         <button id="btnFS" class="btn btn--ghost btn--small">Tela cheia</button>
-        <span class="tag" id="syncTag">Sincronizado</span>
+        <span class="tag is-sync" id="syncTag" role="status" aria-live="polite">Conectando…</span>
       </div>
       <div class="row muted">
         <span id="clockBRT">—:— BRT</span>
         <span class="tag">Canal #1</span>
+      </div>
+    </div>
+    <div class="nowbar" aria-label="Programa atual">
+      <div class="nowbar__title"><span class="onair">NO AR</span><span id="barTitle">—</span></div>
+      <div class="nowbar__next" id="barNext">—</div>
+      <div class="progress">
+        <span id="barElapsed">0:00</span>
+        <div class="progress__track" role="progressbar" aria-label="Progresso do vídeo atual" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barTrack"><div class="progress__bar" id="barFill"></div></div>
+        <span id="barRemain">-0:00</span>
       </div>
     </div>
   </section>
@@ -113,21 +155,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="grid">
       <section class="card upnext">
         <h3>Guia de Programação</h3>
+        <p id="tvNotice" class="notice" role="status"></p>
         <div id="guide" class="list"></div>
       </section>
       <aside class="card">
         <h3>Sobre a TV</h3>
         <div class="desc">
-          <p>Programação contínua com vídeos do canal. Todo mundo vê a mesma coisa, do mesmo ponto. A grade é calculada pela hora do Brasil (BRT) e reinicia quando a playlist termina.</p>
-          <p class="small">Para atualizar a programação sem mexer no código, publique <code>/tv/playlist.json</code> (exemplo abaixo). A página busca esse arquivo a cada 5 minutos.</p>
-          <details>
-            <summary>Exemplo de <code>tv/playlist.json</code></summary>
-<pre class="small">[
-  { "id": "CYbAoKRh8JA", "title": "Gameplay 01 — Aventura", "dur": 452 },
-  { "id": "dQw4w9WgXcQ", "title": "Gameplay 02 — Boss Rush", "dur": 612 },
-  { "id": "kxopViU98Xo", "title": "Gameplay 03 — Co-op Caótico", "dur": 538 }
-]</pre>
-          </details>
+          <p>Programação contínua com vídeos do canal. Todo mundo vê a mesma coisa, do mesmo ponto: a grade é calculada pelo relógio e recomeça quando a playlist termina. Os horários aparecem na hora de Brasília (BRT).</p>
+          <div class="stats" id="tvStats"></div>
+          <p class="small">A grade é atualizada automaticamente a partir dos uploads do canal. Quer assistir com controles? Clique no título no guia para abrir o vídeo no YouTube.</p>
         </div>
       </aside>
     </div>
@@ -138,197 +174,310 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- YouTube IFrame API -->
   <script>
     // ====== Config ======
-    const TIMEZONE = 'America/Sao_Paulo'; // BRT como referência
-    const EPOCH = Date.parse('2025-01-01T00:00:00-03:00'); // marco da programação
-    const PLAYLIST_JSON_URL = 'tv/playlist.json'; // opcional; se não existir, usamos fallback
+    const TIMEZONE = 'America/Sao_Paulo';                  // só para EXIBIR horários (BRT)
+    const EPOCH = Date.parse('2025-01-01T00:00:00-03:00'); // marco absoluto da programação (não mude: desloca a grade)
+    const PLAYLIST_JSON_URL = 'tv/playlist.json';          // gerado por scripts/tv-playlist.mjs (ver tv/LEIAME.md)
     const REFRESH_JSON_MS = 5 * 60 * 1000;
+    const GUIDE_SIZE = 7;                                  // atual + 6 próximos
 
-    // Fallback inicial (usado só se tv/playlist.json não carregar).
-    // Mantenha apenas vídeos reais do canal, com "dur" = duração exata em segundos.
-    let PLAYLIST = [
-      { id: 'CYbAoKRh8JA', title: 'Canal Trailer • Flloydinn', dur: 120 }
+    // Programação reserva: usada só se tv/playlist.json não carregar ou vier sem vídeos válidos.
+    // Vídeos reais do canal, com "dur" = duração exata em segundos.
+    const FALLBACK = [
+      { id: 'qUu9A3DCDIQ', title: 'ZOANDO NO MÁFIA III', dur: 1112 },
+      { id: 'h3BVy54S2Eg', title: 'FUGINDO DO PREDADOR COM ESTILO | Predator', dur: 628 },
+      { id: 's131KGEhHSs', title: 'HISTÓRIAS DE TERROR | Horror Stories [Demo]', dur: 620 },
     ];
+    let PLAYLIST = FALLBACK.slice();
+    let META = { source: 'reserva' };   // origem da grade em uso: 'reserva' | 'youtube-api' | 'rss' | 'manual' | 'exemplo'
+    let pending = null;                 // nova playlist aguardando o fim do vídeo atual
+    let pendingTimer = null;
 
-    // ID de vídeo do YouTube válido: 11 caracteres [A-Za-z0-9_-], e não um placeholder
-    // como "xxxxxxxxxxx" (mesmo caractere repetido).
+    // ID de vídeo do YouTube válido: 11 caracteres [A-Za-z0-9_-], e não um placeholder ("xxxxxxxxxxx")
     const isValidYTId = id => /^[A-Za-z0-9_-]{11}$/.test(id) && !/^(.)\1{10}$/.test(id);
 
     // ====== Utils ======
     const $ = s => document.querySelector(s);
     const fmtClock = d => new Intl.DateTimeFormat('pt-BR', {hour:'2-digit',minute:'2-digit', timeZone: TIMEZONE}).format(d);
+    const fmtDur = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
+      return (h ? h + ':' + String(m).padStart(2,'0') : m) + ':' + String(x).padStart(2,'0'); };
+    const fmtLong = s => { const h = Math.floor(s/3600), m = Math.round(s%3600/60); return h ? `${h}h${String(m).padStart(2,'0')}` : `${m} min`; };
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const sumDur = arr => arr.reduce((s,v)=> s + (v.dur||0), 0);
-    const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+    const track = (name, params) => { try{ window.gtag && gtag('event', name, params || {}); }catch{} };
 
-    function pickCurrentByTime(){
-      const total = sumDur(PLAYLIST);
-      if(!total) return {index:0, offset:0, loopStart: new Date(EPOCH)};
-      // EPOCH e Date.now() são instantes absolutos (UTC): todos os visitantes,
-      // em qualquer fuso, calculam a mesma posição. O fuso só afeta a exibição (fmtClock).
-      const elapsed = Math.floor((Date.now() - EPOCH)/1000); // segs
-      let t = ((elapsed % total) + total) % total; // posição dentro do loop
+    /** Posição na grade para um instante. EPOCH e Date.now() são absolutos (UTC):
+     *  todos os visitantes, em qualquer fuso, calculam o mesmo vídeo e o mesmo segundo. */
+    function pickCurrentByTime(list = PLAYLIST, now = Date.now()){
+      const total = sumDur(list);
+      if(!total) return { index:0, offset:0, start:new Date(now), end:new Date(now), loopStart:new Date(EPOCH) };
+      const elapsed = Math.floor((now - EPOCH)/1000);
+      let t = ((elapsed % total) + total) % total;
       let idx = 0;
-      while(idx < PLAYLIST.length && t >= (PLAYLIST[idx].dur||0)){
-        t -= (PLAYLIST[idx].dur||0); idx++;
-      }
-      if(idx >= PLAYLIST.length){ idx = 0; t = 0; }
-      // calcula início dessa volta para montar grade com horários bonitinhos
+      while(idx < list.length && t >= (list[idx].dur||0)){ t -= (list[idx].dur||0); idx++; }
+      if(idx >= list.length){ idx = 0; t = 0; }
       const loops = Math.floor(elapsed / total);
       const loopStart = new Date(EPOCH + loops*total*1000);
-      return { index: idx, offset: t, loopStart };
+      const start = new Date(now - t*1000);
+      const end = new Date(+start + list[idx].dur*1000);
+      return { index: idx, offset: t, start, end, loopStart };
     }
 
+    /** Aceita o formato novo ({videos:[...], source, updated...}) e o antigo (array). */
+    function normalize(data){
+      const raw = Array.isArray(data) ? data : (data && Array.isArray(data.videos) ? data.videos : null);
+      if(!raw) return null;
+      const videos = raw
+        .filter(x => x && isValidYTId(String(x.id||'')) && Number(x.dur) > 0)
+        .map(x => ({ id:String(x.id), title:String(x.title||'Sem título'), dur:Math.round(Number(x.dur)) }));
+      const skipped = raw.length - videos.length;
+      if(skipped) console.warn(`[TV] ${skipped} item(ns) ignorado(s) em ${PLAYLIST_JSON_URL}: ID inválido/placeholder ou "dur" ausente.`);
+      const meta = Array.isArray(data) ? { source:'manual' } : { source: data.source || 'manual', updated: data.updated, channel: data.channel };
+      return { videos, meta };
+    }
+    const sameList = (a, b) => a.length === b.length && a.every((v,i) => v.id === b[i].id && v.dur === b[i].dur && v.title === b[i].title);
+
+    // ====== Status / avisos ======
+    function setStatus(kind, text){
+      const el = $('#syncTag');
+      el.className = 'tag is-' + kind;
+      el.textContent = text;
+    }
+    function renderNotice(){
+      const el = $('#tvNotice');
+      let msg = '';
+      if(META.source === 'reserva') msg = 'Exibindo a programação reserva: a grade completa do canal não pôde ser carregada agora. Tentamos de novo a cada 5 minutos.';
+      else if(META.source === 'exemplo' || !PLAYLIST.length) msg = 'A programação com os vídeos do canal está sendo preparada. Enquanto isso, confira os vídeos no YouTube.';
+      if(pending) msg = (msg ? msg + ' ' : '') + `Grade atualizada: entra no ar às ${fmtClock(pickCurrentByTime().end)}, ao fim do vídeo atual.`;
+      el.textContent = msg;
+      el.classList.toggle('is-on', !!msg);
+    }
+    function renderStats(){
+      const parts = [`${PLAYLIST.length} vídeo${PLAYLIST.length === 1 ? '' : 's'}`, `${fmtLong(sumDur(PLAYLIST))} de programação`];
+      if(META.updated){ const d = new Date(META.updated); if(!isNaN(d)) parts.push('atualizada em ' + d.toLocaleDateString('pt-BR', { timeZone: TIMEZONE })); }
+      $('#tvStats').innerHTML = parts.map(p => `<span class="tag">${esc(p)}</span>`).join('');
+    }
+
+    // ====== Guia + faixa "no ar" ======
     function buildGuide(){
       const g = $('#guide');
-      const { index, offset, loopStart } = pickCurrentByTime();
-      const list = [];
-      let t = new Date(loopStart);
-      // avança até o início do vídeo atual
-      for(let i=0;i<index;i++) t = new Date(+t + (PLAYLIST[i].dur*1000));
-      // atual + próximos 6
-      for(let k=0;k<7;k++){
-        const i = (index + k) % PLAYLIST.length;
-        const v = PLAYLIST[i];
-        const start = new Date(+t + (k===0 ? 0 : 0)); // já está em t correto
-        const end = new Date(+start + v.dur*1000);
-        list.push({i, v, start, end, now: k===0});
+      if(!PLAYLIST.length){ g.innerHTML = ''; return; }
+      const cur = pickCurrentByTime();
+      const rows = [];
+      let t = cur.start;
+      for(let k = 0; k < Math.min(GUIDE_SIZE, Math.max(PLAYLIST.length, GUIDE_SIZE)); k++){
+        const v = PLAYLIST[(cur.index + k) % PLAYLIST.length];
+        const end = new Date(+t + v.dur*1000);
+        rows.push({ v, start:t, end, now:k===0 });
         t = end;
       }
-      g.innerHTML = list.map(row => `
-        <article class="item ${row.now?'now':''}">
-          <div class="meta">${fmtClock(row.start)}–${fmtClock(row.end)}</div>
-          <div><strong>${row.v.title||'Sem título'}</strong><div class="small">ID: ${row.v.id}</div></div>
-          <div class="tag">${Math.round(row.v.dur/60)} min</div>
-        </article>
-      `).join('');
-      $('#nowTitle').textContent = PLAYLIST[index]?.title || '—';
-      $('#nowClock').textContent = fmtClock(new Date());
+      g.innerHTML = rows.map(r => `
+        <article class="item ${r.now ? 'is-now' : ''}"${r.now ? ' aria-current="true"' : ''}>
+          <div class="meta">${fmtClock(r.start)}–${fmtClock(r.end)}</div>
+          <div>
+            ${r.now ? '<span class="onair">NO AR</span>' : ''}<strong><a href="https://www.youtube.com/watch?v=${encodeURIComponent(r.v.id)}" target="_blank" rel="noopener">${esc(r.v.title)}</a></strong>
+            ${r.now ? `<div class="mini"><i id="guideMini" style="width:${(100*cur.offset/r.v.dur).toFixed(1)}%"></i></div>` : ''}
+          </div>
+          <div class="tag">${fmtDur(r.v.dur)}</div>
+        </article>`).join('');
+    }
+    function renderNowBar(){
+      if(!PLAYLIST.length) return;
+      const cur = pickCurrentByTime();
+      const v = PLAYLIST[cur.index];
+      const next = PLAYLIST[(cur.index + 1) % PLAYLIST.length];
+      const pct = Math.min(100, 100*cur.offset/v.dur);
+      $('#nowTitle').textContent = v.title;
+      $('#barTitle').textContent = v.title;
+      $('#barNext').innerHTML = `A seguir às ${fmtClock(cur.end)}: <strong>${esc(next.title)}</strong>`;
+      $('#barElapsed').textContent = fmtDur(cur.offset);
+      $('#barRemain').textContent = '-' + fmtDur(v.dur - cur.offset);
+      $('#barFill').style.width = pct.toFixed(2) + '%';
+      $('#barTrack').setAttribute('aria-valuenow', Math.round(pct));
+      const mini = $('#guideMini'); if(mini) mini.style.width = pct.toFixed(1) + '%';
+      // virou o vídeo: refaz a grade
+      if(renderNowBar.lastId !== v.id + cur.start.getTime()){ renderNowBar.lastId = v.id + cur.start.getTime(); buildGuide(); }
+    }
+    function renderAll(){ buildGuide(); renderNowBar(); renderNotice(); renderStats(); }
+
+    // ====== Tela de aviso (slate) ======
+    let slateFor = null; // ID do vídeo cujo horário está coberto pela slate
+    function showSlate(title, text, forId){
+      slateFor = forId || null;
+      $('#slateTitle').textContent = title;
+      $('#slateText').textContent = text;
+      $('#slate').classList.add('is-on');
+    }
+    function hideSlate(){ slateFor = null; $('#slate').classList.remove('is-on'); }
+    let slotTimer = null;
+    function resyncAtSlotEnd(){
+      clearTimeout(slotTimer);
+      const ms = pickCurrentByTime().end - Date.now();
+      slotTimer = setTimeout(() => { hideSlate(); syncToSchedule(true); }, Math.max(500, ms + 300));
     }
 
     // ====== YouTube Player ======
-    let player, booted=false, target = {videoId:null, seek:0};
+    let player, booted = false, playingId = null;
+    const warnedDur = new Set();
     function ensureYT(){
       if(window.YT && YT.Player){ onYouTubeIframeAPIReady(); return; }
       const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.onerror = () => { setStatus('warn', 'Sem player'); showSlate('Não foi possível carregar o player do YouTube', 'Verifique sua conexão ou bloqueadores de conteúdo e recarregue a página.'); };
       document.head.appendChild(tag);
+      setTimeout(() => { if(!booted && !$('#slate').classList.contains('is-on')){ setStatus('warn', 'Sem player'); showSlate('O player do YouTube está demorando para carregar', 'Verifique sua conexão ou bloqueadores de conteúdo e recarregue a página.'); } }, 15000);
     }
     window.onYouTubeIframeAPIReady = function(){
-      if(player) return;
-      const opts = {
-        videoId: 'CYbAoKRh8JA',
-        playerVars: {
-          autoplay: 1, controls: 0, disablekb: 1, fs: 0, modestbranding: 1, playsinline: 1,
-          rel: 0, iv_load_policy: 3
-        },
-        events: {
-          onReady: onReady,
-          onStateChange: onStateChange,
-          onError: onError
-        }
-      };
-      player = new YT.Player('player', opts);
+      if(player || !PLAYLIST.length) return;
+      const cur = pickCurrentByTime();
+      playingId = PLAYLIST[cur.index].id;
+      player = new YT.Player('player', {
+        videoId: playingId,
+        playerVars: { autoplay:1, controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1, rel:0, iv_load_policy:3, start: Math.floor(cur.offset) },
+        events: { onReady, onStateChange, onError }
+      });
     };
 
     function onReady(){
       booted = true;
+      hideSlate();
       player.mute(); // garante autoplay
       $('#overlay').style.display = 'flex';
-      syncToSchedule(true);
+      syncToSchedule(false);
       heartbeat();
     }
     function onStateChange(e){
-      // 0 ended, 1 playing, 2 paused, 3 buffering
-      if(e.data === YT.PlayerState.ENDED){
-        // troca pro próximo da playlist conforme relógio (não “fila local”)
-        syncToSchedule(true);
+      if(e.data === YT.PlayerState.PLAYING){
+        setStatus('ok', 'Sincronizado');
+        // confere se a duração da playlist bate com a real (diferença desloca a grade)
+        const real = player.getDuration?.(), v = PLAYLIST.find(x => x.id === playingId);
+        if(v && real > 0 && Math.abs(real - v.dur) > 2 && !warnedDur.has(v.id)){
+          warnedDur.add(v.id);
+          console.warn(`[TV] "dur" de ${v.id} na playlist é ${v.dur}s, mas o vídeo tem ${Math.round(real)}s. Rode: node scripts/tv-playlist.mjs sync --refresh`);
+        }
+      } else if(e.data === YT.PlayerState.BUFFERING){
+        setStatus('sync', 'Carregando…');
+      } else if(e.data === YT.PlayerState.ENDED){
+        if(applyPendingIfDue(true)) return;
+        const cur = pickCurrentByTime();
+        // o vídeo acabou antes do horário previsto ("dur" maior que o real): não recarrega em loop,
+        // mostra intervalo até o próximo horário da grade
+        if(PLAYLIST[cur.index].id === playingId && (cur.end - Date.now()) > 2000){
+          setStatus('sync', 'Intervalo');
+          showSlate('Intervalo', `O próximo vídeo começa às ${fmtClock(cur.end)}.`, playingId);
+          resyncAtSlotEnd();
+        } else {
+          syncToSchedule(true);
+        }
       }
     }
-    function onError(){ console.warn('YT error'); setTimeout(()=> syncToSchedule(true), 1500); }
+    function onError(e){
+      // 2 = ID inválido, 5 = erro HTML5, 100 = removido/privado, 101/150 = incorporação bloqueada
+      const cur = pickCurrentByTime();
+      console.warn(`[TV] erro ${e && e.data} no vídeo ${playingId}. Mostrando aviso até ${fmtClock(cur.end)}.`);
+      setStatus('warn', 'Vídeo indisponível');
+      showSlate('Este vídeo não está disponível agora', `A programação continua às ${fmtClock(cur.end)}.`, playingId);
+      track('tv_video_error', { video_id: playingId, error_code: e && e.data });
+      resyncAtSlotEnd(); // sem tentar o mesmo vídeo em loop: espera o próximo horário
+    }
 
     // ====== Sincronização ======
     function syncToSchedule(forceLoad=false){
-      if(!booted) return;
+      renderNowBar();
+      if(!booted || !PLAYLIST.length) return;
+      applyPendingIfDue(false);
       const { index, offset } = pickCurrentByTime();
-      const vid = PLAYLIST[index]?.id;
-      if(!vid){ return; }
+      const vid = PLAYLIST[index].id;
+      if(slateFor && slateFor === vid) return; // aviso cobrindo este horário: não insiste
 
-      const curId = player.getVideoData()?.video_id;
+      const curId = player.getVideoData?.()?.video_id;
       const curTime = player.getCurrentTime ? player.getCurrentTime() : 0;
       const drift = Math.abs(curTime - offset);
 
-      // decide se recarrega
-      if(forceLoad || vid !== curId || drift > 3){
-        try{
-          player.loadVideoById(vid, offset, 'hd1080');
-        }catch{
-          player.cueVideoById(vid, offset, 'hd1080');
-          setTimeout(()=> player.playVideo?.(), 200);
-        }
-        $('#syncTag').textContent = 'Sincronizado';
-      }else{
-        // apenas corrige leve drift
-        if(drift > 0.8) player.seekTo(offset, true);
+      if(forceLoad || vid !== curId || vid !== playingId || drift > 3){
+        hideSlate();
+        playingId = vid;
+        setStatus('sync', 'Sincronizando…');
+        try { player.loadVideoById({ videoId: vid, startSeconds: offset }); }
+        catch { player.cueVideoById({ videoId: vid, startSeconds: offset }); setTimeout(()=> player.playVideo?.(), 200); }
+      } else if(drift > 0.8){
+        player.seekTo(offset, true);
       }
-      buildGuide();
-      $('#nowTitle').textContent = PLAYLIST[index]?.title || '—';
     }
 
-    // batimento: mantém hora, resincroniza leve e detecta troca de bloco
-    function heartbeat(){
-      $('#clockBRT').textContent = fmtClock(new Date()) + ' BRT';
-      // resync leve cada 15s
-      syncToSchedule(false);
-      setTimeout(heartbeat, 15000);
-    }
-
-    // resincroniza quando volta ao foco
-    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) setTimeout(()=> syncToSchedule(true), 400); });
+    // batimento: resincroniza leve a cada 15s (só recarrega se mudou de vídeo ou desviou > 3s)
+    function heartbeat(){ syncToSchedule(false); setTimeout(heartbeat, 15000); }
+    // ao voltar para a aba: corrige o ponto sem recarregar à toa
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) setTimeout(()=> syncToSchedule(false), 400); });
 
     // ====== Controles ======
     function unmute(){
       try{ player.unMute(); }catch{}
       $('#overlay').style.display = 'none';
+      track('tv_unmute');
     }
     $('#btnUnmute').onclick = unmute;
     $('#btnUnmute2').onclick = unmute;
-
     $('#btnFS').onclick = ()=>{
       const el = document.documentElement;
       if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
     };
 
-    // ====== Playlist externa (opcional) ======
+    // ====== Playlist (tv/playlist.json) ======
+    function applyPlaylist(list, meta){
+      PLAYLIST = list; META = meta; pending = null; clearTimeout(pendingTimer);
+      renderAll();
+    }
+    /** Aplica a playlist pendente quando o vídeo atual (da grade antiga) terminou. */
+    function applyPendingIfDue(fromEnded){
+      if(!pending) return false;
+      if(!fromEnded && Date.now() < pending.at) return false;
+      applyPlaylist(pending.list, pending.meta);
+      syncToSchedule(true);
+      return true;
+    }
     async function tryLoadJSON(){
+      let parsed = null;
       try{
-        const r = await fetch(PLAYLIST_JSON_URL, {cache:'no-store'});
-        if(!r.ok) throw 0;
-        const data = await r.json();
-        if(!Array.isArray(data)) return;
-        const valid = data
-          .filter(x => x && isValidYTId(String(x.id||'')) && Number(x.dur) > 0)
-          .map(x => ({ id:String(x.id), title:String(x.title||'Sem título'), dur:Number(x.dur) }));
-        const skipped = data.length - valid.length;
-        if(skipped) console.warn(`[TV] ${skipped} item(ns) ignorado(s) em ${PLAYLIST_JSON_URL}: ID inválido/placeholder ou "dur" ausente.`);
-        if(!valid.length) return; // mantém a playlist atual em vez de esvaziar a grade
-        // Só recarrega o player se a playlist realmente mudou (evita cortar o vídeo a cada 5 min)
-        const changed = JSON.stringify(valid) !== JSON.stringify(PLAYLIST);
-        PLAYLIST = valid;
-        buildGuide();
-        if(changed) syncToSchedule(true);
-      }catch(e){
-        // silencioso: mantém fallback
+        const r = await fetch(PLAYLIST_JSON_URL, { cache:'no-store' });
+        if(r.ok) parsed = normalize(await r.json());
+      }catch(e){ /* rede/JSON inválido: mantém a grade atual */ }
+
+      if(!parsed || !parsed.videos.length){
+        if(META.source === 'reserva') renderNotice();
+        return; // sem dados válidos: nunca esvazia a grade
       }
+      const { videos, meta } = parsed;
+      if(sameList(videos, PLAYLIST)){ META = meta; renderNotice(); renderStats(); return; } // nada mudou: não mexe no player
+
+      if(!booted){ applyPlaylist(videos, meta); return; } // player ainda não começou: troca direto
+
+      // Se o vídeo e o ponto atuais são os mesmos na grade nova, troca sem interromper.
+      const curOld = pickCurrentByTime(PLAYLIST), curNew = pickCurrentByTime(videos);
+      if(videos[curNew.index].id === playingId && Math.abs(curNew.offset - curOld.offset) < 3){
+        applyPlaylist(videos, meta);
+        return;
+      }
+      // Senão, deixa o vídeo atual terminar e só então entra a grade nova
+      pending = { list: videos, meta, at: +curOld.end };
+      clearTimeout(pendingTimer);
+      pendingTimer = setTimeout(() => applyPendingIfDue(false), Math.max(0, curOld.end - Date.now()) + 300);
+      renderNotice();
     }
     setInterval(tryLoadJSON, REFRESH_JSON_MS);
 
     // ====== Inicialização ======
-    ensureYT();
-    buildGuide();
-    tryLoadJSON();
-    // reloginho
-    setInterval(()=> { $('#clockBRT').textContent = fmtClock(new Date()) + ' BRT'; }, 1000);
-    // “Sincronizado” pisca quando ajusta
-    setInterval(()=>{ const el=$('#syncTag'); el.textContent = (el.textContent==='Sincronizado'?'OK':'Sincronizado'); }, 2000);
+    (async () => {
+      renderAll();
+      await Promise.race([tryLoadJSON(), new Promise(r => setTimeout(r, 2500))]); // não segura o player se a rede estiver lenta
+      ensureYT();
+    })();
+    // relógios e barra de progresso
+    setInterval(()=> {
+      $('#clockBRT').textContent = fmtClock(new Date()) + ' BRT';
+      $('#nowClock').textContent = fmtClock(new Date());
+      renderNowBar();
+      if(pending && Date.now() >= pending.at) applyPendingIfDue(false);
+    }, 1000);
   </script>
 </body>
 </html>

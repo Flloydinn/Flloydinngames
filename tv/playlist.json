@@ -1,3 +1,91 @@
-[
-  { "id": "CYbAoKRh8JA", "title": "Trailer do Canal", "dur": 120 }
-]
+{
+  "channel": {
+    "id": "UCZs7v1mWuMmcssEFk9sW7PA",
+    "handle": "@flloydinn",
+    "title": "FLLOYDINN GAMEPLAY"
+  },
+  "source": "rss",
+  "updated": "2026-11-23T17:20:43.874Z",
+  "count": 13,
+  "totalSeconds": 6708,
+  "videos": [
+    {
+      "id": "qUu9A3DCDIQ",
+      "title": "ZOANDO NO MÁFIA III",
+      "dur": 1112,
+      "published": "2022-01-12"
+    },
+    {
+      "id": "9UqW2L4Ha1A",
+      "title": "Feliz 2022!!!",
+      "dur": 87,
+      "published": "2022-01-01"
+    },
+    {
+      "id": "h3BVy54S2Eg",
+      "title": "FUGINDO DO PREDADOR COM ESTILO | Predator",
+      "dur": 628,
+      "published": "2021-09-30"
+    },
+    {
+      "id": "CYbAoKRh8JA",
+      "title": "PlayStation Showcase 2021 | Resumão GEEK",
+      "dur": 237,
+      "published": "2021-09-16"
+    },
+    {
+      "id": "s131KGEhHSs",
+      "title": "HISTÓRIAS DE TERROR | Horror Stories [Demo]",
+      "dur": 620,
+      "published": "2021-09-14"
+    },
+    {
+      "id": "PL_W4SS3GEk",
+      "title": "TRANSFORMANDO INIMIGOS EM GALINHAS | Realm Royale",
+      "dur": 1087,
+      "published": "2021-09-07"
+    },
+    {
+      "id": "0oXQDXck1W0",
+      "title": "FIZ MIOJO SABOR WHATSAPP ¿ QUIERES ?",
+      "dur": 314,
+      "published": "2021-09-04"
+    },
+    {
+      "id": "W1fMRgdPCb0",
+      "title": "COMBATE NA MANSÃO BRAITHWAITE | Red Dead Online",
+      "dur": 452,
+      "published": "2021-08-31"
+    },
+    {
+      "id": "zayXFZfXzMg",
+      "title": "CRISTIANO RONALDO VS COCA-COLA, CR7 ODEIA COCA-COLA!!!",
+      "dur": 169,
+      "published": "2021-08-27"
+    },
+    {
+      "id": "a-_2L1LNSeo",
+      "title": "UM CONTRA TODOS | Red Dead Online",
+      "dur": 318,
+      "published": "2021-08-23"
+    },
+    {
+      "id": "rB3E257j-oE",
+      "title": "COMPRANDO FERRAMENTAS DE CAÇA | Red Dead Online",
+      "dur": 275,
+      "published": "2021-08-20"
+    },
+    {
+      "id": "7sFDdqvgtjI",
+      "title": "PAI TÁ DE NAVE | Fortnite",
+      "dur": 859,
+      "published": "2021-08-13"
+    },
+    {
+      "id": "-6PBG0gk2dQ",
+      "title": "O CARA MAIS CHATO DO JOGO! | Red Dead Online",
+      "dur": 550,
+      "published": "2021-07-18"
+    }
+  ]
+}

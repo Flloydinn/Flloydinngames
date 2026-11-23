@@ -128,6 +128,16 @@
     .modal__title{margin:0;font-size:1rem}
     .modal__body{aspect-ratio:16/9;background:#000}
     .modal__body iframe{width:100%;height:100%;display:block}
+    /* Facade: thumbnail + play (o iframe do YouTube só carrega no clique) */
+    .thumb__play{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.35));border:0;padding:0;cursor:pointer;color:#fff}
+    .thumb__play svg{transition:transform .15s ease, filter .15s ease;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+    .thumb__play:hover svg,.thumb__play:focus-visible svg{transform:scale(1.1)}
+    .thumb__play:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+    .btn--save.is-saved{border-color:transparent;background:linear-gradient(135deg, var(--ok) 0%, #79e7b1 100%);color:#0b0b0c}
+    .notice{margin:.4rem 0 0;padding:.55rem .75rem;border:1px solid rgba(255,184,77,.35);background:rgba(255,184,77,.06);border-radius:.6rem;color:#ffe2a8;font-size:.9rem}
+    .meta--stack{display:block}
+    .meta__game{display:block;color:var(--text);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meta__stats{display:block;font-size:.8rem}
     /* Skeletons */
     .skeleton{position:relative;overflow:hidden;background:#141519}
     .skeleton::after{
@@ -175,17 +185,16 @@
         </select>
         <select id="type" class="select" aria-label="Tipo de conteúdo">
           <option value="all">Todos os tipos</option>
-          <option value="video">Vídeo</option>
-          <option value="short">Short</option>
-          <option value="live">Live</option>
-          <option value="serie">Série</option>
-          <option value="clipe">Clipe</option>
+          <option value="video">Vídeos</option>
+          <option value="short">Shorts</option>
+          <option value="live">Lives</option>
         </select>
       </div>
     </div>
     <div class="container section" aria-label="Categorias">
       <div id="chips" class="filters" role="listbox" aria-label="Categorias por jogo"></div>
       <p class="legend" id="legend"></p>
+      <p class="notice" id="dataNotice" role="status" hidden></p>
     </div>
   </div>
 
@@ -213,33 +222,26 @@
   <!-- Rodapé -->
   <site-footer></site-footer>
   <script>
-    // ===== Dataset de exemplo =====
-    // Campos: id, youtubeId, title, game, categories, type, durationMin, views, dateISO, thumb
-    const SAMPLE = [
-      {id:1,youtubeId:"CYbAoKRh8JA",title:"Coop Caótico: primeiras vitórias",game:"Overcooked 2",categories:["Coop","Diversão"],type:"video",durationMin:12,views:1200,dateISO:"2025-08-12",thumb:"assets/game2.jpg"},
-      {id:2,youtubeId:"dQw4w9WgXcQ",title:"Aventura Insana parte 1",game:"Elden Ring",categories:["Aventura","Desafio"],type:"serie",durationMin:28,views:980,dateISO:"2025-07-30",thumb:"assets/game1.jpg"},
-      {id:3,youtubeId:"r1G1JkqQ4",title:"Indie surpresa em 10 minutos",game:"Hades",categories:["Indie","Rápido"],type:"short",durationMin:3,views:4200,dateISO:"2025-08-28",thumb:"assets/game3.jpg"},
-      {id:4,youtubeId:"V-_O7nl0Ii0",title:"Battle Royale com a galera",game:"Fortnite",categories:["Multiplayer"],type:"live",durationMin:95,views:2100,dateISO:"2025-09-02",thumb:"assets/game4.jpg"},
-      {id:5,youtubeId:"kXYiU_JCYtU",title:"Clipes da semana",game:"Vários",categories:["Clipes"],type:"clipe",durationMin:8,views:1550,dateISO:"2025-09-05",thumb:"assets/game6.jpg"},
-      {id:6,youtubeId:"3JZ_D3ELwOQ",title:"Noite de terror",game:"Phasmophobia",categories:["Terror"],type:"video",durationMin:22,views:865,dateISO:"2025-08-15",thumb:"assets/game5.jpg"},
-      {id:7,youtubeId:"oHg5SJYRHA0",title:"Série Soulslike parte 2",game:"Elden Ring",categories:["Aventura","Desafio"],type:"serie",durationMin:31,views:640,dateISO:"2025-08-05",thumb:"assets/game1.jpg"},
-      {id:8,youtubeId:"M7lc1UVf-VE",title:"Coop de chorar de rir",game:"Gang Beasts",categories:["Coop","Diversão"],type:"video",durationMin:16,views:1330,dateISO:"2025-09-07",thumb:"assets/game2.jpg"},
-      {id:9,youtubeId:"5NV6Rdv1a3I",title:"Short: momento épico",game:"Apex Legends",categories:["Clipes"],type:"short",durationMin:1,views:5200,dateISO:"2025-09-09",thumb:"assets/game4.jpg"},
-      {id:10,youtubeId:"FTQbiNvZqaY",title:"Live especial com inscritos",game:"Minecraft",categories:["Multiplayer"],type:"live",durationMin:120,views:3400,dateISO:"2025-08-20",thumb:"assets/game6.jpg"},
-      {id:11,youtubeId:"Zi_XLOBDo_Y",title:"Indie roguelike em alta",game:"Dead Cells",categories:["Indie"],type:"video",durationMin:18,views:760,dateISO:"2025-07-21",thumb:"assets/game3.jpg"},
-      {id:12,youtubeId:"kJQP7kiw5Fk",title:"Corrida maluca com a comunidade",game:"Trackmania",categories:["Corrida","Multiplayer"],type:"video",durationMin:14,views:1500,dateISO:"2025-08-26",thumb:"assets/game6.jpg"},
-      {id:13,youtubeId:"eY52Zsg-KVI",title:"Clipes: melhores fails",game:"Vários",categories:["Clipes","Diversão"],type:"clipe",durationMin:7,views:2100,dateISO:"2025-06-28",thumb:"assets/game5.jpg"},
-      {id:14,youtubeId:"2vjPBrBU-TM",title:"Short: boss deleteado",game:"Elden Ring",categories:["Aventura"],type:"short",durationMin:0.8,views:6100,dateISO:"2025-08-29",thumb:"assets/game1.jpg"},
-      {id:15,youtubeId:"hY7m5jjJ9mM",title:"Live maratona 2 horas",game:"Valorant",categories:["FPS","Multiplayer"],type:"live",durationMin:132,views:2700,dateISO:"2025-09-01",thumb:"assets/game4.jpg"},
-      {id:16,youtubeId:"tVj0ZTS4WF4",title:"Guia rápido para iniciantes",game:"Fortnite",categories:["Dica"],type:"video",durationMin:9,views:3200,dateISO:"2025-08-10",thumb:"assets/game4.jpg"},
-      {id:17,youtubeId:"9bZkp7q19f0",title:"Série Soulslike parte 3",game:"Elden Ring",categories:["Aventura","Desafio"],type:"serie",durationMin:29,views:710,dateISO:"2025-08-18",thumb:"assets/game1.jpg"},
-      {id:18,youtubeId:"60ItHLz5WEA",title:"Short: combo perfeito",game:"Hades",categories:["Indie","Clipes"],type:"short",durationMin:0.7,views:4550,dateISO:"2025-09-03",thumb:"assets/game3.jpg"}
+    // ===== Dados do canal =====
+    // data/videos.json é gerado por scripts/tv-playlist.mjs (GitHub Actions, diário) a partir do YouTube.
+    // Nenhuma chave de API no site. Ordem de tentativa: catálogo -> playlist da TV -> reserva abaixo.
+    const SOURCES = [['data/videos.json', 'catalogo'], ['tv/playlist.json', 'tv']];
+    const FALLBACK = [
+      { id:'qUu9A3DCDIQ', title:'ZOANDO NO MÁFIA III', published:'2022-01-12', dur:1112, type:'video', game:'Mafia III' },
+      { id:'h3BVy54S2Eg', title:'FUGINDO DO PREDADOR COM ESTILO | Predator', published:'2021-09-30', dur:628, type:'video', game:'Predator' },
+      { id:'-6PBG0gk2dQ', title:'O CARA MAIS CHATO DO JOGO! | Red Dead Online', published:'2021-07-18', dur:550, type:'video', game:'Red Dead Online' },
     ];
+    const ID_RE = /^[A-Za-z0-9_-]{11}$/;
+    const TYPE_LABEL = { video:'Vídeo', short:'Short', live:'Live' };
+    const TYPE_PLURAL = { video:'Vídeos', short:'Shorts', live:'Lives' };
+    let VIDEOS = [];
+    let CHIP_GAMES = [];
 
-    // ===== Estado e elementos =====
+    // ===== Elementos e estado =====
     const elGrid = document.getElementById('grid');
     const elChips = document.getElementById('chips');
     const elLegend = document.getElementById('legend');
+    const elNotice = document.getElementById('dataNotice');
     const elQ = document.getElementById('q');
     const elClear = document.getElementById('clearBtn');
     const elSort = document.getElementById('sort');
@@ -248,48 +250,94 @@
     const elPrev = document.getElementById('prev');
     const elNext = document.getElementById('next');
 
-    const state = {
-      q: "",
-      type: "all",
-      duration: "all",
-      sort: "recent",
-      category: "todas",
-      page: 1,
-      perPage: 12
-    };
+    const state = { q:"", type:"all", duration:"all", sort:"recent", category:"todas", page:1, perPage:12 };
 
     // ===== Util =====
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const fmtViews = n => n >= 1000 ? (n/1000).toFixed(n%1000===0?0:1).replace('.', ',') + ' mil' : String(n);
-    const fmtDate = iso => new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
-    const minutesToLabel = m => (m<1?`${Math.round(m*60)}s`:`${Math.round(m)} min`);
+    const fmtDateShort = iso => iso ? new Date(iso + 'T12:00:00').toLocaleDateString('pt-BR') : '';
+    const fmtDur = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
+      return (h ? h + ':' + String(m).padStart(2,'0') : m) + ':' + String(x).padStart(2,'0'); };
+    const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const saved = (() => { try { return new Set(JSON.parse(localStorage.getItem('fll_saved_videos') || '[]')); } catch { return new Set(); } })();
+    const persistSaved = () => { try { localStorage.setItem('fll_saved_videos', JSON.stringify([...saved])); } catch {} };
 
-    // ===== Categorias dinâmicas (por jogo) =====
-    const GAMES = Array.from(new Set(SAMPLE.map(v => v.game)));
+    /** Normaliza um item do JSON; descarta qualquer coisa sem ID válido. A thumb é montada a partir do ID. */
+    function normalize(v){
+      if(!v || !ID_RE.test(String(v.id))) return null;
+      const dur = Math.max(0, Math.round(Number(v.dur) || 0));
+      return {
+        id: String(v.id),
+        title: String(v.title || 'Sem título'),
+        game: String(v.game || 'Outros'),
+        categories: Array.isArray(v.tags) ? v.tags.map(String) : [],
+        description: String(v.description || ''),
+        type: TYPE_LABEL[v.type] ? v.type : 'video',
+        durationSec: dur, durationMin: dur/60,
+        views: v.views != null && Number.isFinite(+v.views) ? +v.views : null,
+        dateISO: /^\d{4}-\d{2}-\d{2}$/.test(String(v.published || '').slice(0,10)) ? String(v.published).slice(0,10) : '',
+        thumb: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+        embeddable: v.embeddable !== false,
+      };
+    }
+
+    async function loadCatalog(){
+      for(const [url, src] of SOURCES){
+        try{
+          const r = await fetch(url, { cache:'no-cache' });
+          if(!r.ok) continue;
+          const d = await r.json();
+          const list = (Array.isArray(d) ? d : (d.videos || [])).map(normalize).filter(Boolean);
+          if(list.length) return { list, src };
+        }catch(e){ /* tenta a próxima fonte */ }
+      }
+      return { list: FALLBACK.map(normalize), src: 'reserva' };
+    }
+
+    // ===== Filtros dinâmicos (a partir dos dados reais) =====
+    function setupFilters(){
+      // tipos que existem de fato, com contagem
+      const counts = VIDEOS.reduce((c, v) => (c[v.type] = (c[v.type]||0) + 1, c), {});
+      elType.innerHTML = '<option value="all">Todos os tipos</option>' +
+        Object.keys(TYPE_PLURAL).filter(t => counts[t]).map(t => `<option value="${t}">${TYPE_PLURAL[t]} (${counts[t]})</option>`).join('');
+      if(state.type !== 'all' && !counts[state.type]) state.type = 'all';
+      elType.value = state.type;
+      // "Mais vistos" só se houver visualizações
+      const hasViews = VIDEOS.some(v => v.views != null);
+      const optViews = elSort.querySelector('option[value="views"]');
+      if(optViews){ optViews.hidden = !hasViews; optViews.disabled = !hasViews; }
+      if(state.sort === 'views' && !hasViews) state.sort = 'recent';
+      elSort.value = state.sort;
+      // chips por jogo: todos se forem poucos; senão os que têm 2+ vídeos, e o resto em "Outros"
+      const byGame = VIDEOS.reduce((c, v) => (v.game !== 'Outros' && (c[v.game] = (c[v.game]||0) + 1), c), {});
+      const games = Object.keys(byGame).sort((a, b) => byGame[b] - byGame[a] || a.localeCompare(b, 'pt'));
+      CHIP_GAMES = games.length <= 10 ? games : games.filter(g => byGame[g] >= 2);
+      const valid = ['todas', 'Outros', ...CHIP_GAMES];
+      if(!valid.includes(state.category)) state.category = 'todas';
+    }
+    const inOutros = v => !CHIP_GAMES.includes(v.game);
+
     function renderChips(){
-      const all = ["todas", ...GAMES];
-      elChips.innerHTML = "";
+      const all = ['todas', ...CHIP_GAMES, ...(VIDEOS.some(inOutros) ? ['Outros'] : [])];
+      elChips.innerHTML = '';
       all.forEach(g => {
         const b = document.createElement('button');
-        b.className = 'chip' + (state.category===g?' is-active':'');
-        b.role = 'option';
-        b.ariaSelected = state.category===g ? 'true':'false';
+        b.className = 'chip' + (state.category===g ? ' is-active' : '');
+        b.setAttribute('role', 'option');
+        b.setAttribute('aria-selected', state.category===g ? 'true' : 'false');
         b.textContent = g;
-        b.addEventListener('click', ()=>{
-          state.category = g;
-          state.page = 1;
-          update();
-        });
+        b.addEventListener('click', ()=>{ state.category = g; state.page = 1; update(); });
         elChips.appendChild(b);
       });
     }
 
     // ===== Filtro principal =====
     function applyFilters(){
-      const q = state.q.trim().toLowerCase();
-      let list = SAMPLE.filter(v=>{
-        const matchesQ = !q || [v.title, v.game, ...(v.categories||[])].join(' ').toLowerCase().includes(q);
+      const q = norm(state.q.trim());
+      const list = VIDEOS.filter(v => {
+        const matchesQ = !q || norm([v.title, v.game, v.description, ...v.categories].join(' ')).includes(q);
         const matchesType = state.type==='all' || v.type===state.type;
-        const matchesCat = state.category==='todas' || v.game===state.category;
+        const matchesCat = state.category==='todas' || (state.category==='Outros' ? inOutros(v) : v.game===state.category);
         const matchesDuration =
           state.duration==='all' ||
           (state.duration==='short' && v.durationMin<=5) ||
@@ -297,37 +345,37 @@
           (state.duration==='long' && v.durationMin>20);
         return matchesQ && matchesType && matchesCat && matchesDuration;
       });
-
       switch(state.sort){
-        case 'recent': list.sort((a,b)=> new Date(b.dateISO)-new Date(a.dateISO)); break;
-        case 'views': list.sort((a,b)=> b.views - a.views); break;
-        case 'durationAsc': list.sort((a,b)=> a.durationMin - b.durationMin); break;
-        case 'durationDesc': list.sort((a,b)=> b.durationMin - a.durationMin); break;
-        case 'title': list.sort((a,b)=> a.title.localeCompare(b.title)); break;
+        case 'recent': list.sort((a,b)=> b.dateISO.localeCompare(a.dateISO)); break;
+        case 'views': list.sort((a,b)=> (b.views ?? -1) - (a.views ?? -1)); break;
+        case 'durationAsc': list.sort((a,b)=> a.durationSec - b.durationSec); break;
+        case 'durationDesc': list.sort((a,b)=> b.durationSec - a.durationSec); break;
+        case 'title': list.sort((a,b)=> a.title.localeCompare(b.title, 'pt')); break;
       }
       return list;
     }
 
     // ===== Render =====
     function renderSkeletons(count=8){
-      elGrid.innerHTML = "";
-      for(let i=0;i<count;i++){
-        const c = document.createElement('article');
-        c.className = 'card';
-        c.innerHTML = `
+      elGrid.innerHTML = Array.from({ length: count }, () => `
+        <article class="card">
           <div class="thumb skeleton"></div>
           <div class="body">
             <div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div>
             <div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div>
-          </div>`;
-        elGrid.appendChild(c);
-      }
+          </div>
+        </article>`).join('');
     }
 
+    const PLAY_SVG = '<svg viewBox="0 0 68 48" width="56" height="40" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#8f0000" fill-opacity=".92"/><path d="M27 34V14l18 10z" fill="#fff"/></svg>';
+    const ytUrl = id => `https://www.youtube.com/watch?v=${id}`;
+
     function renderGrid(items){
+      const pages = Math.max(1, Math.ceil(items.length / state.perPage));
+      if(state.page > pages) state.page = pages;
       const start = (state.page-1)*state.perPage;
       const end = start + state.perPage;
-      const pageItems = items.slice(start,end);
+      const pageItems = items.slice(start, end);
 
       if(pageItems.length===0){
         elGrid.innerHTML = `<div class="empty">Nenhum resultado encontrado. Tente ajustar filtros ou termos de busca.</div>`;
@@ -336,66 +384,80 @@
         return;
       }
 
-      elGrid.innerHTML = pageItems.map(v=>`
+      elGrid.innerHTML = pageItems.map(v => {
+        const t = esc(v.title);
+        const play = v.embeddable
+          ? `<button class="thumb__play" type="button" data-play="${v.id}" aria-label="Assistir: ${t}">${PLAY_SVG}</button>`
+          : `<a class="thumb__play" href="${ytUrl(v.id)}" target="_blank" rel="noopener" aria-label="Abrir no YouTube: ${t}">${PLAY_SVG}</a>`;
+        const isSaved = saved.has(v.id);
+        return `
         <article class="card" data-id="${v.id}">
           <div class="thumb">
-            <img src="${v.thumb}" alt="${v.title}">
+            <img src="${v.thumb}" alt="" loading="lazy" decoding="async" width="480" height="360">
+            ${play}
             <div class="badge-row">
-              <span class="badge">${v.type.toUpperCase()}</span>
-              <span class="badge">${minutesToLabel(v.durationMin)}</span>
+              <span class="badge">${esc(TYPE_LABEL[v.type])}</span>
+              <span class="badge">${fmtDur(v.durationSec)}</span>
             </div>
           </div>
           <div class="body">
-            <h3 class="title" title="${v.title}">${v.title}</h3>
-            <div class="meta">
-              <span>${v.game}</span>
-              <span aria-hidden="true">•</span>
-              <span>${fmtViews(v.views)} views</span>
-              <span aria-hidden="true">•</span>
-              <time datetime="${v.dateISO}">${fmtDate(v.dateISO)}</time>
+            <h3 class="title" title="${t}">${t}</h3>
+            <div class="meta meta--stack">
+              <span class="meta__game">${esc(v.game)}</span>
+              <span class="meta__stats">${[
+                v.views != null ? `${fmtViews(v.views)} ${v.views === 1 ? 'visualização' : 'visualizações'}` : '',
+                v.dateISO ? `<time datetime="${v.dateISO}">${fmtDateShort(v.dateISO)}</time>` : ''
+              ].filter(Boolean).join(' <span aria-hidden="true">·</span> ')}</span>
             </div>
             <div class="actions">
-              <button class="btn btn--play" data-play="${v.youtubeId}" aria-label="Assistir ${v.title}">Assistir</button>
-              <button class="btn btn--save btn--small" data-save="${v.id}" aria-label="Salvar para depois">Salvar</button>
+              ${v.embeddable
+                ? `<button class="btn btn--play" data-play="${v.id}" aria-label="Assistir ${t}">Assistir</button>`
+                : `<a class="btn btn--play" href="${ytUrl(v.id)}" target="_blank" rel="noopener">Abrir no YouTube</a>`}
+              <button class="btn btn--save btn--small${isSaved ? ' is-saved' : ''}" data-save="${v.id}" aria-pressed="${isSaved}">${isSaved ? 'Salvo' : 'Salvar'}</button>
             </div>
           </div>
-        </article>
-      `).join('');
+        </article>`;
+      }).join('');
 
-      // Legenda
       const total = items.length;
-      const showing = `${start+1} a ${Math.min(end,total)}`;
-      elLegend.textContent = `Exibindo ${showing} de ${total} vídeos`;
-
-      // Paginação
+      elLegend.textContent = `Exibindo ${start+1} a ${Math.min(end,total)} de ${total} ${total === 1 ? 'vídeo' : 'vídeos'}`;
       elPrev.disabled = state.page===1;
-      elNext.disabled = end >= items.length;
-
-      // Delegação de eventos
-      elGrid.querySelectorAll('[data-play]').forEach(btn=>{
-        btn.addEventListener('click', ()=> openModal(btn.dataset.play, btn.closest('.card').querySelector('.title').textContent));
-      });
-      elGrid.querySelectorAll('[data-save]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          btn.textContent = 'Salvo';
-          btn.style.borderColor = 'transparent';
-          btn.style.background = 'linear-gradient(135deg, var(--ok) 0%, #79e7b1 100%)';
-          btn.setAttribute('aria-pressed','true');
-        });
-      });
+      elNext.disabled = end >= total;
     }
 
-    // ===== Modal Player =====
+    // um único listener para a grade (assistir / salvar)
+    elGrid.addEventListener('click', e => {
+      const play = e.target.closest('button[data-play]');
+      if(play){ const v = VIDEOS.find(x => x.id === play.dataset.play); if(v) openModal(v); return; }
+      const save = e.target.closest('[data-save]');
+      if(save){
+        const id = save.dataset.save;
+        saved.has(id) ? saved.delete(id) : saved.add(id);
+        persistSaved();
+        const on = saved.has(id);
+        save.textContent = on ? 'Salvo' : 'Salvar';
+        save.classList.toggle('is-saved', on);
+        save.setAttribute('aria-pressed', String(on));
+      }
+    });
+
+    // ===== Modal Player (iframe só é criado aqui, no clique) =====
     const modal = document.getElementById('modal');
     const mbody = document.getElementById('mbody');
     const mtitle = document.getElementById('mtitle');
     const mclose = document.getElementById('mclose');
     let lastFocus = null;
 
-    function openModal(youtubeId, title){
+    function openModal(v){
       lastFocus = document.activeElement;
-      mtitle.textContent = title;
-      mbody.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" title="${title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      mtitle.textContent = v.title;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0`;
+      iframe.title = v.title;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.setAttribute('frameborder', '0');
+      mbody.replaceChildren(iframe);
       modal.classList.add('open');
       modal.setAttribute('aria-hidden','false');
       mclose.focus();
@@ -403,7 +465,7 @@
     function closeModal(){
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden','true');
-      mbody.innerHTML = "";
+      mbody.replaceChildren();
       if(lastFocus) lastFocus.focus();
     }
     mclose.addEventListener('click', closeModal);
@@ -411,25 +473,17 @@
     window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
 
     // ===== Bind Controles =====
-    elQ.addEventListener('input', debounce(()=>{
-      state.q = elQ.value; state.page = 1; update();
-    }, 200));
-    elClear.addEventListener('click', ()=>{
-      elQ.value = ""; state.q = ""; state.page = 1; update();
-      elQ.focus();
-    });
+    elQ.addEventListener('input', debounce(()=>{ state.q = elQ.value; state.page = 1; update(); }, 200));
+    elClear.addEventListener('click', ()=>{ elQ.value = ""; state.q = ""; state.page = 1; update(); elQ.focus(); });
     elSort.addEventListener('change', ()=>{ state.sort = elSort.value; state.page = 1; update(); });
     elDuration.addEventListener('change', ()=>{ state.duration = elDuration.value; state.page = 1; update(); });
     elType.addEventListener('change', ()=>{ state.type = elType.value; state.page = 1; update(); });
     elPrev.addEventListener('click', ()=>{ if(state.page>1){ state.page--; update(); } });
     elNext.addEventListener('click', ()=>{ state.page++; update(); });
 
-    // ===== Debounce =====
-    function debounce(fn, wait){
-      let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), wait); };
-    }
+    function debounce(fn, wait){ let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), wait); }; }
 
-    // ===== URL Sync (opcional) =====
+    // ===== URL Sync =====
     function syncFromURL(){
       const p = new URLSearchParams(location.search);
       state.q = p.get('q') || state.q;
@@ -437,12 +491,9 @@
       state.duration = p.get('dur') || state.duration;
       state.sort = p.get('sort') || state.sort;
       state.category = p.get('cat') || state.category;
-      state.page = parseInt(p.get('page')||state.page,10);
-      // Preencher inputs
+      state.page = Math.max(1, parseInt(p.get('page') || state.page, 10) || 1);
       elQ.value = state.q;
-      elSort.value = state.sort;
       elDuration.value = state.duration;
-      elType.value = state.type;
     }
     function pushURL(){
       const p = new URLSearchParams();
@@ -453,35 +504,31 @@
       if(state.category!=='todas') p.set('cat',state.category);
       if(state.page!==1) p.set('page',String(state.page));
       const query = p.toString();
-      const url = query ? `?${query}` : location.pathname;
-      history.replaceState(null,'',url);
+      history.replaceState(null,'', query ? `?${query}` : location.pathname);
     }
 
     // ===== Update =====
     function update(){
       renderChips();
       renderSkeletons(6);
-      requestAnimationFrame(()=>{
-        const filtered = applyFilters();
-        renderGrid(filtered);
-        pushURL();
-      });
+      requestAnimationFrame(()=>{ renderGrid(applyFilters()); pushURL(); });
     }
 
     // ===== Inicialização =====
-    (function init(){
+    (async function init(){
       syncFromURL();
-      renderChips();
+      renderSkeletons(8);
+      const { list, src } = await loadCatalog();
+      VIDEOS = list;
+      if(src !== 'catalogo'){
+        elNotice.textContent = src === 'tv'
+          ? 'Mostrando os vídeos da programação da TV: o catálogo completo não carregou agora.'
+          : 'Mostrando uma seleção de vídeos: a lista do canal não carregou agora. Tente recarregar a página.';
+        elNotice.hidden = false;
+      }
+      setupFilters();
       update();
     })();
-
-    // ===== Nota de integração YouTube API =====
-    // Se desejar carregar vídeos automaticamente do seu canal:
-    // 1) Crie uma API Key no Google Cloud.
-    // 2) Use fetch('https://www.googleapis.com/youtube/v3/search?...') para obter vídeos.
-    // 3) Normalize para o formato do SAMPLE e faça SAMPLE.splice(0,SAMPLE.length,...novos).
-    // 4) Chame update() após popular.
-    // Mantenha a chave fora do cliente em produção, usando um pequeno backend proxy.
   </script>
 </body>
 </html>

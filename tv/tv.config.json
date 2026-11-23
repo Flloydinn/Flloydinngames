@@ -1,0 +1,18 @@
+{
+  "channelId": "UCZs7v1mWuMmcssEFk9sW7PA",
+  "handle": "@flloydinn",
+  "minDurationSec": 61,
+  "maxDurationSec": 10800,
+  "maxVideos": 60,
+  "order": "newest",
+  "exclude": [],
+  "include": [],
+  "catalog": {
+    "maxVideos": 500,
+    "exclude": [],
+    "games": {
+      "qUu9A3DCDIQ": "Mafia III",
+      "CYbAoKRh8JA": "PlayStation Showcase"
+    }
+  }
+}

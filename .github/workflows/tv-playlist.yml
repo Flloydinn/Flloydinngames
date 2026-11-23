@@ -1,0 +1,55 @@
+# Atualiza os vídeos do canal no site uma vez por dia:
+#   tv/playlist.json  -> grade da TV 24/7 (tv.html)
+#   data/videos.json  -> catálogo (videos.html e destaque do index.html)
+# - Com o secret YOUTUBE_API_KEY (Settings > Secrets and variables > Actions): usa a YouTube Data API
+#   (todos os uploads, duração exata). Sem ele: usa o RSS público (15 uploads mais recentes).
+# - Se a busca falhar ou vier vazia, o job falha e os arquivos publicados continuam os mesmos.
+# - Só faz commit quando algo muda; o push dispara o deploy do Netlify.
+#   Visualizações sozinhas só são atualizadas às segundas (evita um commit por dia só por views).
+name: Atualizar vídeos do canal (TV + catálogo)
+
+on:
+  schedule:
+    - cron: "17 9 * * *"   # todo dia às 06:17 (BRT)
+  workflow_dispatch: {}     # botão "Run workflow" para rodar na hora
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tv-playlist
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Buscar vídeos do canal
+        run: |
+          EXTRA=""
+          if [ "$(date -u +%u)" = "1" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then EXTRA="--stats"; fi
+          node scripts/tv-playlist.mjs sync $EXTRA
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
+      - name: Validar arquivos
+        run: node scripts/tv-playlist.mjs check --online
+
+      - name: Commit (somente se mudou)
+        run: |
+          if git diff --quiet -- tv/playlist.json data/videos.json && [ -z "$(git status --porcelain -- data/videos.json)" ]; then
+            echo "Nada mudou."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tv/playlist.json data/videos.json
+          git commit -m "Vídeos do canal: atualiza TV e catálogo"
+          git push
