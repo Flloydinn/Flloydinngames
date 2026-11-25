@@ -218,3 +218,18 @@ site-header,site-footer{display:contents}
 .stat strong{display:block;font-size:1.6rem;line-height:1.1;color:#fff;font-variant-numeric:tabular-nums}
 .stat span{font-size:.85rem;color:var(--muted)}
 @media (max-width:900px){ .cards-3{grid-template-columns:1fr} .stat-row{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* ====== Barra de rolagem (identidade cinema: trilha preta, polegar cinza, destaque --brand) ======
+   Chrome/Edge/Safari usam os seletores ::-webkit-scrollbar (permitem hover vermelho e cantos arredondados).
+   Firefox (e navegadores sem ::-webkit-scrollbar) usam scrollbar-width/scrollbar-color.
+   Nos dois casos a largura é fixa e fina: sem transições, sem scrollbar-gutter, sem mudança de layout. */
+:root{--sb-track:#0b0b0c;--sb-thumb:#5b5e68;--sb-thumb-hover:#b31212;--sb-thumb-active:#8f0000}
+@supports not selector(::-webkit-scrollbar){
+  :root{scrollbar-width:thin;scrollbar-color:var(--sb-thumb) var(--sb-track)}
+}
+::-webkit-scrollbar{width:10px;height:10px;background:var(--sb-track)}
+::-webkit-scrollbar-track{background:var(--sb-track)}
+::-webkit-scrollbar-thumb{background:var(--sb-thumb);border-radius:99px;border:2px solid var(--sb-track);min-height:32px;min-width:32px}
+::-webkit-scrollbar-thumb:hover{background:var(--sb-thumb-hover)}
+::-webkit-scrollbar-thumb:active{background:var(--sb-thumb-active)}
+::-webkit-scrollbar-corner{background:var(--sb-track)}
