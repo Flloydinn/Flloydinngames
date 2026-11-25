@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Flloydinn",
+  "short_name": "Flloydinn",
+  "description": "Hub do Flloydinn: gameplays, TV 24/7, Arcade com jogos 3D grátis, agenda, blog e loja.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0b0c",
+  "theme_color": "#8f0000",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "/assets/pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/pwa-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Arcade", "url": "/arcade.html", "icons": [{ "src": "/assets/pwa-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "TV 24/7", "url": "/tv.html", "icons": [{ "src": "/assets/pwa-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Agenda", "url": "/agenda.html", "icons": [{ "src": "/assets/pwa-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ]
+}

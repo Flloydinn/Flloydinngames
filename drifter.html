@@ -69,8 +69,10 @@
   @media (max-width:900px){.mobile{display:flex}}
   .no-webgl{position:fixed;inset:48px 0 0 0;display:grid;place-items:center;color:#fff;background:#000}
 </style>
+<link rel="stylesheet" href="game-bar.css">
   <script src="img-fallback.js"></script>
   <script src="engage.js"></script>
+  <script src="conquistas.js" data-game="drifter"></script>
   <script type="application/ld+json" id="ld-main">
 {
   "@context": "https://schema.org",
@@ -158,19 +160,25 @@
   ]
 }
   </script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0b0b0c">
 </head>
 <body>
-  <div class="topbar">
+  <header class="topbar gamebar">
     <div class="row">
-      <div class="brand"><a href="index.html" style="color:#fff;text-decoration:none">Flloyd<span>inn</span> Gameplay</a> <span class="meta hide-mobile">/ Desert Drifter 3D</span></div>
-      <div class="nav">
-        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
-        <a class="btn btn--ghost btn--small" href="blog.html">Blog</a>
-        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
-        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      <div class="gb-left">
+        <a class="brand" href="index.html" aria-label="Flloydinn — página inicial">Flloyd<span>inn</span></a>
+        <span class="gb-title">Desert Drifter 3D</span>
       </div>
+      <nav class="nav" aria-label="Navegação do jogo">
+        <a class="gb-back" href="arcade.html">&larr; Arcade</a>
+        <a class="gb-opt" href="videos.html">Vídeos</a>
+        <a class="gb-opt" href="blog.html">Blog</a>
+        <a class="gb-opt" href="loja.html">Loja</a>
+        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      </nav>
     </div>
-  </div>
+  </header>
 
   <canvas id="game"></canvas>
 
@@ -414,11 +422,11 @@ function step(dt){
 
   rocks.children.forEach(r=>{ const d=r.position.distanceTo(hover.position); if(d<2.8){ const push=hover.position.clone().sub(r.position).setY(0).normalize().multiplyScalar(10*dt); phys.vel.add(push); beep(120,.05,.2); } });
 
-  crystals.forEach(c=>{ if(!c.visible) return; if(c.position.distanceTo(hover.position)<2.4){ c.visible=false; state.crystals++; save(); hud.toast.textContent='+1 cristal'; hud.toast.style.display='block'; setTimeout(()=> hud.toast.style.display='none', 600); beep(880,.08,.15);} });
+  crystals.forEach(c=>{ if(!c.visible) return; if(c.position.distanceTo(hover.position)<2.4){ c.visible=false; state.crystals++; save(); window.FlloydConquistas&&FlloydConquistas.event('crystal', state.crystals); hud.toast.textContent='+1 cristal'; hud.toast.style.display='block'; setTimeout(()=> hud.toast.style.display='none', 600); beep(880,.08,.15);} });
 
   const gate=gates[currentGate]; if(gate){ const d=gate.mesh.position.clone().setY(hover.position.y).distanceTo(hover.position);
     if(d<6){ gate.passed=true; currentGate=(currentGate+1)%gates.length;
-      if(currentGate===0){ const now=performance.now(); const lapTime=(now-lapStartTime)/1000; lapStartTime=now; state.lap++; if(!state.bestLap||lapTime<state.bestLap) state.bestLap=lapTime; save();
+      if(currentGate===0){ const now=performance.now(); const lapTime=(now-lapStartTime)/1000; lapStartTime=now; state.lap++; if(!state.bestLap||lapTime<state.bestLap) state.bestLap=lapTime; save(); window.FlloydConquistas&&(FlloydConquistas.event('lap'),FlloydConquistas.record('drifter'));
         hud.toast.textContent=`Volta ${state.lap} — ${lapTime.toFixed(1)}s`; hud.toast.style.display='block'; setTimeout(()=> hud.toast.style.display='none', 1200); beep(660,.07,.12); beep(990,.08,.12);
       } else { beep(520,.05,.09); }
     }

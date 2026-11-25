@@ -59,8 +59,10 @@
   @media (max-width:900px){.mobile{display:flex}}
   .help{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.45);border:1px solid var(--border);padding:.25rem .5rem;border-radius:.6rem;font-size:.85rem}
 </style>
+<link rel="stylesheet" href="game-bar.css">
   <script src="img-fallback.js"></script>
   <script src="engage.js"></script>
+  <script src="conquistas.js" data-game="runner"></script>
   <script type="application/ld+json" id="ld-main">
 {
   "@context": "https://schema.org",
@@ -148,19 +150,25 @@
   ]
 }
   </script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0b0b0c">
 </head>
 <body>
-  <div class="topbar">
+  <header class="topbar gamebar">
     <div class="row">
-      <div class="brand"><a href="index.html" style="color:#fff;text-decoration:none">Flloyd<span>inn</span> Gameplay</a> <span class="meta">/ Neon Runner 3D</span></div>
-      <div class="nav">
-        <a class="btn btn--ghost btn--small" href="videos.html">Vídeos</a>
-        <a class="btn btn--ghost btn--small" href="blog.html">Blog</a>
-        <a class="btn btn--ghost btn--small" href="loja.html">Loja</a>
-        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      <div class="gb-left">
+        <a class="brand" href="index.html" aria-label="Flloydinn — página inicial">Flloyd<span>inn</span></a>
+        <span class="gb-title">Neon Runner 3D</span>
       </div>
+      <nav class="nav" aria-label="Navegação do jogo">
+        <a class="gb-back" href="arcade.html">&larr; Arcade</a>
+        <a class="gb-opt" href="videos.html">Vídeos</a>
+        <a class="gb-opt" href="blog.html">Blog</a>
+        <a class="gb-opt" href="loja.html">Loja</a>
+        <button id="btnHelp" class="btn btn--small">Como jogar</button>
+      </nav>
     </div>
-  </div>
+  </header>
 
   <canvas id="game"></canvas>
 
@@ -475,7 +483,7 @@ function gameOver(){
   if(!state.alive) return;
   state.alive=false; togglePause();
   const score = Math.floor(state.dist) + state.coins*10;
-  if(score > state.best){ state.best=score; localStorage.setItem('runner_best', String(score)); HUD.best.textContent=score; }
+  if(score > state.best){ state.best=score; localStorage.setItem('runner_best', String(score)); HUD.best.textContent=score; window.FlloydConquistas&&FlloydConquistas.record('runner', score); }
   setToast('Game Over');
 }
 

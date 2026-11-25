@@ -19,6 +19,15 @@
   Cache-Control: public, max-age=0, must-revalidate
 /layout.js
   Cache-Control: public, max-age=0, must-revalidate
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+/conquistas.js
+  Cache-Control: public, max-age=0, must-revalidate
+/game-bar.css
+  Cache-Control: public, max-age=0, must-revalidate
+/manifest.webmanifest
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=0, must-revalidate
 /analytics.js
   Cache-Control: public, max-age=0, must-revalidate
 /forms.js

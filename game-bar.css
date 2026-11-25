@@ -1,0 +1,24 @@
+/* Barra superior unificada dos jogos 3D (asteroid, drifter, minigolf, runner, wildlands-online).
+ * Mesmo visual limpo e sem borda da navbar principal: preto translúcido, branco e --brand (#8f0000).
+ * Altura fixa de 48px (os canvases e HUDs dos jogos começam em top:48px). */
+.topbar.gamebar{position:fixed;inset:0 0 auto 0;z-index:30;height:48px;border:0;
+  background:linear-gradient(180deg,rgba(11,11,12,.88),rgba(11,11,12,.6));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.gamebar .row{width:min(1200px,calc(100% - 1.5rem));height:48px;margin:0 auto;padding:0;display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.gamebar .gb-left{display:flex;align-items:center;gap:.7rem;min-width:0}
+.gamebar .brand{font-weight:800;letter-spacing:.3px;font-size:1.15rem;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0}
+.gamebar .brand span{color:var(--brand)}
+.gamebar .gb-title{color:var(--muted);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.gamebar .gb-title::before{content:"";display:inline-block;width:1px;height:14px;margin-right:.7rem;background:rgba(255,255,255,.18);vertical-align:-2px}
+.gamebar .nav{display:flex;align-items:center;gap:1rem;flex-shrink:0}
+.gamebar .nav a:not(.btn){position:relative;color:#fff;text-decoration:none;font-size:.9rem;font-weight:600;opacity:.85;border:0;background:none;padding:0}
+.gamebar .nav a:not(.btn):hover,.gamebar .nav a:not(.btn):focus-visible{opacity:1}
+.gamebar .nav a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:2px;border-radius:2px;background:var(--brand2);transform:scaleX(0);transition:transform .15s ease}
+.gamebar .nav a:not(.btn):hover::after,.gamebar .nav a:not(.btn):focus-visible::after{transform:scaleX(1)}
+.gamebar .nav a.gb-back{opacity:1}
+.gamebar .btn{background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%);border:0;color:#fff;border-radius:.6rem;padding:.4rem .75rem;font-weight:700;font-size:.9rem;cursor:pointer}
+.gamebar .btn--ghost{background:rgba(255,255,255,.08)}
+.gamebar a:focus-visible,.gamebar button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.gamebar .nav a:not(.btn)::after{transition:none}}
+@media (max-width:900px){.gamebar .gb-opt{display:none}}
+@media (max-width:640px){.gamebar .gb-title{display:none}.gamebar .nav{gap:.7rem}.gamebar .btn{padding:.35rem .6rem}}
+@media (max-width:400px){.gamebar .brand{font-size:1rem}.gamebar .nav{gap:.55rem}.gamebar .btn{font-size:.8rem;padding:.3rem .5rem}}

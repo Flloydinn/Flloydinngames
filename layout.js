@@ -211,5 +211,17 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyCortes); else applyCortes();
 
+  // ------------------------------------------------------------------
+  // PWA: registra o Service Worker (sw.js) só em https: ou localhost. Falhas nunca quebram a página.
+  // ------------------------------------------------------------------
+  (function registerSW() {
+    var h = location.hostname;
+    var secure = location.protocol === 'https:' || h === 'localhost' || h === '127.0.0.1';
+    if (!secure || !('serviceWorker' in navigator)) return;
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () { /* sem SW: o site segue normal */ });
+    });
+  })();
+
   window.FlloydLayout = { NAV: NAV, FOOTER_LINKS: FOOTER_LINKS };
 })();
