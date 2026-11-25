@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 
-  <script src="analytics.js"></script>
+  <script src="js/analytics.js"></script>
   
   <meta charset="utf-8">
   <title>FAQ e suporte — Flloydinn</title>
@@ -30,13 +30,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="layout.js"></script>
-  <script src="engage.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/layout.js"></script>
+  <script src="js/engage.js"></script>
   <style>
-    body{line-height:1.65} /* ajuste desta página sobre styles.css */
-    .container{width:min(1100px,calc(100% - 2rem))} /* ajuste desta página sobre styles.css */
-    .btn{padding:.55rem .85rem} /* ajuste desta página sobre styles.css */
+    body{line-height:1.65} /* ajuste desta página sobre css/styles.css */
+    .container{width:min(1100px,calc(100% - 2rem))} /* ajuste desta página sobre css/styles.css */
+    .btn{padding:.55rem .85rem} /* ajuste desta página sobre css/styles.css */
     .btn--small{padding:.45rem .7rem} /* reaplica o tamanho pequeno depois do ajuste de .btn acima */
     .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
 
@@ -88,8 +88,8 @@
     }
       #faq{min-height:60vh} /* reserva o espaço da lista montada por JS */
   </style>
-  <script src="img-fallback.js"></script>
-  <script src="forms.js" defer></script>
+  <script src="js/img-fallback.js"></script>
+  <script src="js/forms.js" defer></script>
   <script type="application/ld+json" id="ld-main">
 {
   "@context": "https://schema.org",
@@ -364,7 +364,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <aside class="side">
         <div class="box">
           <h3 style="margin:.2rem 0 .6rem">Abrir ticket</h3>
-          <!-- Envio real: endpoint em forms.js (FORM_CONFIG.suporte) ou data-endpoint="https://formspree.io/f/..." aqui -->
+          <!-- Envio real: endpoint em js/forms.js (FORM_CONFIG.suporte) ou data-endpoint="https://formspree.io/f/..." aqui -->
           <form id="form" class="form" novalidate data-form="suporte" data-subject="Ticket de suporte" data-success="Ticket enviado! Você receberá a resposta no e-mail informado.">
             <div class="inline">
               <input class="input" name="name" placeholder="Seu nome *" required>
@@ -477,7 +477,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
     });
 
-    // ====== Form: validação e envio real ficam em forms.js (data-form="suporte") ======
+    // ====== Form: validação e envio real ficam em js/forms.js (data-form="suporte") ======
     el.copyEmail.addEventListener('click', async ()=>{
       try{ await navigator.clipboard.writeText('flloydinn@gmail.com'); alert('E-mail copiado.'); }
       catch{ alert('Não foi possível copiar.'); }

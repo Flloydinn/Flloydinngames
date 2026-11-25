@@ -13,26 +13,26 @@
 
 # CSS/JS sem versão no nome: o navegador revalida a cada visita (resposta 304 rápida via ETag),
 # para um deploy novo nunca misturar HTML novo com script antigo
-/styles.css
+/css/styles.css
   Cache-Control: public, max-age=0, must-revalidate
-/script.js
+/js/script.js
   Cache-Control: public, max-age=0, must-revalidate
-/layout.js
+/js/layout.js
   Cache-Control: public, max-age=0, must-revalidate
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate
-/conquistas.js
+/js/conquistas.js
   Cache-Control: public, max-age=0, must-revalidate
-/game-bar.css
+/css/game-bar.css
   Cache-Control: public, max-age=0, must-revalidate
 /manifest.webmanifest
   Content-Type: application/manifest+json
   Cache-Control: public, max-age=0, must-revalidate
-/analytics.js
+/js/analytics.js
   Cache-Control: public, max-age=0, must-revalidate
-/forms.js
+/js/forms.js
   Cache-Control: public, max-age=0, must-revalidate
-/img-fallback.js
+/js/img-fallback.js
   Cache-Control: public, max-age=0, must-revalidate
 
 # Dados atualizados pelo GitHub Actions: sempre frescos

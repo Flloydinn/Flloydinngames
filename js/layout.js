@@ -1,8 +1,8 @@
 /* =====================================================================
  * Header e footer compartilhados — Flloydinn Gameplay
  *
- * Uso (carregar no <head>, SEM defer/async, depois do styles.css):
- *   <script src="layout.js"></script>
+ * Uso (carregar no <head>, SEM defer/async, depois do css/styles.css):
+ *   <script src="js/layout.js"></script>
  *   ...
  *   <site-header></site-header>                 -> header padrão (menu em botões)
  *   <site-header variant="home"></site-header>  -> header do index (menu em texto + âncoras)
@@ -54,7 +54,7 @@
     'arcade.html': 'jogos', 'loja.html': 'loja', 'agenda.html': 'agenda', 'parcerias.html': 'parcerias'
   };
 
-  var BREAKPOINT = 860; // mesmo valor do @media em styles.css
+  var BREAKPOINT = 860; // mesmo valor do @media em css/styles.css
 
   // ------------------------------------------------------------------
   function esc(s) {

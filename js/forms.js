@@ -65,7 +65,7 @@
       payload._subject = subject;
     } else if (service === 'web3forms') {
       if (!WEB3FORMS_ACCESS_KEY) {
-        var e1 = new Error('WEB3FORMS_ACCESS_KEY não configurada em forms.js.');
+        var e1 = new Error('WEB3FORMS_ACCESS_KEY não configurada em js/forms.js.');
         e1.code = 'not_configured';
         return Promise.reject(e1);
       }
@@ -239,10 +239,10 @@
 
       var endpoint = getEndpoint(kind, form);
       if (!endpoint) {
-        if (isDevHost) console.warn('[forms.js] Formulário "' + kind + '" sem endpoint. Configure FORM_CONFIG em forms.js ou data-endpoint no <form>.');
+        if (isDevHost) console.warn('[js/forms.js] Formulário "' + kind + '" sem endpoint. Configure FORM_CONFIG em js/forms.js ou data-endpoint no <form>.');
         showFallback('info',
           'O envio automático deste formulário ainda não está ativo. Seus dados continuam aqui: envie por e-mail ou copie a mensagem.',
-          isDevHost ? 'Dono do site: configure o endpoint em <code>forms.js</code> (FORM_CONFIG) ou <code>data-endpoint</code> no formulário.' : '');
+          isDevHost ? 'Dono do site: configure o endpoint em <code>js/forms.js</code> (FORM_CONFIG) ou <code>data-endpoint</code> no formulário.' : '');
         track('form_fallback', { form_name: kind, reason: 'not_configured' });
         return;
       }
@@ -258,7 +258,7 @@
         form.reset();
         track('generate_lead', { form_name: kind });
       }, function (err) {
-        if (err.code === 'not_configured' && isDevHost) console.warn('[forms.js]', err.message);
+        if (err.code === 'not_configured' && isDevHost) console.warn('[js/forms.js]', err.message);
         showFallback('err',
           'Não foi possível enviar agora (' + esc(err.message) + '). Seus dados não foram perdidos: tente de novo ou use uma opção abaixo.');
         track('form_fallback', { form_name: kind, reason: err.code || 'error' });

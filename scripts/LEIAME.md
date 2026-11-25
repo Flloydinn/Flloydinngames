@@ -1,5 +1,11 @@
 # Scripts do site (Node 18+, sem dependências)
 
+## Estrutura do projeto
+- **Raiz:** páginas `.html` (URLs públicas, canonicals e sitemap dependem delas), `index.html`, `404.html`, `manifest.webmanifest`,
+  `sw.js` (precisa estar na raiz para controlar o site todo), `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`, `_headers`, `_redirects`.
+- **`js/`:** `analytics`, `conquistas`, `engage`, `forms`, `img-fallback`, `layout`, `script`. **`css/`:** `styles`, `game-bar`.
+- **`assets/`, `data/`, `posts/`, `tv/`, `scripts/`:** imagens, dados, artigos, TV e automação (como antes).
+
 Esta pasta não é publicada: o `_redirects` do Netlify devolve 404 para `/scripts/*`.
 
 ## Validar os dados
@@ -26,7 +32,7 @@ Quando o endereço oficial existir, edite só `data/canais.json`:
 ```json
 "cortes": { "name": "Cortes do Flloydinn", "url": "https://www.youtube.com/@HANDLE_REAL" }
 ```
-Deixe `""` enquanto não houver canal. O `layout.js` troca o selo "Em breve" por link em `index.html` e
+Deixe `""` enquanto não houver canal. O `js/layout.js` troca o selo "Em breve" por link em `index.html` e
 `canais.html` e acrescenta a URL ao `sameAs` da `Organization`. Depois rode `node scripts/validar-dados.mjs`.
 
 ## GEO / AEO (IA e mecanismos de resposta)

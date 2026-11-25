@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-  <script src="/analytics.js"></script>
+  <script src="/js/analytics.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Página não encontrada — Flloydinn</title>
@@ -13,9 +13,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <!-- Caminhos absolutos: o 404 pode ser servido em qualquer URL (ex.: /pasta/qualquer) -->
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/layout.js"></script>
-  <script src="/engage.js"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/layout.js"></script>
+  <script src="/js/engage.js"></script>
   <style>
     .nf{min-height:calc(100vh - 140px); display:grid; align-items:center; padding:3rem 0}
     .nf__code{font-size:clamp(4.5rem, 14vw, 9rem); font-weight:800; line-height:1; margin:0;
@@ -28,7 +28,7 @@
     .nf__links a:hover,.nf__links a:focus-visible{transform:translateY(-2px); border-color:var(--brand)}
     .nf__links small{color:var(--muted)}
   </style>
-  <script src="/img-fallback.js"></script>
+  <script src="/js/img-fallback.js"></script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0b0b0c">
 </head>
@@ -61,7 +61,7 @@
   <site-footer base="/"></site-footer>
 
   <script>
-    // Header, menu mobile e ano do rodapé: layout.js
+    // Header, menu mobile e ano do rodapé: js/layout.js
     if (window.gtag) gtag('event', 'page_not_found', { page_path: location.pathname, page_referrer: document.referrer });
   </script>
 </body>

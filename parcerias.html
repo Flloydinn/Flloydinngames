@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 
-  <script src="analytics.js"></script>
+  <script src="js/analytics.js"></script>
   
   <meta charset="utf-8">
   <title>Parcerias e mídia kit — Flloydinn Gameplay</title>
@@ -30,9 +30,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="layout.js"></script>
-  <script src="engage.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/layout.js"></script>
+  <script src="js/engage.js"></script>
   <style>
     /* Utilitários desta página */
     .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
@@ -95,8 +95,8 @@
     @media (max-width:800px){.grid-2{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:560px){.packs{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.quotes{grid-template-columns:1fr}.inline{grid-template-columns:1fr}}
   </style>
-  <script src="img-fallback.js"></script>
-  <script src="forms.js" defer></script>
+  <script src="js/img-fallback.js"></script>
+  <script src="js/forms.js" defer></script>
   <script type="application/ld+json" id="ld-main">
 {
   "@context": "https://schema.org",
@@ -380,7 +380,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </ul>
         <p class="meta" style="margin-top:.6rem"><span class="tag">DICA</span> Pode anexar o mídia kit quando for responder por e-mail.</p>
       </div>
-      <!-- Envio real: endpoint em forms.js (FORM_CONFIG.parcerias) ou data-endpoint="https://formspree.io/f/..." aqui -->
+      <!-- Envio real: endpoint em js/forms.js (FORM_CONFIG.parcerias) ou data-endpoint="https://formspree.io/f/..." aqui -->
       <form class="box form" id="form" novalidate data-form="parcerias" data-subject="Proposta de parceria" data-success="Recebemos sua proposta! Retornamos em até 2 dias úteis.">
         <div class="inline">
           <input class="input" name="name" placeholder="Seu nome *" required>
@@ -455,7 +455,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     logos.addEventListener('mouseenter', ()=> cancelAnimationFrame(anim));
     logos.addEventListener('mouseleave', ()=> autoScroll());
 
-    // Form: validação e envio real ficam em forms.js (data-form="parcerias")
+    // Form: validação e envio real ficam em js/forms.js (data-form="parcerias")
     document.getElementById('copyEmail').addEventListener('click', async ()=>{
       try { await navigator.clipboard.writeText('flloydinn@gmail.com'); alert('E-mail copiado: flloydinn@gmail.com'); }
       catch { alert('Não foi possível copiar.'); }

@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 
-  <script src="analytics.js"></script>
+  <script src="js/analytics.js"></script>
   
   <meta charset="utf-8">
   <title>Loja Flloydinn — camisetas, canecas e itens do canal</title>
@@ -30,9 +30,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="layout.js"></script>
-  <script src="engage.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/layout.js"></script>
+  <script src="js/engage.js"></script>
   <style>
     /* Utilitários desta página */
     .tag{font-size:.75rem;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:.15rem .45rem;border-radius:.4rem;font-weight:700}
@@ -121,8 +121,8 @@
       .toolbar__inner .select, .toolbar__inner .btn{width:100%}
     }
   </style>
-  <script src="img-fallback.js"></script>
-  <script src="forms.js" defer></script>
+  <script src="js/img-fallback.js"></script>
+  <script src="js/forms.js" defer></script>
   <script type="application/ld+json" id="ld-main">
 {
   "@context": "https://schema.org",
@@ -700,7 +700,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     $('#dlQR').onclick=downloadQR;
 
     // ======== Concluir pedido ========
-    // Envia o resumo do pedido pelo endpoint "pedidos" do forms.js (Formspree/Web3Forms).
+    // Envia o resumo do pedido pelo endpoint "pedidos" do js/forms.js (Formspree/Web3Forms).
     // Sem endpoint configurado, NÃO finge envio: guarda no navegador e oferece mandar o resumo por e-mail.
     function orderSummary(tx){
       const itens = tx.items.map(i => {

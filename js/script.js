@@ -1,5 +1,5 @@
 // Scripts específicos da página inicial (index.html)
-// Header, menu mobile e ano do rodapé ficam em layout.js; formulário em forms.js.
+// Header, menu mobile e ano do rodapé ficam em js/layout.js; formulário em js/forms.js.
 
 // Sombra no header ao rolar
 const header = document.querySelector('.site-header');

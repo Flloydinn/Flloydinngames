@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 
-  <script src="analytics.js"></script>
+  <script src="js/analytics.js"></script>
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,11 +30,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="layout.js"></script>
-  <script src="engage.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/layout.js"></script>
+  <script src="js/engage.js"></script>
   <style>
-    /* ====== Página inicial (específico do index; a base está em styles.css) ====== */
+    /* ====== Página inicial (específico do index; a base está em css/styles.css) ====== */
     .container{width:min(1100px,calc(100% - 2rem))}
     .btn{padding:.7rem 1rem;font-weight:600}
     .btn--small{padding:.5rem .8rem}
@@ -195,8 +195,8 @@
       .btn{padding:.65rem .9rem}
     }
   </style>
-  <script src="img-fallback.js"></script>
-  <script src="forms.js" defer></script>
+  <script src="js/img-fallback.js"></script>
+  <script src="js/forms.js" defer></script>
   <script type="application/ld+json" id="ld-main">
 {
   "@context": "https://schema.org",
@@ -364,7 +364,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="hero__shade"></div>
   </section>
 
-  <!-- Em destaque / Próxima parada (script.js atualiza com os dados reais; o HTML abaixo é a reserva) -->
+  <!-- Em destaque / Próxima parada (js/script.js atualiza com os dados reais; o HTML abaixo é a reserva) -->
   <section class="highlights" aria-labelledby="hlTitle">
     <div class="container">
       <div class="hl-head">
@@ -388,7 +388,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
-  <!-- Continuar explorando (engage.js: histórico e favoritos deste navegador; some quando vazio) -->
+  <!-- Continuar explorando (js/engage.js: histórico e favoritos deste navegador; some quando vazio) -->
   <section class="continue-band" data-continue hidden aria-label="Continuar explorando"></section>
 
   <!-- Sobre -->
@@ -503,7 +503,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
       <!-- Vídeo em destaque: facade leve (thumbnail + play). O iframe do YouTube só carrega no clique.
-           script.js troca pelo vídeo mais recente de data/videos.json; o vídeo abaixo é a reserva. -->
+           js/script.js troca pelo vídeo mais recente de data/videos.json; o vídeo abaixo é a reserva. -->
       <div class="embed">
         <button class="yt-facade" type="button" id="featuredVideo" data-yt-id="qUu9A3DCDIQ" aria-label="Assistir: ZOANDO NO MÁFIA III">
           <img src="https://i.ytimg.com/vi/qUu9A3DCDIQ/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async">
@@ -522,7 +522,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h2 class="section-title film-title" id="canaisTitle">Esporte &amp; Bastidores</h2>
       <p class="channels__intro">Do controle ao estádio: o gameplay continua no canal principal, o esporte ganha casa no <strong>Flloydinn Esporte Clube</strong> e os melhores momentos viram <strong>cortes</strong> rápidos para assistir em qualquer lugar.</p>
       <div class="channels">
-        <!-- Cortes: o link oficial fica em data/canais.json (cortes.url). Vazio = "Em breve". Preenchido, layout.js troca o botão por link, remove o selo e atualiza o JSON-LD. Nada a editar aqui. -->
+        <!-- Cortes: o link oficial fica em data/canais.json (cortes.url). Vazio = "Em breve". Preenchido, js/layout.js troca o botão por link, remove o selo e atualiza o JSON-LD. Nada a editar aqui. -->
         <article class="channel lift" style="--accent:#ff5c5c">
           <span class="channel__mark" aria-hidden="true">✂</span>
           <div class="channel__body">
@@ -583,7 +583,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li><strong>YouTube:</strong> @flloydinn</li>
         </ul>
       </div>
-      <!-- Envio real: endpoint em forms.js (FORM_CONFIG.contato) ou data-endpoint="https://formspree.io/f/..." aqui -->
+      <!-- Envio real: endpoint em js/forms.js (FORM_CONFIG.contato) ou data-endpoint="https://formspree.io/f/..." aqui -->
       <form class="form" id="contactForm" novalidate data-form="contato" data-subject="Contato pelo site" data-success="Mensagem enviada! Respondo assim que possível.">
 
         <label>Nome
@@ -611,6 +611,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <site-footer variant="home"></site-footer>
 
-  <script src="script.js" defer></script>
+  <script src="js/script.js" defer></script>
 </body>
 </html>

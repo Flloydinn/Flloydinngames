@@ -4,7 +4,7 @@
    específico delas (e podem sobrescrever qualquer regra daqui).
 
    Contém: tokens, reset, tipografia, botões, header e footer padrão
-   (renderizados por layout.js), menu mobile e utilitários.
+   (renderizados por js/layout.js), menu mobile e utilitários.
    NÃO contém estilos de telas específicas (hero do index, loja, agenda…).
 
    Exceções que NÃO carregam este arquivo: os jogos 3D (asteroid, runner,
@@ -56,7 +56,7 @@ img{max-width:100%;display:block}
 .btn--ghost{background:transparent;border:1px solid var(--border)}
 .btn--small{padding:.45rem .7rem;font-size:.9rem}
 
-/* ====== 4. Header padrão (layout.js) ====== */
+/* ====== 4. Header padrão (js/layout.js) ====== */
 /* <site-header>/<site-footer> são só marcadores: o conteúdo real é o <header>/<footer> de dentro */
 site-header,site-footer{display:contents}
 
@@ -106,7 +106,7 @@ site-header,site-footer{display:contents}
   .site-header .hamburger{display:block}
 }
 
-/* ====== 5. Footer padrão (layout.js) ====== */
+/* ====== 5. Footer padrão (js/layout.js) ====== */
 .site-footer{border-top:1px solid var(--border);padding:1rem 0;color:var(--muted)}
 .site-footer__inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem 1.2rem}
 .site-footer__inner p{margin:0}

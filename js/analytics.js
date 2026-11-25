@@ -1,5 +1,5 @@
 /* Analytics central do site (GA4 + Google Tag Manager)
- * Incluído no topo do <head> de todas as páginas:  <script src="analytics.js"></script>
+ * Incluído no topo do <head> de todas as páginas:  <script src="js/analytics.js"></script>
  * Para mudar IDs ou estratégia, altere SÓ este arquivo.
  *
  * ATENÇÃO — LOAD_GTAG_DIRECT

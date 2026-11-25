@@ -63,7 +63,7 @@ async function checkHeaders() {
   h('strict-transport-security') ? ok('headers', 'strict-transport-security presente') : warn('headers', 'strict-transport-security ausente');
   const a = await get('/assets/og-flloydinn.jpg');
   /max-age=\d+/.test(a.headers.get('cache-control') || '') && !/max-age=0\b/.test(a.headers.get('cache-control')) ? ok('cache', `/assets/*: ${a.headers.get('cache-control')}`) : bad('cache', `/assets/* sem cache longo (${a.headers.get('cache-control')})`);
-  for (const f of ['/styles.css', '/layout.js', '/data/agenda.json']) {
+  for (const f of ['/css/styles.css', '/js/layout.js', '/data/agenda.json']) {
     const x = await get(f); const cc = x.headers.get('cache-control') || '';
     /max-age=0|no-cache|must-revalidate/.test(cc) ? ok('cache', `${f}: ${cc}`) : warn('cache', `${f} sem revalidação (${cc})`);
   }

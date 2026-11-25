@@ -9,7 +9,7 @@
  *   - Nunca intercepta: métodos != GET, Range (vídeo/áudio), outras origens (YouTube, three.js/CDN,
  *     PeerJS/WebRTC, analytics), /scripts/ e o próprio sw.js. Jogos WebGL e a TV 24/7 não são tocados.
  */
-const VERSION = 'v1';
+const VERSION = 'v2'; // v2: scripts movidos para /js e estilos para /css (limpa os caches antigos)
 const PRECACHE = 'flloydinn-pre-' + VERSION;
 const PAGES = 'flloydinn-pages-' + VERSION;
 const ASSETS = 'flloydinn-assets-' + VERSION;
@@ -18,7 +18,7 @@ const NET_TIMEOUT = 4000;
 
 // só ativos essenciais que existem no repositório
 const CORE = [
-  '/', '/index.html', '/styles.css', '/layout.js', '/img-fallback.js', '/engage.js', '/conquistas.js', '/game-bar.css',
+  '/', '/index.html', '/css/styles.css', '/js/layout.js', '/js/img-fallback.js', '/js/engage.js', '/js/conquistas.js', '/css/game-bar.css',
   '/manifest.webmanifest', '/assets/favicon-32.png', '/assets/apple-touch-icon.png', '/assets/pwa-192.png', '/assets/og-flloydinn.jpg',
 ];
 

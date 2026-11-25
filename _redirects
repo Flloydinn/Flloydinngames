@@ -12,5 +12,16 @@
 /tv/tv.config.json /404.html  404!
 /tv/LEIAME.md    /404.html    404!
 
+# Caminhos antigos dos scripts/estilos (agora em /js e /css): páginas em cache antigo continuam funcionando
+/analytics.js    /js/analytics.js    301
+/conquistas.js    /js/conquistas.js    301
+/engage.js    /js/engage.js    301
+/forms.js    /js/forms.js    301
+/img-fallback.js    /js/img-fallback.js    301
+/layout.js    /js/layout.js    301
+/script.js    /js/script.js    301
+/styles.css    /css/styles.css    301
+/game-bar.css    /css/game-bar.css    301
+
 # Qualquer outra URL inexistente -> página 404 amigável (precisa ser a última regra)
 /*               /404.html    404

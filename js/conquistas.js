@@ -6,7 +6,7 @@
  * O módulo NUNCA altera placares ou recordes dos jogos: só observa eventos que eles informam.
  *
  * Uso nas páginas:
- *   <script src="conquistas.js" data-game="space"></script>   -> registra "jogou/abriu" ao carregar
+ *   <script src="js/conquistas.js" data-game="space"></script>   -> registra "jogou/abriu" ao carregar
  *       ids: space, runner, drifter, minigolf, wildlands (3D) • parry, aim, quiz (Arcade) • tv
  *   FlloydConquistas.record('space', 1200)    -> recorde novo registrado pelo jogo
  *   FlloydConquistas.event('crystal', total)  -> drifter: total de cristais
