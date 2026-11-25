@@ -163,20 +163,15 @@
           </div>
         </article>
 
-        <!-- CORTES DO FLLOYDINN: o link oficial ainda não foi definido.
-             Quando o canal existir:
-               1. troque o <span class="btn ... aria-disabled="true">Em breve</span> abaixo por
-                  <a class="btn btn--small" href="https://www.youtube.com/@HANDLE_DO_CANAL" target="_blank" rel="noopener">Ver no YouTube</a>
-               2. remova o selo <span class="ch-badge ch-badge--soon">Em breve</span>
-               3. faça a mesma troca no bloco "Esporte & Bastidores" do index.html -->
+        <!-- CORTES DO FLLOYDINN: o link oficial fica em data/canais.json (cortes.url). Vazio = "Em breve". Preenchido, layout.js troca o botão abaixo por um link, remove o selo e adiciona a URL ao JSON-LD Organization. Nada a editar aqui. -->
         <article class="ch-card lift" id="cortes">
           <span class="ch-mark" aria-hidden="true">✂</span>
           <div class="ch-body">
-            <h2>Cortes do Flloydinn <span class="ch-badge ch-badge--soon">Em breve</span></h2>
+            <h2>Cortes do Flloydinn <span class="ch-badge ch-badge--soon" data-cortes-soon>Em breve</span></h2>
             <p>Os melhores momentos das gameplays e lives em clipes curtos, para assistir em qualquer lugar. Enquanto o canal não estreia, os momentos rápidos ficam aqui no site.</p>
             <ul class="tag-chips" aria-label="Formatos"><li>Shorts</li><li>Clipes</li><li>Melhores momentos</li></ul>
             <div class="ch-actions">
-              <span class="btn btn--small" aria-disabled="true">Em breve no YouTube</span>
+              <span class="btn btn--small" aria-disabled="true" data-cortes-cta data-label="Ver no YouTube">Em breve no YouTube</span>
               <a class="btn btn--ghost btn--small" href="cortes.html">Ver momentos rápidos</a>
             </div>
           </div>

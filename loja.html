@@ -211,14 +211,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </article>
       <div class="side-cards">
         <article class="card-sm">
-          <img src="assets/camiseta.jpg" alt="Camiseta">
+          <img src="assets/produtos/camiseta.jpg" alt="Camiseta">
           <div>
             <h4 class="t">Camiseta Premium</h4>
             <p class="m">Algodão 100 por cento, corte unissex</p>
           </div>
         </article>
         <article class="card-sm">
-          <img src="assets/caneca.jpg" alt="Caneca">
+          <img src="assets/produtos/caneca.jpg" alt="Caneca">
           <div>
             <h4 class="t">Caneca 350 ml</h4>
             <p class="m">Estampa durável, lavável</p>
@@ -751,13 +751,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       $('#retryProducts').onclick = init;
     }
 
+    // ======== JSON-LD Product (gerado de data/produtos.json; sem avaliações) ========
+    function setProductsLD(list){
+      const SITE = 'https://flloydinn.netlify.app/';
+      const abs = u => /^https:/.test(u) ? u : SITE + u;
+      const items = list.filter(p => p.img).map(p => ({
+        "@type": "Product", "@id": SITE + 'loja.html#' + encodeURIComponent(p.id),
+        "name": p.title, "description": p.desc || p.title, "image": [abs(p.img)], "sku": p.id,
+        "category": CAT_LABEL[p.category] || p.category,
+        "brand": { "@type": "Brand", "name": "Flloydinn" },
+        "offers": { "@type": "Offer", "price": p.price.toFixed(2), "priceCurrency": "BRL",
+          "availability": "https://schema.org/InStock", "url": SITE + 'loja.html#' + encodeURIComponent(p.id),
+          "seller": { "@type": "Organization", "@id": SITE + '#org', "name": "Flloydinn" } }
+      }));
+      let el = document.getElementById('ld-products');
+      if(!items.length){ if(el) el.remove(); return; }
+      if(!el){ el = document.createElement('script'); el.type = 'application/ld+json'; el.id = 'ld-products'; document.head.appendChild(el); }
+      el.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": items }).replace(/</g, '\\u003c');
+    }
+
     // ======== Init ========
     async function init(){
       grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Carregando produtos…</div>';
       updateMini();
       try{
         PRODUCTS = await loadProducts(); productsLoaded = true;
-        renderCategories(); repriceCart(); renderProducts(); updateMini();
+        renderCategories(); repriceCart(); renderProducts(); updateMini(); setProductsLD(PRODUCTS);
       }catch(err){
         console.warn('[loja]', err); productsLoaded = false; showProductsError();
       }

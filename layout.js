@@ -176,5 +176,40 @@
   upgrade('site-header', renderHeader);
   upgrade('site-footer', renderFooter);
 
+  // ------------------------------------------------------------------
+  // Canal "Cortes do Flloydinn": PONTO ÚNICO = data/canais.json -> cortes.url
+  // Vazio: selo "Em breve", sem link. Preenchido (https://...): troca o botão
+  // [data-cortes-cta] por um link, remove os selos [data-cortes-soon] e inclui a
+  // URL no sameAs da Organization (<script type="application/ld+json">).
+  // ------------------------------------------------------------------
+  function applyCortes() {
+    var cta = document.querySelectorAll('[data-cortes-cta]');
+    var ld = document.querySelectorAll('script[type="application/ld+json"]');
+    if (!cta.length && !ld.length) return;
+    fetch('data/canais.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      var url = d && d.cortes && typeof d.cortes.url === 'string' ? d.cortes.url.trim() : '';
+      if (!/^https:\/\/(www\.)?(youtube\.com|youtu\.be)\/[^\s"'<>]+$/i.test(url)) return;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-cortes-soon]'), function (el) { el.remove(); });
+      Array.prototype.forEach.call(cta, function (el) {
+        var a = document.createElement('a');
+        a.className = el.className; a.classList.remove('is-disabled');
+        a.href = url; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = el.getAttribute('data-label') || 'Ver no YouTube';
+        a.setAttribute('aria-label', 'Ver o canal Cortes do Flloydinn no YouTube');
+        el.replaceWith(a);
+      });
+      Array.prototype.forEach.call(ld, function (s) {
+        try {
+          var j = JSON.parse(s.textContent), changed = false;
+          (j['@graph'] || [j]).forEach(function (n) {
+            if (n && n['@type'] === 'Organization' && Array.isArray(n.sameAs) && n.sameAs.indexOf(url) < 0) { n.sameAs.push(url); changed = true; }
+          });
+          if (changed) s.textContent = JSON.stringify(j).replace(/</g, '\\u003c');
+        } catch (e) { /* JSON-LD de outra página: ignora */ }
+      });
+    }).catch(function () { /* sem arquivo: mantém "Em breve" */ });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyCortes); else applyCortes();
+
   window.FlloydLayout = { NAV: NAV, FOOTER_LINKS: FOOTER_LINKS };
 })();

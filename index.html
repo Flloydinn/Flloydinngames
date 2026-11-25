@@ -476,16 +476,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h2 class="section-title film-title" id="canaisTitle">Esporte &amp; Bastidores</h2>
       <p class="channels__intro">Do controle ao estádio: o gameplay continua no canal principal, o esporte ganha casa no <strong>Flloydinn Esporte Clube</strong> e os melhores momentos viram <strong>cortes</strong> rápidos para assistir em qualquer lugar.</p>
       <div class="channels">
-        <!-- Cortes: link ainda não publicado. Quando existir, troque o <span class="channel__cta"> por
-             <a class="btn btn--ghost btn--small channel__cta" href="https://www.youtube.com/@HANDLE" target="_blank" rel="noopener">Ver canal</a>
-             e remova o selo "Em breve" (mesma troca em canais.html). -->
+        <!-- Cortes: o link oficial fica em data/canais.json (cortes.url). Vazio = "Em breve". Preenchido, layout.js troca o botão por link, remove o selo e atualiza o JSON-LD. Nada a editar aqui. -->
         <article class="channel lift" style="--accent:#ff5c5c">
           <span class="channel__mark" aria-hidden="true">✂</span>
           <div class="channel__body">
-            <h3 class="channel__name">Cortes do Flloydinn <span class="channel__soon">Em breve</span></h3>
+            <h3 class="channel__name">Cortes do Flloydinn <span class="channel__soon" data-cortes-soon>Em breve</span></h3>
             <p class="channel__desc">Os melhores momentos dos vídeos e lives em clipes curtos. Enquanto o canal não estreia, veja os <a href="cortes.html">momentos rápidos aqui no site</a>.</p>
           </div>
-          <span class="btn btn--ghost btn--small channel__cta" aria-disabled="true">Em breve</span>
+          <span class="btn btn--ghost btn--small channel__cta" aria-disabled="true" data-cortes-cta data-label="Ver canal">Em breve</span>
         </article>
         <article class="channel lift" style="--accent:#b31212">
           <span class="channel__mark" aria-hidden="true">⚽</span>

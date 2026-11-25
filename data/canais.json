@@ -1,0 +1,7 @@
+{
+  "_sobre": "PONTO ÚNICO dos canais extras. Para ativar o canal Cortes do Flloydinn, preencha cortes.url (ex.: https://www.youtube.com/@HANDLE_REAL). Vazio = selo 'Em breve', sem link. Lido por layout.js em todas as páginas (canais.html, index.html e JSON-LD Organization).",
+  "cortes": {
+    "name": "Cortes do Flloydinn",
+    "url": ""
+  }
+}
