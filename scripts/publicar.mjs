@@ -6,6 +6,7 @@ import { readFile, writeFile, access } from 'node:fs/promises';
 import { createInterface } from 'node:readline/promises';
 import path from 'node:path';
 import { ROOT, EVENT_TYPES, validar, isoDate } from './validar-dados.mjs';
+import { gerar } from './gerar-geo.mjs';
 
 const rl = createInterface({ input: process.stdin });
 const lines = rl[Symbol.asyncIterator](); // lê linha a linha (funciona no terminal e com entrada redirecionada)
@@ -96,6 +97,8 @@ try {
   const op = await ask('Escolha', '1');
   if (op === '1') await novoPost(); else if (op === '2') await novoEvento(); else { console.log('Opção inválida.'); process.exitCode = 1; }
   if (op === '1' || op === '2') {
+    const up = await gerar({ write: true }); // mantém llms.txt / llms-full.txt / JSON-LD em dia
+    if (up.length) console.log('GEO atualizado: ' + up.join(', '));
     const errs = await validar();
     if (errs.length) { console.error(`\n✗ Validação encontrou ${errs.length} problema(s):\n` + errs.map(e => '  - ' + e).join('\n')); process.exitCode = 1; }
     else console.log('✓ Validação: tudo certo.');

@@ -29,5 +29,18 @@ Quando o endereço oficial existir, edite só `data/canais.json`:
 Deixe `""` enquanto não houver canal. O `layout.js` troca o selo "Em breve" por link em `index.html` e
 `canais.html` e acrescenta a URL ao `sameAs` da `Organization`. Depois rode `node scripts/validar-dados.mjs`.
 
+## GEO / AEO (IA e mecanismos de resposta)
+```
+node scripts/gerar-geo.mjs           # regenera llms.txt, llms-full.txt e o JSON-LD unificado
+node scripts/gerar-geo.mjs --check   # só confere (o validar-dados.mjs já faz isso)
+```
+Gera `llms.txt` e `llms-full.txt` (raiz) a partir de `data/*.json` e `posts/index.json`, mantém o nó `Organization`
+(`@id` `#org`, com `Brand` `#brand`, `sameAs` e `subOrganization`) igual em todas as páginas e os `ItemList` estáticos de
+`videos.html` (vídeos) e `arcade.html` (jogos). O `publicar.mjs` já roda isso sozinho. Ao preencher `cortes.url`,
+rode `node scripts/gerar-geo.mjs`: o canal Cortes entra nos arquivos e no JSON-LD.
+
+## Auditoria de produção
+`node scripts/auditar-producao.mjs [URL] [--lighthouse]` — status, redirects, headers, SEO/OG/JSON-LD, robots e llms.
+
 ## Outros
 `tv-playlist.mjs` atualiza `tv/playlist.json`, `data/videos.json` e `data/canal.json` (veja o cabeçalho do arquivo).

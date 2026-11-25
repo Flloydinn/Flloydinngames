@@ -72,9 +72,53 @@
       },
       "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
       "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "brand": {
+        "@type": "Brand",
+        "@id": "https://flloydinn.netlify.app/#brand",
+        "name": "Flloydinn",
+        "url": "https://flloydinn.netlify.app/",
+        "logo": "https://flloydinn.netlify.app/assets/apple-touch-icon.png"
+      },
+      "knowsAbout": [
+        "Gameplay",
+        "Lives",
+        "Jogos no navegador",
+        "Futebol",
+        "Fórmula 1",
+        "NBA",
+        "Super Bowl",
+        "Olimpíadas"
+      ],
+      "inLanguage": "pt-BR",
       "sameAs": [
         "https://www.youtube.com/@flloydinn",
         "https://www.youtube.com/@flloydinnesporteclube"
+      ],
+      "subOrganization": [
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-gameplay",
+          "name": "Flloydinn Gameplay",
+          "url": "https://www.youtube.com/@flloydinn",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinn"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-esporte",
+          "name": "Flloydinn Esporte Clube",
+          "url": "https://www.youtube.com/@flloydinnesporteclube",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinnesporteclube"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
       ]
     },
     {
@@ -191,6 +235,12 @@
         </div>
       </div>
     </section>
+  <section class="geo-answers" aria-labelledby="geoTitle">
+    <div class="container">
+      <h2 id="geoTitle" class="geo-title">Respostas rápidas</h2>
+      <dl class="geo-dl"><div><dt>Quem é o Flloydinn?</dt><dd>Flloydinn é o projeto do canal de YouTube <strong>Flloydinn Gameplay</strong> (<a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">@flloydinn</a>): gameplays leves, lives e clipes com a comunidade, em português. Este site é o hub com TV 24/7, Arcade, agenda, blog e loja.</dd></div><div><dt>Quais são os canais oficiais do Flloydinn?</dt><dd><strong>Flloydinn Gameplay</strong> (<a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">@flloydinn</a>) é o canal principal. O <strong>Flloydinn Esporte Clube</strong> (<a href="https://www.youtube.com/@flloydinnesporteclube" target="_blank" rel="noopener">@flloydinnesporteclube</a>) cobre futebol, Fórmula 1, NBA, Super Bowl e Olimpíadas. Há ainda o canal <strong>Cortes do Flloydinn</strong>: veja o status e o link em <a href="canais.html">Canais</a>.</dd></div><div><dt>Como funciona a TV 24/7?</dt><dd>A <a href="tv.html">TV 24/7</a> toca em sequência os vídeos do canal. A grade é calculada pelo relógio, então todo mundo vê o mesmo vídeo no mesmo ponto, com horários em horário de Brasília.</dd></div></dl>
+    </div>
+  </section>
   </main>
 
   <site-footer></site-footer>

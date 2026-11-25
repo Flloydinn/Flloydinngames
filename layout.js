@@ -202,7 +202,10 @@
         try {
           var j = JSON.parse(s.textContent), changed = false;
           (j['@graph'] || [j]).forEach(function (n) {
-            if (n && n['@type'] === 'Organization' && Array.isArray(n.sameAs) && n.sameAs.indexOf(url) < 0) { n.sameAs.push(url); changed = true; }
+            if (n && n['@type'] === 'Organization' && Array.isArray(n.sameAs) && n.sameAs.indexOf(url) < 0) {
+              n.sameAs.push(url); changed = true;
+              if (Array.isArray(n.subOrganization)) n.subOrganization.push({ '@type': 'Organization', '@id': 'https://flloydinn.netlify.app/#canal-cortes', name: (d.cortes && d.cortes.name) || 'Cortes do Flloydinn', url: url, sameAs: [url], parentOrganization: { '@id': 'https://flloydinn.netlify.app/#org' } });
+            }
           });
           if (changed) s.textContent = JSON.stringify(j).replace(/</g, '\\u003c');
         } catch (e) { /* JSON-LD de outra página: ignora */ }

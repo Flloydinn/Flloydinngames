@@ -144,9 +144,53 @@
       },
       "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
       "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "brand": {
+        "@type": "Brand",
+        "@id": "https://flloydinn.netlify.app/#brand",
+        "name": "Flloydinn",
+        "url": "https://flloydinn.netlify.app/",
+        "logo": "https://flloydinn.netlify.app/assets/apple-touch-icon.png"
+      },
+      "knowsAbout": [
+        "Gameplay",
+        "Lives",
+        "Jogos no navegador",
+        "Futebol",
+        "Fórmula 1",
+        "NBA",
+        "Super Bowl",
+        "Olimpíadas"
+      ],
+      "inLanguage": "pt-BR",
       "sameAs": [
         "https://www.youtube.com/@flloydinn",
         "https://www.youtube.com/@flloydinnesporteclube"
+      ],
+      "subOrganization": [
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-gameplay",
+          "name": "Flloydinn Gameplay",
+          "url": "https://www.youtube.com/@flloydinn",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinn"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-esporte",
+          "name": "Flloydinn Esporte Clube",
+          "url": "https://www.youtube.com/@flloydinnesporteclube",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinnesporteclube"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
       ]
     },
     {
@@ -204,6 +248,213 @@
   </script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0b0b0c">
+  <!--GEO:games:start-->
+  <script type="application/ld+json" id="ld-games">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Jogos grátis do Arcade Flloydinn",
+    "url": "https://flloydinn.netlify.app/arcade.html",
+    "numberOfItems": 8,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Space Courier 3D",
+          "url": "https://flloydinn.netlify.app/asteroid.html",
+          "description": "Pilote uma nave cargueira e desvie de asteroides neste jogo 3D grátis no navegador. Colete dados, use o boost e bata seu recorde.",
+          "image": "https://flloydinn.netlify.app/assets/og/space-courier.jpg",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "operatingSystem": "Navegador com WebGL",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Neon Runner 3D",
+          "url": "https://flloydinn.netlify.app/runner.html",
+          "description": "Corra por uma cidade neon, salte entre plataformas com pulo duplo e dash neste endless runner 3D grátis no navegador. Quanto você aguenta?",
+          "image": "https://flloydinn.netlify.app/assets/og/neon-runner.jpg",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "operatingSystem": "Navegador com WebGL",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Desert Drifter 3D",
+          "url": "https://flloydinn.netlify.app/drifter.html",
+          "description": "Pilote um hovercraft com física arcade pelas dunas, use o boost, colete cristais e marque sua melhor volta. Jogo 3D grátis no navegador.",
+          "image": "https://flloydinn.netlify.app/assets/og/desert-drifter.jpg",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "operatingSystem": "Navegador com WebGL",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Galaxy MiniGolf 3D",
+          "url": "https://flloydinn.netlify.app/minigolf.html",
+          "description": "Mire, dose a força e complete os buracos de um campo de minigolfe futurista no menor número de tacadas. Jogo 3D grátis no navegador.",
+          "image": "https://flloydinn.netlify.app/assets/og/galaxy-minigolf.jpg",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "operatingSystem": "Navegador com WebGL",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Wildlands Online",
+          "url": "https://flloydinn.netlify.app/wildlands-online.html",
+          "description": "Explore um mundo aberto 3D com amigos, direto no navegador: conexão P2P, chat e minimapa, sem instalar nada.",
+          "image": "https://flloydinn.netlify.app/assets/og/wildlands-online.jpg",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "operatingSystem": "Navegador com WebGL",
+          "playMode": "MultiPlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 6,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Parry!",
+          "url": "https://flloydinn.netlify.app/arcade.html#parry",
+          "description": "Minijogo de reação: clique no instante certo, com média de reação salva como recorde.",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 7,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Aim Trainer",
+          "url": "https://flloydinn.netlify.app/arcade.html#aim",
+          "description": "Minijogo de mira: acerte os círculos em 15 segundos.",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 8,
+        "item": {
+          "@type": "VideoGame",
+          "name": "Boss Quiz",
+          "url": "https://flloydinn.netlify.app/arcade.html#quiz",
+          "description": "Minijogo de perguntas e respostas sobre games.",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web browser",
+          "playMode": "SinglePlayer",
+          "inLanguage": "pt-BR",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/InStock"
+          },
+          "publisher": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
+      }
+    ]
+  }
+  </script>
+  <!--GEO:games:end-->
 </head>
 <body>
   <!-- Header -->

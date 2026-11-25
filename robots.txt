@@ -1,4 +1,41 @@
+# robots.txt — Flloydinn
+# Páginas públicas, sitemap.xml, llms.txt e llms-full.txt são liberados para todos os rastreadores,
+# inclusive os de busca e de IA listados abaixo. Áreas internas ficam bloqueadas.
+
 User-agent: *
 Allow: /
+Disallow: /scripts/
+Disallow: /.github/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /scripts/
+Disallow: /.github/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /scripts/
+Disallow: /.github/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /scripts/
+Disallow: /.github/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /scripts/
+Disallow: /.github/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /scripts/
+Disallow: /.github/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /scripts/
+Disallow: /.github/
 
 Sitemap: https://flloydinn.netlify.app/sitemap.xml
+# Resumo para LLMs: https://flloydinn.netlify.app/llms.txt (versão completa: /llms-full.txt)

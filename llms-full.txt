@@ -1,0 +1,95 @@
+# Flloydinn
+
+> Flloydinn é o projeto do canal de YouTube **Flloydinn Gameplay** (@flloydinn): gameplays leves, lives e clipes com a comunidade, em português do Brasil. O site flloydinn.netlify.app é o hub que reúne o canal, a TV 24/7, o Arcade com jogos 3D grátis no navegador, a agenda de lives, o blog e a loja.
+
+Fatos rápidos: idioma pt-BR; horários sempre em horário de Brasília (UTC−3); jogos grátis e sem login; recordes e conquistas ficam só no navegador de quem joga (localStorage).
+
+## Canais oficiais
+- [Flloydinn Gameplay (YouTube)](https://www.youtube.com/@flloydinn): canal principal, gameplays, lives e clipes.
+- [Flloydinn Esporte Clube (YouTube)](https://www.youtube.com/@flloydinnesporteclube): futebol, Fórmula 1, NBA, Super Bowl e Olimpíadas.
+- Cortes do Flloydinn: canal anunciado, ainda sem endereço oficial no YouTube ("em breve"). Enquanto isso, os momentos rápidos ficam em [cortes.html](https://flloydinn.netlify.app/cortes.html).
+
+## Site (páginas principais)
+- [Página inicial](https://flloydinn.netlify.app/): Hub do projeto: vídeos em destaque, próximo evento, jogos e canais.
+- [Canais](https://flloydinn.netlify.app/canais.html): Todos os canais do ecossistema Flloydinn e como se complementam.
+- [Vídeos](https://flloydinn.netlify.app/videos.html): Catálogo do canal Flloydinn Gameplay com busca e filtros.
+- [TV 24/7](https://flloydinn.netlify.app/tv.html): Programação contínua com os vídeos do canal, sincronizada pelo relógio (horário de Brasília).
+- [Arcade](https://flloydinn.netlify.app/arcade.html): Jogos grátis no navegador, recordes e conquistas salvos localmente.
+- [Agenda](https://flloydinn.netlify.app/agenda.html): Lives, estreias e eventos da comunidade.
+- [Blog](https://flloydinn.netlify.app/blog.html): Análises e notícias de games.
+- [Loja](https://flloydinn.netlify.app/loja.html): Camisetas, caneca, adesivos e wallpapers do canal (pagamento por PIX).
+- [Cortes e momentos rápidos](https://flloydinn.netlify.app/cortes.html): Shorts e vídeos curtos do canal reunidos no site.
+- [Sobre](https://flloydinn.netlify.app/sobre.html): O projeto, a proposta do hub e os bastidores.
+- [FAQ](https://flloydinn.netlify.app/faq.html): Perguntas frequentes sobre canal, loja, TV e jogos.
+- [Parcerias](https://flloydinn.netlify.app/parcerias.html): Anuncie com o Flloydinn Gameplay: integrações em gameplay, lives e shorts, métricas públicas do canal e contato comercial.
+
+## Arcade: jogos 3D no navegador (grátis)
+- [Space Courier 3D](https://flloydinn.netlify.app/asteroid.html): Pilote uma nave cargueira e desvie de asteroides neste jogo 3D grátis no navegador. Colete dados, use o boost e bata seu recorde.
+- [Neon Runner 3D](https://flloydinn.netlify.app/runner.html): Corra por uma cidade neon, salte entre plataformas com pulo duplo e dash neste endless runner 3D grátis no navegador. Quanto você aguenta?
+- [Desert Drifter 3D](https://flloydinn.netlify.app/drifter.html): Pilote um hovercraft com física arcade pelas dunas, use o boost, colete cristais e marque sua melhor volta. Jogo 3D grátis no navegador.
+- [Galaxy MiniGolf 3D](https://flloydinn.netlify.app/minigolf.html): Mire, dose a força e complete os buracos de um campo de minigolfe futurista no menor número de tacadas. Jogo 3D grátis no navegador.
+- [Wildlands Online](https://flloydinn.netlify.app/wildlands-online.html): Explore um mundo aberto 3D com amigos, direto no navegador: conexão P2P, chat e minimapa, sem instalar nada.
+- [Minijogos do Arcade](https://flloydinn.netlify.app/arcade.html): Parry!, Aim Trainer, Boss Quiz.
+
+## Versão curta e mapa do site
+- [llms-full.txt](https://flloydinn.netlify.app/llms-full.txt): catálogo completo (canais, agenda, produtos, artigos e vídeos) gerado a partir dos arquivos de dados do site.
+- [sitemap.xml](https://flloydinn.netlify.app/sitemap.xml): todas as páginas públicas.
+
+---
+
+# Catálogo completo (gerado de data/*.json e posts/index.json)
+
+## Canais (data/canais.json e data/canal.json)
+- Flloydinn Gameplay — https://www.youtube.com/@flloydinn — handle @flloydinn — canal principal.
+- Flloydinn Esporte Clube — https://www.youtube.com/@flloydinnesporteclube — futebol, Fórmula 1, NBA, Super Bowl, Olimpíadas.
+- Cortes do Flloydinn — ainda sem URL oficial (data/canais.json → cortes.url vazio).
+
+## TV 24/7
+- [tv.html](https://flloydinn.netlify.app/tv.html): a grade é calculada pelo relógio a partir de uma playlist de vídeos do canal; todo mundo vê o mesmo vídeo no mesmo ponto. Horários exibidos em horário de Brasília.
+
+## Arcade
+- Space Courier 3D — https://flloydinn.netlify.app/asteroid.html — um jogador — Pilote uma nave cargueira e desvie de asteroides neste jogo 3D grátis no navegador. Colete dados, use o boost e bata seu recorde.
+- Neon Runner 3D — https://flloydinn.netlify.app/runner.html — um jogador — Corra por uma cidade neon, salte entre plataformas com pulo duplo e dash neste endless runner 3D grátis no navegador. Quanto você aguenta?
+- Desert Drifter 3D — https://flloydinn.netlify.app/drifter.html — um jogador — Pilote um hovercraft com física arcade pelas dunas, use o boost, colete cristais e marque sua melhor volta. Jogo 3D grátis no navegador.
+- Galaxy MiniGolf 3D — https://flloydinn.netlify.app/minigolf.html — um jogador — Mire, dose a força e complete os buracos de um campo de minigolfe futurista no menor número de tacadas. Jogo 3D grátis no navegador.
+- Wildlands Online — https://flloydinn.netlify.app/wildlands-online.html — multiplayer — Explore um mundo aberto 3D com amigos, direto no navegador: conexão P2P, chat e minimapa, sem instalar nada.
+- Parry! — https://flloydinn.netlify.app/arcade.html#parry — Minijogo de reação: clique no instante certo, com média de reação salva como recorde.
+- Aim Trainer — https://flloydinn.netlify.app/arcade.html#aim — Minijogo de mira: acerte os círculos em 15 segundos.
+- Boss Quiz — https://flloydinn.netlify.app/arcade.html#quiz — Minijogo de perguntas e respostas sobre games.
+- Conquistas e recordes: salvos apenas no navegador (localStorage); nada é enviado a servidores.
+
+## Agenda (data/agenda.json, atualizada em 2026-11-25) — horário de Brasília
+- sáb., 28/11/2026, 20:00 a 22:00 — Live — Dungeon Rush ao vivo (live; Dungeon Rush) — YouTube @flloydinn. Runs rápidas do roguelike do nosso primeiro post. Traga seu loadout! — https://flloydinn.netlify.app/agenda.html#live-dungeon-rush
+- qui., 03/12/2026, 20:00 a 22:00 — Live — Coop Caótico (live; Chaos Co-op) — YouTube @flloydinn. Jogue com a gente — sorteios no chat. — https://flloydinn.netlify.app/agenda.html#live-coop-caotico
+- dom., 06/12/2026, 16:00 a 18:00 — Torneio da Comunidade (tour; Neon Runner 3D) — Discord + Live. Eliminatórias rápidas, final ao vivo. — https://flloydinn.netlify.app/agenda.html#tour-comunidade-dez
+- qui., 10/12/2026, 19:00 a 21:00 — Primeiras impressões — Wildlands Online (launch; Wildlands Online) — YouTube @flloydinn. Primeiro contato, guia inicial e dicas para quem vai começar. — https://flloydinn.netlify.app/agenda.html#launch-wildlands
+- qui., 17/12/2026, 20:00 a 22:00 — Live — Torneio de Galaxy Minigolf (live; Galaxy Minigolf) — YouTube @flloydinn. Desafio de tacadas com a comunidade no chat. — https://flloydinn.netlify.app/agenda.html#live-minigolf
+- dom., 20/12/2026, 20:00 a 23:00 — Live — Retrospectiva 2026 (live; Vários jogos) — YouTube @flloydinn. Os melhores momentos do ano e anúncios para 2027. — https://flloydinn.netlify.app/agenda.html#live-fim-de-ano
+
+## Produtos da loja (data/produtos.json, moeda BRL) — https://flloydinn.netlify.app/loja.html
+- Camiseta Logo Clássico — R$ 89,90 — camisetas — Algodão 100 por cento • Unissex • Modelagem confortável
+- Camiseta Pixel Edition — R$ 99,90 — camisetas — Estampa exclusiva do canal • Edição limitada
+- Caneca Flloydinn 350 ml — R$ 49,90 — canecas — Cerâmica com estampa resistente • Pode ir à lava-louças
+- Kit Adesivos — R$ 29,90 — adesivos — Kit com 6 adesivos vinílicos de alta durabilidade
+- Pack Wallpapers 4K — R$ 19,90 — digitais (digital) — 10 artes exclusivas em 3840x2160 (download digital)
+- Wallpaper Animado — R$ 14,90 — digitais (digital) — 1 vídeo loop em 4K para desktop (download digital)
+
+## Artigos do blog (posts/index.json)
+- [Primeiras impressões de um indie promissor](https://flloydinn.netlify.app/post.html?slug=exemplo-primeiro-post) — 2025-09-10 — Análises — Dungeon Rush: Testamos um roguelike ágil que mistura combate tático com exploração rápida.
+
+## Vídeos do catálogo (data/videos.json, 15 itens) — mais recentes primeiro
+- [La física de este juego de PS2 está rota 😂 #ps2 #callofduty #glitch](https://www.youtube.com/watch?v=J7X1Q-A6A-A) — 2025-03-19 — short — 1:00 — Outros
+- [ZOANDO NO MÁFIA III](https://www.youtube.com/watch?v=qUu9A3DCDIQ) — 2022-01-12 — video — 18:32 — Mafia III
+- [Feliz 2022!!!](https://www.youtube.com/watch?v=9UqW2L4Ha1A) — 2022-01-01 — video — 1:27 — Outros
+- [FUGINDO DO PREDADOR COM ESTILO | Predator](https://www.youtube.com/watch?v=h3BVy54S2Eg) — 2021-09-30 — video — 10:28 — Predator
+- [PlayStation Showcase 2021 | Resumão GEEK](https://www.youtube.com/watch?v=CYbAoKRh8JA) — 2021-09-16 — video — 3:57 — PlayStation Showcase
+- [HISTÓRIAS DE TERROR | Horror Stories [Demo]](https://www.youtube.com/watch?v=s131KGEhHSs) — 2021-09-14 — video — 10:20 — Horror Stories
+- [TRANSFORMANDO INIMIGOS EM GALINHAS | Realm Royale](https://www.youtube.com/watch?v=PL_W4SS3GEk) — 2021-09-07 — video — 18:07 — Realm Royale
+- [CEBOLINHA PARMERENSE](https://www.youtube.com/watch?v=cMaCupydNEM) — 2021-09-06 — video — 0:28 — Outros
+- [FIZ MIOJO SABOR WHATSAPP ¿ QUIERES ?](https://www.youtube.com/watch?v=0oXQDXck1W0) — 2021-09-04 — video — 5:14 — Outros
+- [COMBATE NA MANSÃO BRAITHWAITE | Red Dead Online](https://www.youtube.com/watch?v=W1fMRgdPCb0) — 2021-08-31 — video — 7:32 — Red Dead Online
+- [CRISTIANO RONALDO VS COCA-COLA, CR7 ODEIA COCA-COLA!!!](https://www.youtube.com/watch?v=zayXFZfXzMg) — 2021-08-27 — video — 2:49 — Outros
+- [UM CONTRA TODOS | Red Dead Online](https://www.youtube.com/watch?v=a-_2L1LNSeo) — 2021-08-23 — video — 5:18 — Red Dead Online
+- [COMPRANDO FERRAMENTAS DE CAÇA | Red Dead Online](https://www.youtube.com/watch?v=rB3E257j-oE) — 2021-08-20 — video — 4:35 — Red Dead Online
+- [PAI TÁ DE NAVE | Fortnite](https://www.youtube.com/watch?v=7sFDdqvgtjI) — 2021-08-13 — video — 14:19 — Fortnite
+- [O CARA MAIS CHATO DO JOGO! | Red Dead Online](https://www.youtube.com/watch?v=-6PBG0gk2dQ) — 2021-07-18 — video — 9:10 — Red Dead Online

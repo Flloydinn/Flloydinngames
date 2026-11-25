@@ -43,6 +43,14 @@
 /posts/index.json
   Cache-Control: public, max-age=0, must-revalidate
 
+# Arquivos para LLMs (GEO): texto puro, indexáveis, sempre frescos
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Markdown bruto dos posts: o conteúdo indexável é post.html?slug=... (evita conteúdo duplicado)
 /posts/*
   X-Robots-Tag: noindex

@@ -97,7 +97,7 @@ async function checkSeo() {
     const blocks = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].map(m => m[1]);
     if (!blocks.length && !/^(post|agenda|loja)\.html/.test(p)) warn(g, 'sem JSON-LD no HTML estático');
     blocks.forEach((b, i) => {
-      try { const j = JSON.parse(b); const types = (j['@graph'] || [j]).map(n => n['@type']).join(','); PLACEHOLDER.test(b) ? bad(g, `JSON-LD #${i + 1} com placeholder: ${PLACEHOLDER.exec(b)[0]}`) : ok(g, `JSON-LD #${i + 1} válido (${types})`); }
+      try { const j = JSON.parse(b); (j['@graph'] || []).filter(n => n['@type'] === 'Organization' && /#org$/.test(n['@id'] || '')).forEach(n => { n.brand && n.brand['@id'] && Array.isArray(n.sameAs) && n.sameAs.some(u => /youtube\.com\/@flloydinn$/.test(u)) && Array.isArray(n.subOrganization) ? 0 : bad(g, 'Organization #org sem brand/sameAs/subOrganization (rode node scripts/gerar-geo.mjs)'); }); const types = (j['@graph'] || [j]).map(n => n['@type']).join(','); PLACEHOLDER.test(b) ? bad(g, `JSON-LD #${i + 1} com placeholder: ${PLACEHOLDER.exec(b)[0]}`) : ok(g, `JSON-LD #${i + 1} válido (${types})`); }
       catch (e) { bad(g, `JSON-LD #${i + 1} inválido: ${e.message}`); }
     });
     const vis = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
@@ -107,7 +107,25 @@ async function checkSeo() {
     let r; try { r = await fetch(url); } catch (e) { r = { status: 0, headers: new Headers() }; }
     r.status === 200 && /^image\//.test(r.headers.get('content-type') || '') ? ok('og:image', `${url} → 200 ${r.headers.get('content-type')}`) : bad('og:image', `${url} (usada em ${from}) → ${r.status} ${r.headers.get('content-type') || ''}`);
   }
-  const rob = await get('/robots.txt'); rob.status === 200 ? ok('seo', 'robots.txt 200') : bad('seo', `robots.txt → ${rob.status}`);
+  const rob = await get('/robots.txt');
+  if (rob.status === 200) {
+    const t = await rob.text(); ok('seo', 'robots.txt 200');
+    for (const bot of ['Googlebot', 'Google-Extended', 'OAI-SearchBot', 'ChatGPT-User', 'PerplexityBot', 'Bingbot']) new RegExp('User-agent:\\s*' + bot, 'i').test(t) ? 0 : bad('robots', `robots.txt sem regra para ${bot}`);
+    /Disallow:\s*\/scripts\//.test(t) && /Disallow:\s*\/\.github\//.test(t) ? ok('robots', 'bots de IA/busca liberados; /scripts/ e /.github/ bloqueados') : bad('robots', 'robots.txt deve bloquear /scripts/ e /.github/');
+    /Sitemap:\s*https:\/\//.test(t) ? 0 : bad('robots', 'robots.txt sem Sitemap');
+    /^\s*Disallow:\s*\/\s*$/m.test(t) ? bad('robots', 'robots.txt bloqueia o site inteiro (Disallow: /)') : 0;
+  } else bad('seo', `robots.txt → ${rob.status}`);
+  // GEO: arquivos para LLMs
+  for (const f of ['/llms.txt', '/llms-full.txt']) {
+    const r = await get(f); const body = r.status === 200 ? await r.text() : '';
+    r.status === 200 && /^# \S/.test(body) ? ok('llms', `${f} → 200 (${body.length} bytes)`) : bad('llms', `${f} → ${r.status} (precisa começar com "# Título")`);
+    if (!local) {
+      /^text\/plain;\s*charset=utf-8$/i.test(r.headers.get('content-type') || '') ? ok('llms', `${f} Content-Type ${r.headers.get('content-type')}`) : bad('llms', `${f} Content-Type deveria ser text/plain; charset=utf-8 (veio ${r.headers.get('content-type')})`);
+      /noindex/i.test(r.headers.get('x-robots-tag') || '') ? bad('llms', `${f} com X-Robots-Tag noindex`) : ok('llms', `${f} indexável`);
+    }
+    if (PLACEHOLDER.test(body)) bad('llms', `${f} com placeholder: ${PLACEHOLDER.exec(body)[0]}`);
+    for (const u of new Set([...body.matchAll(/\]\((https:\/\/flloydinn\.netlify\.app[^)\s]*)\)/g)].map(m => m[1]))) { const p = new URL(u).pathname + new URL(u).search; const rr = await get(p); rr.status === 200 ? 0 : bad('llms', `${f}: link ${u} → ${rr.status}`); }
+  }
   const sm = await get('/sitemap.xml');
   if (sm.status === 200) {
     const xml = await sm.text(); const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);

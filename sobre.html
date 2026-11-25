@@ -70,9 +70,53 @@
       },
       "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
       "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "brand": {
+        "@type": "Brand",
+        "@id": "https://flloydinn.netlify.app/#brand",
+        "name": "Flloydinn",
+        "url": "https://flloydinn.netlify.app/",
+        "logo": "https://flloydinn.netlify.app/assets/apple-touch-icon.png"
+      },
+      "knowsAbout": [
+        "Gameplay",
+        "Lives",
+        "Jogos no navegador",
+        "Futebol",
+        "Fórmula 1",
+        "NBA",
+        "Super Bowl",
+        "Olimpíadas"
+      ],
+      "inLanguage": "pt-BR",
       "sameAs": [
         "https://www.youtube.com/@flloydinn",
         "https://www.youtube.com/@flloydinnesporteclube"
+      ],
+      "subOrganization": [
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-gameplay",
+          "name": "Flloydinn Gameplay",
+          "url": "https://www.youtube.com/@flloydinn",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinn"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-esporte",
+          "name": "Flloydinn Esporte Clube",
+          "url": "https://www.youtube.com/@flloydinnesporteclube",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinnesporteclube"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
       ]
     },
     {
@@ -184,6 +228,12 @@
         <div style="display:flex;flex-wrap:wrap;gap:.5rem"><a class="btn btn--small" href="index.html#participar">Participar</a><a class="btn btn--ghost btn--small" href="parcerias.html">Parcerias</a></div>
       </div>
     </section>
+  <section class="geo-answers" aria-labelledby="geoTitle">
+    <div class="container">
+      <h2 id="geoTitle" class="geo-title">Respostas rápidas</h2>
+      <dl class="geo-dl"><div><dt>Quem é o Flloydinn?</dt><dd>Flloydinn é o projeto do canal de YouTube <strong>Flloydinn Gameplay</strong> (<a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">@flloydinn</a>): gameplays leves, lives e clipes com a comunidade, em português. Este site é o hub com TV 24/7, Arcade, agenda, blog e loja.</dd></div><div><dt>Quais são os canais oficiais do Flloydinn?</dt><dd><strong>Flloydinn Gameplay</strong> (<a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">@flloydinn</a>) é o canal principal. O <strong>Flloydinn Esporte Clube</strong> (<a href="https://www.youtube.com/@flloydinnesporteclube" target="_blank" rel="noopener">@flloydinnesporteclube</a>) cobre futebol, Fórmula 1, NBA, Super Bowl e Olimpíadas. Há ainda o canal <strong>Cortes do Flloydinn</strong>: veja o status e o link em <a href="canais.html">Canais</a>.</dd></div><div><dt>Quais jogos existem no Arcade?</dt><dd>O <a href="arcade.html">Arcade</a> reúne 5 jogos 3D grátis no navegador: <a href="asteroid.html">Space Courier 3D</a>, <a href="runner.html">Neon Runner 3D</a>, <a href="drifter.html">Desert Drifter 3D</a>, <a href="minigolf.html">Galaxy MiniGolf 3D</a> e <a href="wildlands-online.html">Wildlands Online</a> (multiplayer), além dos minijogos Parry!, Aim Trainer e Boss Quiz. Recordes e conquistas ficam salvos só no seu navegador.</dd></div></dl>
+    </div>
+  </section>
   </main>
 
   <site-footer></site-footer>

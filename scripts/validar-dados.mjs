@@ -6,6 +6,7 @@
 import { readFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { gerar } from './gerar-geo.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const EVENT_TYPES = ['live', 'launch', 'tour', 'rec'];
@@ -132,6 +133,8 @@ async function checkPosts(errs) {
 export async function validar() {
   const errs = [];
   await checkAgenda(errs); await checkCanais(errs); await checkCanal(errs); await checkProdutos(errs); await checkPosts(errs);
+  // GEO/AEO: llms.txt, llms-full.txt e JSON-LD (Organization, vídeos, jogos) precisam refletir os dados atuais
+  if (!errs.length) { try { const stale = await gerar({ write: false }); if (stale.length) errs.push(`GEO desatualizado (${stale.join(', ')}): rode node scripts/gerar-geo.mjs`); } catch (e) { errs.push('gerar-geo: ' + e.message); } }
   return errs;
 }
 

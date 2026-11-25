@@ -86,6 +86,7 @@
       .tabs{justify-content:flex-start}
       .inline{grid-template-columns:1fr}
     }
+      #faq{min-height:60vh} /* reserva o espaço da lista montada por JS */
   </style>
   <script src="img-fallback.js"></script>
   <script src="forms.js" defer></script>
@@ -110,9 +111,53 @@
       },
       "image": "https://flloydinn.netlify.app/assets/og-flloydinn.jpg",
       "description": "Flloydinn é o projeto do canal Flloydinn Gameplay no YouTube: gameplays, lives, TV 24/7, jogos no navegador e o Flloydinn Esporte Clube.",
+      "brand": {
+        "@type": "Brand",
+        "@id": "https://flloydinn.netlify.app/#brand",
+        "name": "Flloydinn",
+        "url": "https://flloydinn.netlify.app/",
+        "logo": "https://flloydinn.netlify.app/assets/apple-touch-icon.png"
+      },
+      "knowsAbout": [
+        "Gameplay",
+        "Lives",
+        "Jogos no navegador",
+        "Futebol",
+        "Fórmula 1",
+        "NBA",
+        "Super Bowl",
+        "Olimpíadas"
+      ],
+      "inLanguage": "pt-BR",
       "sameAs": [
         "https://www.youtube.com/@flloydinn",
         "https://www.youtube.com/@flloydinnesporteclube"
+      ],
+      "subOrganization": [
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-gameplay",
+          "name": "Flloydinn Gameplay",
+          "url": "https://www.youtube.com/@flloydinn",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinn"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://flloydinn.netlify.app/#canal-esporte",
+          "name": "Flloydinn Esporte Clube",
+          "url": "https://www.youtube.com/@flloydinnesporteclube",
+          "sameAs": [
+            "https://www.youtube.com/@flloydinnesporteclube"
+          ],
+          "parentOrganization": {
+            "@id": "https://flloydinn.netlify.app/#org"
+          }
+        }
       ]
     },
     {
@@ -150,10 +195,34 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "Quais são os canais oficiais do Flloydinn?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Flloydinn Gameplay (@flloydinn) é o canal principal. O Flloydinn Esporte Clube (@flloydinnesporteclube) cobre futebol, Fórmula 1, NBA, Super Bowl e Olimpíadas. Há ainda o canal Cortes do Flloydinn: veja o status e o link na página Canais (canais.html)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como funciona a TV 24/7?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A TV 24/7 (tv.html) toca em sequência os vídeos do canal. A grade é calculada pelo relógio, então todo mundo vê o mesmo vídeo no mesmo ponto, com horários em horário de Brasília."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quais jogos existem no Arcade?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O Arcade (arcade.html) reúne 5 jogos 3D grátis no navegador: Space Courier 3D, Neon Runner 3D, Desert Drifter 3D, Galaxy MiniGolf 3D e Wildlands Online (multiplayer), além dos minijogos Parry!, Aim Trainer e Boss Quiz. Recordes e conquistas ficam salvos só no seu navegador."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Quem é o Flloydinn?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Criador de conteúdo focado em gameplay leve, coop e descobertas de indies. Vídeos semanais e lives ocasionais."
+            "text": "Flloydinn é o projeto do canal de YouTube Flloydinn Gameplay (@flloydinn): gameplays leves, lives e clipes com a comunidade, em português. Este site é o hub com TV 24/7, Arcade, agenda, blog e loja."
           }
         },
         {
@@ -328,6 +397,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </aside>
     </div>
+  <section class="geo-answers" aria-labelledby="geoTitle">
+    <div class="container">
+      <h2 id="geoTitle" class="geo-title">Respostas rápidas</h2>
+      <dl class="geo-dl"><div><dt>Quem é o Flloydinn?</dt><dd>Flloydinn é o projeto do canal de YouTube <strong>Flloydinn Gameplay</strong> (<a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">@flloydinn</a>): gameplays leves, lives e clipes com a comunidade, em português. Este site é o hub com TV 24/7, Arcade, agenda, blog e loja.</dd></div><div><dt>Quais são os canais oficiais do Flloydinn?</dt><dd><strong>Flloydinn Gameplay</strong> (<a href="https://www.youtube.com/@flloydinn" target="_blank" rel="noopener">@flloydinn</a>) é o canal principal. O <strong>Flloydinn Esporte Clube</strong> (<a href="https://www.youtube.com/@flloydinnesporteclube" target="_blank" rel="noopener">@flloydinnesporteclube</a>) cobre futebol, Fórmula 1, NBA, Super Bowl e Olimpíadas. Há ainda o canal <strong>Cortes do Flloydinn</strong>: veja o status e o link em <a href="canais.html">Canais</a>.</dd></div><div><dt>Como funciona a TV 24/7?</dt><dd>A <a href="tv.html">TV 24/7</a> toca em sequência os vídeos do canal. A grade é calculada pelo relógio, então todo mundo vê o mesmo vídeo no mesmo ponto, com horários em horário de Brasília.</dd></div><div><dt>Quais jogos existem no Arcade?</dt><dd>O <a href="arcade.html">Arcade</a> reúne 5 jogos 3D grátis no navegador: <a href="asteroid.html">Space Courier 3D</a>, <a href="runner.html">Neon Runner 3D</a>, <a href="drifter.html">Desert Drifter 3D</a>, <a href="minigolf.html">Galaxy MiniGolf 3D</a> e <a href="wildlands-online.html">Wildlands Online</a> (multiplayer), além dos minijogos Parry!, Aim Trainer e Boss Quiz. Recordes e conquistas ficam salvos só no seu navegador.</dd></div></dl>
+    </div>
+  </section>
   </main>
 
   <site-footer></site-footer>
@@ -337,7 +412,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script>
     // ====== Dataset (edite livremente) ======
     const QA = [
-      {cat:'geral', q:'Quem é o Flloydinn?', a:'Criador de conteúdo focado em gameplay leve, coop e descobertas de indies. Vídeos semanais e lives ocasionais.'},
       {cat:'geral', q:'Como sugerir jogos?', a:'Use o formulário de contato no site ou comente no YouTube. Priorizamos jogos com modo coop/local e experiências diferentes.'},
       {cat:'loja', q:'Quais formas de pagamento?', a:'PIX direto pelo site (copia e cola + QR). Em breve: cartão via parceiro de pagamento.'},
       {cat:'loja', q:'Qual o prazo de envio?', a:'Pedidos são preparados em até 2 dias úteis. Prazos de transporte variam por região — geralmente 3–8 dias úteis.'},

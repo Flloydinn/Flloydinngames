@@ -1,0 +1,36 @@
+# Flloydinn
+
+> Flloydinn é o projeto do canal de YouTube **Flloydinn Gameplay** (@flloydinn): gameplays leves, lives e clipes com a comunidade, em português do Brasil. O site flloydinn.netlify.app é o hub que reúne o canal, a TV 24/7, o Arcade com jogos 3D grátis no navegador, a agenda de lives, o blog e a loja.
+
+Fatos rápidos: idioma pt-BR; horários sempre em horário de Brasília (UTC−3); jogos grátis e sem login; recordes e conquistas ficam só no navegador de quem joga (localStorage).
+
+## Canais oficiais
+- [Flloydinn Gameplay (YouTube)](https://www.youtube.com/@flloydinn): canal principal, gameplays, lives e clipes.
+- [Flloydinn Esporte Clube (YouTube)](https://www.youtube.com/@flloydinnesporteclube): futebol, Fórmula 1, NBA, Super Bowl e Olimpíadas.
+- Cortes do Flloydinn: canal anunciado, ainda sem endereço oficial no YouTube ("em breve"). Enquanto isso, os momentos rápidos ficam em [cortes.html](https://flloydinn.netlify.app/cortes.html).
+
+## Site (páginas principais)
+- [Página inicial](https://flloydinn.netlify.app/): Hub do projeto: vídeos em destaque, próximo evento, jogos e canais.
+- [Canais](https://flloydinn.netlify.app/canais.html): Todos os canais do ecossistema Flloydinn e como se complementam.
+- [Vídeos](https://flloydinn.netlify.app/videos.html): Catálogo do canal Flloydinn Gameplay com busca e filtros.
+- [TV 24/7](https://flloydinn.netlify.app/tv.html): Programação contínua com os vídeos do canal, sincronizada pelo relógio (horário de Brasília).
+- [Arcade](https://flloydinn.netlify.app/arcade.html): Jogos grátis no navegador, recordes e conquistas salvos localmente.
+- [Agenda](https://flloydinn.netlify.app/agenda.html): Lives, estreias e eventos da comunidade.
+- [Blog](https://flloydinn.netlify.app/blog.html): Análises e notícias de games.
+- [Loja](https://flloydinn.netlify.app/loja.html): Camisetas, caneca, adesivos e wallpapers do canal (pagamento por PIX).
+- [Cortes e momentos rápidos](https://flloydinn.netlify.app/cortes.html): Shorts e vídeos curtos do canal reunidos no site.
+- [Sobre](https://flloydinn.netlify.app/sobre.html): O projeto, a proposta do hub e os bastidores.
+- [FAQ](https://flloydinn.netlify.app/faq.html): Perguntas frequentes sobre canal, loja, TV e jogos.
+- [Parcerias](https://flloydinn.netlify.app/parcerias.html): Anuncie com o Flloydinn Gameplay: integrações em gameplay, lives e shorts, métricas públicas do canal e contato comercial.
+
+## Arcade: jogos 3D no navegador (grátis)
+- [Space Courier 3D](https://flloydinn.netlify.app/asteroid.html): Pilote uma nave cargueira e desvie de asteroides neste jogo 3D grátis no navegador. Colete dados, use o boost e bata seu recorde.
+- [Neon Runner 3D](https://flloydinn.netlify.app/runner.html): Corra por uma cidade neon, salte entre plataformas com pulo duplo e dash neste endless runner 3D grátis no navegador. Quanto você aguenta?
+- [Desert Drifter 3D](https://flloydinn.netlify.app/drifter.html): Pilote um hovercraft com física arcade pelas dunas, use o boost, colete cristais e marque sua melhor volta. Jogo 3D grátis no navegador.
+- [Galaxy MiniGolf 3D](https://flloydinn.netlify.app/minigolf.html): Mire, dose a força e complete os buracos de um campo de minigolfe futurista no menor número de tacadas. Jogo 3D grátis no navegador.
+- [Wildlands Online](https://flloydinn.netlify.app/wildlands-online.html): Explore um mundo aberto 3D com amigos, direto no navegador: conexão P2P, chat e minimapa, sem instalar nada.
+- [Minijogos do Arcade](https://flloydinn.netlify.app/arcade.html): Parry!, Aim Trainer, Boss Quiz.
+
+## Dados estruturados e versão completa
+- [llms-full.txt](https://flloydinn.netlify.app/llms-full.txt): catálogo completo (canais, agenda, produtos, artigos e vídeos) gerado a partir dos arquivos de dados do site.
+- [sitemap.xml](https://flloydinn.netlify.app/sitemap.xml): todas as páginas públicas.
