@@ -1,9 +1,9 @@
 # Redirecionamentos do Netlify (https://docs.netlify.com/routing/redirects/)
 # A primeira regra que casar vence; "!" força a regra mesmo que o arquivo exista.
 
-# Blog antigo -> blog atual
-/oblog.html      /blog.html   301
-/oblog           /blog.html   301
+# Blog antigo -> blog atual ("!" é necessário porque oblog.html ainda existe como arquivo)
+/oblog.html      /blog.html   301!
+/oblog           /blog.html   301!
 
 # Arquivos internos do repositório: não publicar
 /posts/MODELO.md /404.html    404!
