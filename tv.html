@@ -51,6 +51,17 @@
        sem isto o iframe fica 640x360 no canto (inset:0 não estica iframe/img) */
     #player, .player iframe{position:absolute;inset:0;width:100% !important;height:100% !important;border:0;display:block}
 
+    /* Capa leve (player sob demanda) */
+    .tv-poster{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;margin:0;background:#000;cursor:pointer;color:#fff;overflow:hidden}
+    .tv-poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+    .tv-poster::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 260px at 50% 55%,rgba(143,0,0,.35),transparent 70%),linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.7))}
+    .tv-poster__cta{position:absolute;z-index:1;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;text-align:center;padding:1rem}
+    .tv-poster__cta strong{font-size:clamp(1.1rem,3vw,1.6rem)} .tv-poster__cta span{color:var(--muted);font-size:.9rem}
+    .tv-poster__cta svg{transition:transform .15s ease} .tv-poster:hover svg,.tv-poster:focus-visible svg{transform:scale(1.08)}
+    .tv-poster:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+    .tv-poster.is-loading .tv-poster__cta span{visibility:hidden} .tv-poster.is-loading{cursor:progress}
+    @media (prefers-reduced-motion:reduce){.tv-poster__cta svg{transition:none}}
+
     /* Tela cheia da área da TV: player ocupa o espaço que sobra acima dos controles */
     .tv-wrap:fullscreen{display:flex;flex-direction:column;width:100vw;height:100vh;border:0}
     .tv-wrap:fullscreen .player{flex:1 1 auto;min-height:0;max-width:none;aspect-ratio:auto}
@@ -126,6 +137,7 @@
 
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
     @media (max-width:640px){.nowbar{grid-template-columns:1fr}.nowbar__next{text-align:left}.player .now{display:none}}
+    #guide{min-height:30rem} /* 7 itens da grade: reserva o espaço antes do JSON carregar */
     .upnext .tz-line{margin:-.4rem .9rem .7rem;display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center}
     .tz-note{font-size:.85rem;color:var(--muted)}
     .upnext h3.film-title{padding-bottom:.6rem}
@@ -210,6 +222,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="tv-wrap">
     <div class="player">
       <div id="player"></div>
+      <!-- Capa leve: o player do YouTube só é carregado ao clicar (celular) ou ocioso após o load (desktop) -->
+      <button id="tvStart" class="tv-poster" type="button" aria-label="Iniciar a transmissão da TV 24/7">
+        <img src="assets/og-flloydinn.jpg" alt="" width="1200" height="630" fetchpriority="high" decoding="async">
+        <span class="tv-poster__cta"><svg viewBox="0 0 68 48" width="64" height="46" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#8f0000"/><path d="M27 34V14l18 10z" fill="#fff"/></svg><strong>Assistir ao vivo</strong><span>Toque para ligar a TV 24/7</span></span>
+      </button>
       <div class="live"><span class="dot"></span><span>AO VIVO (linear)</span></div>
       <div class="now small">Agora: <strong id="nowTitle">—</strong> • <span id="nowClock">--:--</span></div>
       <div id="slate" class="slate" role="status" aria-live="polite"><strong id="slateTitle"></strong><span id="slateText"></span></div>
@@ -410,8 +427,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     // ====== YouTube Player ======
-    let player, booted = false, playingId = null;
+    let player, booted = false, playingId = null, playerStarted = false, startedByUser = false;
     const warnedDur = new Set();
+    // Player sob demanda: a API do YouTube (pesada) só entra no clique ou, no desktop, quando o navegador está ocioso após o load
+    function startPlayer(byUser){
+      if(playerStarted) return;
+      playerStarted = true; startedByUser = !!byUser;
+      const p = $('#tvStart'); p.classList.add('is-loading'); p.setAttribute('aria-busy', 'true');
+      setStatus('sync', 'Carregando player…');
+      if(byUser) track('tv_start');
+      ensureYT();
+    }
+    $('#tvStart').onclick = () => startPlayer(true);
+    function armPlayer(){
+      const desktop = window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)').matches;
+      const saver = !!(navigator.connection && navigator.connection.saveData);
+      if(!desktop || saver) return; // celular/economia de dados: espera o clique
+      const go = () => (window.requestIdleCallback || (f => setTimeout(f, 200)))(() => startPlayer(false), { timeout: 3000 });
+      if(document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true });
+    }
     function ensureYT(){
       if(window.YT && YT.Player){ onYouTubeIframeAPIReady(); return; }
       const tag = document.createElement('script');
@@ -435,8 +469,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     function onReady(){
       booted = true;
       hideSlate();
-      player.mute(); // garante autoplay
-      $('#overlay').style.display = 'flex';
+      $('#tvStart').hidden = true; // capa some quando o player está pronto
+      if(startedByUser){ try{ player.unMute(); }catch{} $('#overlay').style.display = 'none'; } // clique = permissão de áudio
+      else { player.mute(); $('#overlay').style.display = 'flex'; } // sem clique: mutado para garantir autoplay
       syncToSchedule(false);
       heartbeat();
     }
@@ -591,8 +626,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // ====== Inicialização ======
     (async () => {
       renderAll();
-      await Promise.race([tryLoadJSON(), new Promise(r => setTimeout(r, 2500))]); // não segura o player se a rede estiver lenta
-      ensureYT();
+      await Promise.race([tryLoadJSON(), new Promise(r => setTimeout(r, 2500))]); // não segura a página se a rede estiver lenta
+      armPlayer();
     })();
     // relógios e barra de progresso
     setInterval(()=> {

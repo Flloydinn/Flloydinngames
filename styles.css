@@ -33,6 +33,8 @@
 /* ====== 2. Reset e tipografia ====== */
 *{box-sizing:border-box}
 html,body{height:100%}
+/* fundo escuro também no <html>: nada abaixo da altura do body fica branco (contraste/overscroll) */
+html{background:#0b0b0c;color-scheme:dark}
 body{
   margin:0;
   font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;

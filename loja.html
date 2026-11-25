@@ -62,6 +62,10 @@
     /* Grid produtos */
     .grid{display:grid;gap:1rem;padding:1.2rem 0 2rem;grid-template-columns:repeat(4,1fr)}
     .product{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:.9rem;overflow:hidden;box-shadow:var(--shadow)}
+    .skeleton{position:relative;overflow:hidden;background:#141519}
+    .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(143,0,0,.12),transparent);animation:shimmer 1.2s infinite}
+    @keyframes shimmer{100%{transform:translateX(100%)}}
+    @media (prefers-reduced-motion:reduce){.skeleton::after{animation:none}}
     .p-media{aspect-ratio:1/1;background:#0e0f12;display:flex;align-items:center;justify-content:center}
     .p-media img{width:100%;height:100%;object-fit:cover}
     .p-body{padding:.9rem}
@@ -197,7 +201,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="container hero__grid">
       <article class="feature">
         <div class="feature__media">
-          <img src="assets/loja-banner.jpg" alt="Produtos da Loja" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+          <img src="assets/loja-banner.jpg" alt="Produtos da Loja" width="1280" height="720" fetchpriority="high" decoding="async" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
         </div>
         <div class="feature__body">
           <span class="tag">NOVIDADE</span>
@@ -213,14 +217,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </article>
       <div class="side-cards">
         <article class="card-sm">
-          <img src="assets/produtos/camiseta.jpg" alt="Camiseta">
+          <img src="assets/produtos/camiseta.jpg" alt="Camiseta" width="800" height="800" loading="lazy" decoding="async">
           <div>
             <h3 class="t">Camiseta Premium</h3>
             <p class="m">Algodão 100 por cento, corte unissex</p>
           </div>
         </article>
         <article class="card-sm">
-          <img src="assets/produtos/caneca.jpg" alt="Caneca">
+          <img src="assets/produtos/caneca.jpg" alt="Caneca" width="800" height="800" loading="lazy" decoding="async">
           <div>
             <h3 class="t">Caneca 350 ml</h3>
             <p class="m">Estampa durável, lavável</p>
@@ -257,7 +261,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Grid de produtos -->
   <main class="container">
-    <section id="grid" class="grid" aria-live="polite"></section>
+    <section id="grid" class="grid" aria-live="polite" aria-busy="true"><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article><article class="product sk-card" aria-hidden="true"><div class="p-media skeleton"></div><div class="p-body" style="min-height:240px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.6rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:70%;margin-bottom:.6rem"></div><div class="skeleton" style="height:16px;border-radius:.4rem;width:35%"></div></div></article></section>
   </main>
 
   <!-- Barra do carrinho -->
@@ -376,7 +380,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         return `
         <article class="product" data-id="${p.id}">
           <div class="p-media">
-            <img src="${esc(p.img)}" alt="${esc(p.title)}" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(300px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+            <img src="${esc(p.img)}" alt="${esc(p.title)}" width="800" height="800" decoding="async" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(300px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
           </div>
           <div class="p-body">
             <div class="p-title">${esc(p.title)} ${p.digital?'<span class="tag">DIGITAL</span>':''}</div>
@@ -774,7 +778,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     // ======== Init ========
     async function init(){
-      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Carregando produtos…</div>';
+      grid.setAttribute('aria-busy', 'true'); // os 8 esqueletos do HTML reservam o espaço enquanto o JSON carrega
       updateMini();
       try{
         PRODUCTS = await loadProducts(); productsLoaded = true;

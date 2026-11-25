@@ -137,6 +137,11 @@
     .meta__game{display:block;color:var(--text);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .meta__stats{display:block;font-size:.8rem}
     /* Abas de formato */
+    /* espaço reservado para o que o JS monta (formatos, categorias, legenda): a barra não cresce depois do 1º render */
+    #formats{min-height:37px}#chips{min-height:36px}.legend{min-height:1.4rem}
+    @media (max-width:900px){#chips{min-height:81px}}
+    @media (max-width:640px){#chips{min-height:171px}}
+    @media (max-width:440px){#formats{min-height:80px}}
     .format-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .6rem}
     .format-tabs button{font:inherit;font-size:.88rem;font-weight:700;padding:.4rem .8rem;border-radius:999px;cursor:pointer;
       color:var(--muted);background:transparent;border:1px solid var(--border);transition:color .15s ease, border-color .15s ease, background .15s ease}
@@ -155,6 +160,7 @@
       animation:shimmer 1.2s infinite;
     }
     @keyframes shimmer{100%{transform:translateX(100%)}}
+    @media (prefers-reduced-motion:reduce){.skeleton::after{animation:none}}
     /* Responsive */
     @media (max-width:1100px){.grid{grid-template-columns:repeat(4,1fr)}}
     @media (max-width:820px){
@@ -274,7 +280,7 @@
 
   <!-- Grid -->
   <main id="videos" class="container" style="padding-top:1rem">
-    <section id="grid" class="grid" aria-live="polite"></section>
+    <section id="grid" class="grid" aria-live="polite" aria-busy="true"><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article><article class="card sk-card"><div class="thumb skeleton"></div><div class="body" style="min-height:181px"><div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div><div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div></div></article></section>
     <div class="controls">
       <button id="prev" class="btn btn--ghost">Anterior</button>
       <button id="next" class="btn">Próxima</button>
@@ -432,7 +438,7 @@
       elGrid.innerHTML = Array.from({ length: count }, () => `
         <article class="card">
           <div class="thumb skeleton"></div>
-          <div class="body">
+          <div class="body" style="min-height:181px">
             <div class="skeleton" style="height:18px;border-radius:.4rem;margin-bottom:.5rem"></div>
             <div class="skeleton" style="height:14px;border-radius:.4rem;width:60%"></div>
           </div>
@@ -607,7 +613,7 @@
     function update(){
       renderFormats();
       renderChips();
-      renderSkeletons(6);
+      renderSkeletons(state.perPage);
       requestAnimationFrame(()=>{ renderGrid(applyFilters()); pushURL(); });
     }
 
@@ -633,7 +639,7 @@
     // ===== Inicialização =====
     (async function init(){
       syncFromURL();
-      renderSkeletons(8);
+      renderSkeletons(state.perPage);
       const { list, src } = await loadCatalog();
       VIDEOS = list;
       setVideosLD(list);

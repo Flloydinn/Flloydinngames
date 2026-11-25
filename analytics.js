@@ -31,12 +31,21 @@
     (d.head || d.documentElement).appendChild(s);
   }
 
+  // gtag() já existe e enfileira eventos no dataLayer; os scripts de terceiros só são baixados
+  // depois do carregamento da página (ocioso) ou na 1ª interação — nada disso atrasa o 1º render.
   if (LOAD_GTAG_DIRECT) {
     w.gtag('js', new Date());
     w.gtag('config', GA4_ID);
-    loadScript('https://www.googletagmanager.com/gtag/js?id=' + GA4_ID);
   }
-
-  w.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-  loadScript('https://www.googletagmanager.com/gtm.js?id=' + GTM_ID);
+  var started = false;
+  function start() {
+    if (started) return;
+    started = true;
+    if (LOAD_GTAG_DIRECT) loadScript('https://www.googletagmanager.com/gtag/js?id=' + GA4_ID);
+    w.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    loadScript('https://www.googletagmanager.com/gtm.js?id=' + GTM_ID);
+  }
+  ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (ev) { w.addEventListener(ev, start, { once: true, passive: true }); });
+  function whenIdle() { (w.requestIdleCallback || function (f) { return setTimeout(f, 1); })(start, { timeout: 4000 }); }
+  if (d.readyState === 'complete') whenIdle(); else w.addEventListener('load', function () { setTimeout(whenIdle, 1500); });
 })(window, document);
