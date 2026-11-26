@@ -1,29 +1,7 @@
 {
   "_sobre": "Agenda do canal (agenda.html e faixa 'Próximo evento' da home). Datas em ISO 8601 com fuso, ex.: 2026-12-05T20:00:00-03:00. type/color: live | launch | tour | rec. Eventos 'rec' (gravação) não aparecem no JSON-LD nem na home. Campos: id (único, letras/números/-/_), title, type, game, start, end, where, desc, color.",
-  "updated": "2026-11-25",
+  "updated": "2026-11-26",
   "events": [
-    {
-      "id": "live-dungeon-rush",
-      "title": "Live — Dungeon Rush ao vivo",
-      "type": "live",
-      "game": "Dungeon Rush",
-      "start": "2026-11-28T20:00:00-03:00",
-      "end": "2026-11-28T22:00:00-03:00",
-      "where": "YouTube @flloydinn",
-      "desc": "Runs rápidas do roguelike do nosso primeiro post. Traga seu loadout!",
-      "color": "live"
-    },
-    {
-      "id": "live-coop-caotico",
-      "title": "Live — Coop Caótico",
-      "type": "live",
-      "game": "Chaos Co-op",
-      "start": "2026-12-03T20:00:00-03:00",
-      "end": "2026-12-03T22:00:00-03:00",
-      "where": "YouTube @flloydinn",
-      "desc": "Jogue com a gente — sorteios no chat.",
-      "color": "live"
-    },
     {
       "id": "tour-comunidade-dez",
       "title": "Torneio da Comunidade",
@@ -45,17 +23,6 @@
       "where": "YouTube @flloydinn",
       "desc": "Primeiro contato, guia inicial e dicas para quem vai começar.",
       "color": "launch"
-    },
-    {
-      "id": "rec-serie-ep4",
-      "title": "Gravação — Série Episódio 4",
-      "type": "rec",
-      "game": "Indie Surprise",
-      "start": "2026-12-12T19:00:00-03:00",
-      "end": "2026-12-12T21:00:00-03:00",
-      "where": "Estúdio",
-      "desc": "Sessão fechada de captação.",
-      "color": "rec"
     },
     {
       "id": "live-minigolf",

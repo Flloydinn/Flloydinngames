@@ -18,7 +18,7 @@ const flag = n => args.includes(n);
 const opt = n => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : undefined; };
 const base = (args.find(a => /^https?:\/\//.test(a)) || 'https://flloydinn.netlify.app').replace(/\/+$/, '');
 const local = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/.test(base);
-const PAGES = ['index.html', 'tv.html', 'videos.html', 'arcade.html', 'loja.html', 'agenda.html', 'blog.html', 'canais.html', 'cortes.html', 'sobre.html', 'faq.html', 'parcerias.html', 'post.html?slug=exemplo-primeiro-post'];
+const PAGES = ['index.html', 'tv.html', 'videos.html', 'arcade.html', 'loja.html', 'agenda.html', 'blog.html', 'canais.html', 'cortes.html', 'sobre.html', 'faq.html', 'parcerias.html', 'post.html?slug=como-funciona-o-site-do-flloydinn'];
 const LH_PAGES = (opt('--paginas') || 'index.html,tv.html,videos.html,arcade.html,canais.html,loja.html').split(',');
 const PLACEHOLDER = /HANDLE_DO_CANAL|@HANDLE|TODO|FIXME|lorem ipsum|example\.com|\[object Object\]|undefined/;
 
@@ -67,7 +67,8 @@ async function checkHeaders() {
     const x = await get(f); const cc = x.headers.get('cache-control') || '';
     /max-age=0|no-cache|must-revalidate/.test(cc) ? ok('cache', `${f}: ${cc}`) : warn('cache', `${f} sem revalidação (${cc})`);
   }
-  const md = await get('/posts/exemplo-primeiro-post.md');
+  const idx = await get('/posts/index.json'); const slug0 = (JSON.parse(await idx.text()).posts[0] || {}).slug;
+  const md = await get('/posts/' + slug0 + '.md');
   /noindex/i.test(md.headers.get('x-robots-tag') || '') ? ok('headers', 'posts/*.md: X-Robots-Tag noindex') : bad('headers', `posts/*.md sem X-Robots-Tag noindex (${md.headers.get('x-robots-tag')})`);
 }
 
@@ -77,7 +78,7 @@ const attr = (html, key, val, get_) => { const m = new RegExp(`<meta[^>]*${key}=
 async function checkSeo() {
   const imgs = new Map();
   for (const p of PAGES) {
-    const g = 'seo ' + p.replace('?slug=exemplo-primeiro-post', '');
+    const g = 'seo ' + p.replace('?slug=como-funciona-o-site-do-flloydinn', '');
     const r = await get('/' + p); if (r.status !== 200) continue;
     const html = await r.text();
     const title = meta(html, /<title[^>]*>([^<]*)<\/title>/i);

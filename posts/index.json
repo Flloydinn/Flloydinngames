@@ -1,19 +1,61 @@
 {
   "posts": [
     {
-      "slug": "exemplo-primeiro-post",
-      "title": "Primeiras impressões de um indie promissor",
-      "excerpt": "Testamos um roguelike ágil que mistura combate tático com exploração rápida.",
-      "dateISO": "2025-09-10",
-      "readMin": 6,
-      "views": 1200,
-      "category": "Análises",
-      "tags": ["Indie", "Roguelike", "Preview"],
-      "game": "Dungeon Rush",
-      "platform": "PC",
+      "slug": "como-funciona-o-site-do-flloydinn",
+      "title": "Como funciona o site do Flloydinn por dentro",
+      "excerpt": "Um site estático, instalável e sem login: veja como as páginas, os dados, o modo offline e os arquivos para IA são organizados.",
+      "dateISO": "2026-11-26",
+      "readMin": 3,
+      "views": 0,
+      "category": "Bastidores",
+      "tags": [
+        "Site",
+        "PWA",
+        "Bastidores"
+      ],
+      "game": "Site Flloydinn",
+      "platform": "Navegador",
       "author": "Flloydinn",
-      "cover": "assets/cover-exemplo.jpg",
-      "file": "exemplo-primeiro-post.md"
+      "cover": "assets/og-flloydinn.jpg",
+      "file": "como-funciona-o-site-do-flloydinn.md"
+    },
+    {
+      "slug": "arcade-flloydinn-os-5-jogos-3d",
+      "title": "Arcade Flloydinn: os 5 jogos 3D que rodam no navegador",
+      "excerpt": "Space Courier, Neon Runner, Desert Drifter, Galaxy MiniGolf e Wildlands Online: grátis, sem login, com recordes e 12 conquistas locais.",
+      "dateISO": "2026-11-25",
+      "readMin": 3,
+      "views": 0,
+      "category": "Arcade",
+      "tags": [
+        "Arcade",
+        "Jogos 3D",
+        "Conquistas"
+      ],
+      "game": "Arcade Flloydinn",
+      "platform": "Navegador",
+      "author": "Flloydinn",
+      "cover": "assets/og/arcade.jpg",
+      "file": "arcade-flloydinn-os-5-jogos-3d.md"
+    },
+    {
+      "slug": "tv-24-7-como-funciona",
+      "title": "TV 24/7 do Flloydinn: como o canal fica no ar o dia todo",
+      "excerpt": "A TV do site é uma programação calculada pelo relógio, com os vídeos do canal e o player carregado só quando necessário.",
+      "dateISO": "2026-11-24",
+      "readMin": 2,
+      "views": 0,
+      "category": "Bastidores",
+      "tags": [
+        "TV 24/7",
+        "YouTube",
+        "Bastidores"
+      ],
+      "game": "TV 24/7",
+      "platform": "Navegador",
+      "author": "Flloydinn",
+      "cover": "assets/og-flloydinn.jpg",
+      "file": "tv-24-7-como-funciona.md"
     }
   ]
 }

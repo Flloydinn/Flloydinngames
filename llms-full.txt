@@ -58,9 +58,7 @@ Fatos rápidos: idioma pt-BR; horários sempre em horário de Brasília (UTC−3
 - Boss Quiz — https://flloydinn.netlify.app/arcade.html#quiz — Minijogo de perguntas e respostas sobre games.
 - Conquistas e recordes: salvos apenas no navegador (localStorage); nada é enviado a servidores.
 
-## Agenda (data/agenda.json, atualizada em 2026-11-25) — horário de Brasília
-- sáb., 28/11/2026, 20:00 a 22:00 — Live — Dungeon Rush ao vivo (live; Dungeon Rush) — YouTube @flloydinn. Runs rápidas do roguelike do nosso primeiro post. Traga seu loadout! — https://flloydinn.netlify.app/agenda.html#live-dungeon-rush
-- qui., 03/12/2026, 20:00 a 22:00 — Live — Coop Caótico (live; Chaos Co-op) — YouTube @flloydinn. Jogue com a gente — sorteios no chat. — https://flloydinn.netlify.app/agenda.html#live-coop-caotico
+## Agenda (data/agenda.json, atualizada em 2026-11-26) — horário de Brasília
 - dom., 06/12/2026, 16:00 a 18:00 — Torneio da Comunidade (tour; Neon Runner 3D) — Discord + Live. Eliminatórias rápidas, final ao vivo. — https://flloydinn.netlify.app/agenda.html#tour-comunidade-dez
 - qui., 10/12/2026, 19:00 a 21:00 — Primeiras impressões — Wildlands Online (launch; Wildlands Online) — YouTube @flloydinn. Primeiro contato, guia inicial e dicas para quem vai começar. — https://flloydinn.netlify.app/agenda.html#launch-wildlands
 - qui., 17/12/2026, 20:00 a 22:00 — Live — Torneio de Galaxy Minigolf (live; Galaxy Minigolf) — YouTube @flloydinn. Desafio de tacadas com a comunidade no chat. — https://flloydinn.netlify.app/agenda.html#live-minigolf
@@ -75,7 +73,9 @@ Fatos rápidos: idioma pt-BR; horários sempre em horário de Brasília (UTC−3
 - Wallpaper Animado — R$ 14,90 — digitais (digital) — 1 vídeo loop em 4K para desktop (download digital)
 
 ## Artigos do blog (posts/index.json)
-- [Primeiras impressões de um indie promissor](https://flloydinn.netlify.app/post.html?slug=exemplo-primeiro-post) — 2025-09-10 — Análises — Dungeon Rush: Testamos um roguelike ágil que mistura combate tático com exploração rápida.
+- [Como funciona o site do Flloydinn por dentro](https://flloydinn.netlify.app/post.html?slug=como-funciona-o-site-do-flloydinn) — 2026-11-26 — Bastidores — Site Flloydinn: Um site estático, instalável e sem login: veja como as páginas, os dados, o modo offline e os arquivos para IA são organizados.
+- [Arcade Flloydinn: os 5 jogos 3D que rodam no navegador](https://flloydinn.netlify.app/post.html?slug=arcade-flloydinn-os-5-jogos-3d) — 2026-11-25 — Arcade — Arcade Flloydinn: Space Courier, Neon Runner, Desert Drifter, Galaxy MiniGolf e Wildlands Online: grátis, sem login, com recordes e 12 conquistas locais.
+- [TV 24/7 do Flloydinn: como o canal fica no ar o dia todo](https://flloydinn.netlify.app/post.html?slug=tv-24-7-como-funciona) — 2026-11-24 — Bastidores — TV 24/7: A TV do site é uma programação calculada pelo relógio, com os vídeos do canal e o player carregado só quando necessário.
 
 ## Vídeos do catálogo (data/videos.json, 15 itens) — mais recentes primeiro
 - [La física de este juego de PS2 está rota 😂 #ps2 #callofduty #glitch](https://www.youtube.com/watch?v=J7X1Q-A6A-A) — 2025-03-19 — short — 1:00 — Outros
