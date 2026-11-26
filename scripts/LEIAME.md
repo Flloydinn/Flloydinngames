@@ -69,7 +69,7 @@ node scripts/gerar-post-semanal.mjs             # gera, grava, roda o GEO e vali
   direto na `master` só se houver mudança (com `git pull --rebase` antes do push). Também pode ser disparado à mão.
 - **Cadastrar o segredo no GitHub:** repositório > **Settings** > **Secrets and variables** > **Actions** >
   aba **Secrets** > **New repository secret** > nome `GEMINI_API_KEY` > cole a chave (criada em
-  https://aistudio.google.com/apikey). Opcional: aba **Variables** > `GEMINI_MODEL` (padrão `gemini-2.5-flash`).
+  https://aistudio.google.com/apikey). Opcional: aba **Variables** > `GEMINI_MODEL` (padrão `gemini-3.8-flash`).
 - **Testar no GitHub:** aba **Actions** > "Post semanal do blog" > **Run workflow** > marque `dry_run`.
 - **Revisão:** o texto é gerado por IA. Confira os posts publicados; para tirar um, apague a entrada em
   `posts/index.json` e o `.md`, e rode `node scripts/gerar-geo.mjs`.

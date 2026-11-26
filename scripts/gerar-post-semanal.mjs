@@ -4,7 +4,7 @@
  *   node scripts/gerar-post-semanal.mjs --dry-run   # só coleta os feeds e monta o prompt (não chama a IA, não grava nada)
  *   node scripts/gerar-post-semanal.mjs             # gera, grava, atualiza o GEO e valida (precisa de GEMINI_API_KEY)
  *
- * Variáveis de ambiente: GEMINI_API_KEY (obrigatória fora do --dry-run), GEMINI_MODEL (padrão gemini-2.5-flash),
+ * Variáveis de ambiente: GEMINI_API_KEY (obrigatória fora do --dry-run), GEMINI_MODEL (padrão gemini-3.8-flash),
  * GEMINI_API_BASE (só para testes com um servidor falso; o padrão é a API oficial).
  * Opções: --days N (janela de notícias, padrão 7).
  *
@@ -50,6 +50,7 @@ const DRY = args.includes('--dry-run');
 const daysArg = args.indexOf('--days');
 const DAYS = daysArg >= 0 ? Math.max(1, parseInt(args[daysArg + 1], 10) || 7) : 7;
 const log = (...a) => console.log(...a);
+const etapa = (n, txt) => log(`\n[${n}/6] ${txt}`);
 const gh = process.env.GITHUB_ACTIONS === 'true';
 function fail(msg, code = 1) { console.error((gh ? '::error::' : '✗ ') + msg); process.exit(code); }
 const exists = p => access(path.join(ROOT, p)).then(() => true, () => false);
@@ -191,25 +192,44 @@ export function montarPrompt(tema) {
   return { sistema, usuario, fatos };
 }
 
+const GEMINI_TIMEOUT_MS = Math.max(120000, parseInt(process.env.GEMINI_TIMEOUT_MS, 10) || 0);  // no mínimo 120 s
+const THINKING_BUDGET = 1024;                                                                   // limita o "raciocínio" para a resposta chegar rápido
+
 async function chamarGemini(prompt, key, model) {
   const url = `${process.env.GEMINI_API_BASE || 'https://generativelanguage.googleapis.com'}/v1beta/models/${encodeURIComponent(model)}:generateContent`;
-  const body = {
+  let comThinking = true;
+  const montar = () => JSON.stringify({
     systemInstruction: { parts: [{ text: prompt.sistema }] },
     contents: [{ role: 'user', parts: [{ text: prompt.usuario }] }],
-    generationConfig: { temperature: 0.5, maxOutputTokens: 4096, responseMimeType: 'application/json' }
-  };
+    // os tokens de raciocínio contam no limite de saída, por isso o teto é folgado
+    generationConfig: { temperature: 0.5, maxOutputTokens: 8192, responseMimeType: 'application/json', ...(comThinking ? { thinkingConfig: { thinkingBudget: THINKING_BUDGET } } : {}) }
+  });
   let ultimo;
   for (let t = 1; t <= 3; t++) {
+    const ini = Date.now();
     try {
-      const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(body), signal: AbortSignal.timeout(90000) });
+      log(`  → requisição ${t}/3 ao Gemini (${model}, timeout ${GEMINI_TIMEOUT_MS / 1000}s${comThinking ? `, raciocínio limitado a ${THINKING_BUDGET} tokens` : ', sem limite de raciocínio'})`);
+      const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: montar(), signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS) });
       if (r.status === 429 || r.status >= 500) throw new Error('Gemini HTTP ' + r.status);
       const j = await r.json();
-      if (!r.ok) throw Object.assign(new Error('Gemini HTTP ' + r.status + ': ' + String(j.error && j.error.message || '').slice(0, 200)), { fatal: true });
+      if (!r.ok) {
+        const msg = String(j.error && j.error.message || '').slice(0, 200);
+        if (r.status === 400 && comThinking && /thinking/i.test(msg)) {          // a API não aceita o campo: tenta de novo sem ele
+          comThinking = false; log(`  ! a API rejeitou thinkingConfig (${msg}); repetindo sem esse campo`); t--; continue;
+        }
+        throw Object.assign(new Error('Gemini HTTP ' + r.status + ': ' + msg), { fatal: true });
+      }
       const cand = j.candidates && j.candidates[0];
-      const txt = cand && cand.content && cand.content.parts && cand.content.parts.map(p => p.text || '').join('');
+      const txt = cand && cand.content && cand.content.parts && cand.content.parts.filter(p => !p.thought).map(p => p.text || '').join('');
       if (!txt) throw Object.assign(new Error('Gemini sem texto (' + (cand && cand.finishReason || (j.promptFeedback && j.promptFeedback.blockReason) || 'vazio') + ')'), { fatal: true });
+      log(`  ← resposta recebida em ${((Date.now() - ini) / 1000).toFixed(1)}s (${txt.length} caracteres)`);
       return JSON.parse(txt);
-    } catch (e) { ultimo = e; if (e.fatal || t === 3) break; await new Promise(r => setTimeout(r, 4000 * t)); }
+    } catch (e) {
+      if (e.name === 'TimeoutError' || e.name === 'AbortError') e = new Error(`Gemini não respondeu em ${GEMINI_TIMEOUT_MS / 1000}s`);
+      ultimo = e; log(`  ✗ ${e.message}`);
+      if (e.fatal || t === 3) break;
+      await new Promise(r => setTimeout(r, 4000 * t));
+    }
   }
   throw ultimo;
 }
@@ -252,16 +272,19 @@ function montarMarkdown(a, tema) {
 async function main() {
   log(`Post semanal do Flloydinn${DRY ? ' (--dry-run: nada será gravado)' : ''}\n`);
   const key = (process.env.GEMINI_API_KEY || '').trim();
-  const model = (process.env.GEMINI_MODEL || 'gemini-2.5-flash').trim();
+  const model = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
   if (!DRY && !key) fail('GEMINI_API_KEY ausente. Cadastre o segredo no GitHub (veja scripts/LEIAME.md). Nada foi alterado.');
 
+  log(`Modelo: ${model} | janela de notícias: ${DAYS} dias | feeds: ${FEEDS.length}`);
+  etapa(1, 'Coletando feeds RSS...');
   const { pool, stats, idx } = await coletar();
   log('Feeds:');
   for (const s of stats) log(`  ${s.erro ? '✗' : '✓'} ${s.feed.nome.padEnd(26)} lidos ${String(s.lidos).padStart(3)} | aproveitados ${String(s.aproveitados).padStart(3)}${s.erro ? ' | ' + s.erro : ''}`);
   log(`\nNotícias novas e sem repetir assunto (últimos ${DAYS} dias): ${pool.length}`);
+  etapa(2, 'Escolhendo o tema...');
   const tema = pool.length ? escolherTema(pool, idx) : null;
   if (!tema) fail('Nenhum tema novo válido encontrado nos feeds. Nada foi alterado.');
-  log(`\nTema escolhido (${tema.principal.cat}): ${tema.principal.title}`);
+  log(`Tema escolhido (${tema.principal.cat}): ${tema.principal.title}`);
   for (const f of tema.fatos) log(`  - [${f.fonte}] ${f.title} (${f.date.slice(0, 10)})`);
 
   const prompt = montarPrompt(tema);
@@ -275,11 +298,12 @@ async function main() {
   // gera (até 2 tentativas se o texto reprovar nas checagens)
   let artigo, erros;
   for (let t = 1; t <= 2; t++) {
-    log(`\nChamando ${model} (tentativa ${t})...`);
+    etapa(3, `Chamando o Gemini (${model}) para escrever o artigo — tentativa ${t}/2...`);
     artigo = await chamarGemini(prompt, key, model);
+    etapa(4, 'Validando o texto gerado (HTML, links, citações, números e estrutura)...');
     erros = checarArtigo(artigo, prompt.fatos);
-    if (!erros.length) break;
-    log('  texto reprovado: ' + erros.join('; '));
+    if (!erros.length) { log('  ✓ texto aprovado: "' + String(artigo.title).slice(0, 90) + '"'); break; }
+    log('  ✗ texto reprovado: ' + erros.join('; '));
   }
   if (erros.length) fail('O artigo gerado não passou nas checagens: ' + erros.join('; ') + '. Nada foi alterado.');
 
@@ -299,12 +323,15 @@ async function main() {
   const novo = JSON.parse(idxOriginal.replace(/^﻿/, '')); novo.posts.unshift(entrada);
 
   try {
+    etapa(5, `Gravando posts/${slug}.md e a entrada em posts/index.json...`);
     await writeFile(mdPath, md, 'utf8');
     await writeFile(idxPath, JSON.stringify(novo, null, 2) + '\n', 'utf8');
+    etapa(6, 'Atualizando o GEO (gerar-geo) e validando os dados...');
     const up = await gerar({ write: true });
-    if (up.length) log('GEO atualizado: ' + up.join(', '));
+    log(up.length ? '  GEO atualizado: ' + up.join(', ') : '  GEO já estava em dia');
     const errs = await validar();
     if (errs.length) throw new Error('validação falhou:\n  - ' + errs.join('\n  - '));
+    log('  ✓ validar-dados: tudo certo');
   } catch (e) {
     await unlink(mdPath).catch(() => {});                       // desfaz tudo
     await writeFile(idxPath, idxOriginal, 'utf8');

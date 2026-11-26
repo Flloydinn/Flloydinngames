@@ -3,7 +3,7 @@
 #   - O texto só vai ao ar se passar nas checagens do script e em scripts/validar-dados.mjs.
 #   - Sem o segredo GEMINI_API_KEY, sem tema novo ou com qualquer falha, o job falha e NADA é commitado.
 # Segredo necessário: Settings > Secrets and variables > Actions > New repository secret > GEMINI_API_KEY
-# (opcional) Variável GEMINI_MODEL em Settings > Secrets and variables > Actions > Variables. Padrão: gemini-2.5-flash.
+# (opcional) Variável GEMINI_MODEL em Settings > Secrets and variables > Actions > Variables. Padrão: gemini-3.8-flash.
 # Para testar sem gastar a API: Actions > "Post semanal do blog" > Run workflow > marque "dry_run".
 name: Post semanal do blog
 
