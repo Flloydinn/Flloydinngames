@@ -151,6 +151,13 @@
     .format-tabs button[aria-pressed="true"]{color:#fff;background:var(--brand);border-color:var(--brand)}
     .format-tabs small{opacity:.75;font-weight:600}
     .actions .icon-btn{padding:.45rem}
+    .actions>*{min-width:0}
+    @media (max-width:440px){
+      .body{padding:.7rem .6rem .8rem}
+      .actions{gap:.3rem}
+      .actions .btn--play{padding:.45rem .25rem;font-size:.8rem;white-space:nowrap}
+      .actions .icon-btn{padding:.4rem;flex:none}
+    }
     .card{transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease}
     .card:hover,.card:focus-within{transform:translateY(-3px);border-color:rgba(255,92,92,.45);box-shadow:0 14px 30px -14px rgba(143,0,0,.6)}
     @media (prefers-reduced-motion: reduce){ .card{transition:none} .card:hover,.card:focus-within{transform:none} .card:hover .thumb img{transform:none} }

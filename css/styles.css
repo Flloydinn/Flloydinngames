@@ -74,7 +74,7 @@ site-header,site-footer{display:contents}
 .site-header .brand{font-weight:800;letter-spacing:.3px;flex-shrink:0}
 .site-header .brand .logo{font-weight:800;letter-spacing:.5px;font-size:1.3rem;display:inline-block;color:#fff}
 .site-header .brand .logo span{color:var(--brand)}
-.site-header .brand .logo{text-shadow:-1px 1px 0 #1b1b1e,-2px 2px 0 #0b0b0c}
+.site-header .brand .logo{text-shadow:-1px 1px 0 #2a2a2f,-2px 2px 0 #0b0b0c}
 .site-header .menu{gap:1.2rem;align-items:center;flex-wrap:nowrap;white-space:nowrap}
 .site-header .menu a:not(.btn){position:relative;opacity:.9;border:0;background:none;box-shadow:none;padding:0;transition:opacity .15s ease}
 .site-header .menu a:not(.btn):hover,.site-header .menu a:not(.btn):focus-visible{opacity:1}
