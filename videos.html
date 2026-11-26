@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/layout.js"></script>
   <script src="js/engage.js"></script>
+  <script src="js/notificacoes.js" defer></script>
   <style>
     body{line-height:1.55} /* ajuste desta página sobre css/styles.css */
     a{color:var(--brand-2)} /* ajuste desta página sobre css/styles.css */
@@ -590,6 +591,14 @@
       </div>
     </div>
     <div class="container section" aria-label="Categorias">
+      <div class="notify" data-notify data-notify-state="off">
+        <p class="notify__txt" data-notify-text>Receba um aviso quando sair vídeo novo no canal.</p>
+        <div class="notify__actions">
+          <button type="button" class="btn" data-notify-toggle aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><span data-notify-label>Ativar avisos de vídeos</span></button>
+          <button type="button" class="btn btn--ghost" data-notify-test hidden>Enviar teste</button>
+        </div>
+        <p class="notify__help" data-notify-help role="status" aria-live="polite" hidden></p>
+      </div>
       <div id="formats" class="format-tabs" role="group" aria-label="Formato"></div>
       <div id="chips" class="filters" role="listbox" aria-label="Categorias por jogo"></div>
       <p class="legend" id="legend"></p>

@@ -1,0 +1,6 @@
+{
+  "_sobre": "Avisos de novos vídeos. Vazio = modo local (avisa quando a pessoa abre o site). Para push em segundo plano, preencha vapidPublicKey (chave PÚBLICA, gerada por node scripts/gerar-vapid.mjs) e subscribeEndpoint (URL https do SEU servidor que guarda as inscrições). Nunca coloque a chave privada aqui. Veja scripts/NOTIFICACOES.md.",
+  "vapidPublicKey": "",
+  "subscribeEndpoint": "",
+  "checkIntervalMin": 60
+}

@@ -249,3 +249,13 @@ site-header,site-footer{display:contents}
 .geo-dl dt{font-weight:700;color:#fff;margin:0 0 .15rem;font-size:.95rem}
 .geo-dl dd{margin:0;color:var(--muted);font-size:.9rem;line-height:1.55}
 .geo-dl a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+
+/* ====== Avisos de novos vídeos (js/notificacoes.js) ====== */
+.notify{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin:.2rem 0 .8rem;padding:.7rem .9rem;border:1px solid var(--border);border-radius:.8rem;background:var(--card)}
+.notify__txt{margin:0;flex:1 1 15rem;min-width:0;font-size:.92rem;line-height:1.5;color:var(--muted);min-height:3em}
+.notify__actions{display:flex;flex-wrap:wrap;gap:.5rem;min-width:0}
+.notify__actions .btn{display:inline-flex;align-items:center;gap:.45rem;font-size:.9rem;padding:.5rem .8rem}
+.notify__actions .btn svg{width:16px;height:16px;flex:none}
+.notify__actions .btn[disabled]{opacity:.55;cursor:not-allowed}
+.notify__help{flex:1 1 100%;margin:0;font-size:.85rem;line-height:1.5;color:#ffe2a8}
+@media (min-width:601px){.notify__txt{min-height:0}}

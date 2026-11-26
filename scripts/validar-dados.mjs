@@ -78,6 +78,18 @@ async function checkCanais(errs) {
   }
 }
 
+async function checkNotificacoes(errs) {
+  const f = 'data/notificacoes.json';
+  const d = await readJson(f, errs); if (!d) return;
+  const k = d.vapidPublicKey, e = d.subscribeEndpoint;
+  if (typeof k !== 'string' || typeof e !== 'string') return errs.push(`${f}: vapidPublicKey e subscribeEndpoint devem ser texto ("" = só modo local)`);
+  if (k && !/^[A-Za-z0-9_-]{87}$/.test(k)) errs.push(`${f}: vapidPublicKey deve ser a chave PÚBLICA VAPID (87 caracteres base64url; gere com node scripts/gerar-vapid.mjs)`);
+  if (e && !/^https:\/\/[^\s"'<>]+$/.test(e)) errs.push(`${f}: subscribeEndpoint deve ser uma URL https`);
+  if (!!k !== !!e) errs.push(`${f}: preencha vapidPublicKey E subscribeEndpoint juntos (ou deixe os dois vazios)`);
+  if (Object.keys(d).some(x => /priv|secret/i.test(x))) errs.push(`${f}: não guarde chave privada neste arquivo`);
+  if (d.checkIntervalMin !== undefined && !(d.checkIntervalMin > 0)) errs.push(`${f}: checkIntervalMin deve ser número > 0`);
+}
+
 async function checkCanal(errs) {
   const f = 'data/canal.json';
   const d = await readJson(f, errs); if (!d) return;
@@ -132,7 +144,7 @@ async function checkPosts(errs) {
 /** Retorna a lista de erros (vazia = tudo válido). */
 export async function validar() {
   const errs = [];
-  await checkAgenda(errs); await checkCanais(errs); await checkCanal(errs); await checkProdutos(errs); await checkPosts(errs);
+  await checkAgenda(errs); await checkCanais(errs); await checkNotificacoes(errs); await checkCanal(errs); await checkProdutos(errs); await checkPosts(errs);
   // GEO/AEO: llms.txt, llms-full.txt e JSON-LD (Organization, vídeos, jogos) precisam refletir os dados atuais
   if (!errs.length) { try { const stale = await gerar({ write: false }); if (stale.length) errs.push(`GEO desatualizado (${stale.join(', ')}): rode node scripts/gerar-geo.mjs`); } catch (e) { errs.push('gerar-geo: ' + e.message); } }
   return errs;

@@ -3,7 +3,7 @@
 ## Estrutura do projeto
 - **Raiz:** páginas `.html` (URLs públicas, canonicals e sitemap dependem delas), `index.html`, `404.html`, `manifest.webmanifest`,
   `sw.js` (precisa estar na raiz para controlar o site todo), `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`, `_headers`, `_redirects`.
-- **`js/`:** `analytics`, `conquistas`, `engage`, `forms`, `img-fallback`, `layout`, `script`, `storage` (helper seguro de localStorage). **`css/`:** `styles`, `game-bar`.
+- **`js/`:** `analytics`, `conquistas`, `engage`, `forms`, `img-fallback`, `layout`, `script`, `storage` (helper seguro de localStorage), `notificacoes` (avisos de vídeo novo). **`css/`:** `styles`, `game-bar`.
 - **`assets/`, `data/`, `posts/`, `tv/`, `scripts/`:** imagens, dados, artigos, TV e automação (como antes).
 
 Esta pasta não é publicada: o `_redirects` do Netlify devolve 404 para `/scripts/*`.
@@ -47,6 +47,10 @@ rode `node scripts/gerar-geo.mjs`: o canal Cortes entra nos arquivos e no JSON-L
 
 ## Auditoria de produção
 `node scripts/auditar-producao.mjs [URL] [--lighthouse]` — status, redirects, headers, SEO/OG/JSON-LD, robots e llms.
+
+## Avisos de novos vídeos
+`node scripts/gerar-vapid.mjs` gera as chaves VAPID; a configuração fica em `data/notificacoes.json` e o passo a passo
+(o que já funciona e o que depende de servidor) em `scripts/NOTIFICACOES.md`.
 
 ## Outros
 `tv-playlist.mjs` atualiza `tv/playlist.json`, `data/videos.json` e `data/canal.json` (veja o cabeçalho do arquivo).
