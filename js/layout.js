@@ -101,8 +101,8 @@
       return '<a class="drawer-link" href="' + esc(hrefOf(n)) + '"' + current(n) + '>' + esc(n.drawerLabel || n.label) + '</a>';
     }).join('') + '<a class="btn" href="' + esc(contactHref) + '">' + esc(CONTACT.label) + '</a>';
 
-    var brand = '<a class="brand" href="' + (home ? '#topo' : esc(resolve('index.html', base))) + '" aria-label="Flloydinn Gameplay — ' + (home ? 'topo' : 'início') + '">' +
-      '<span class="logo">Flloyd<span>inn</span></span></a>';
+    var brand = '<a class="brand" href="' + (home ? '#topo' : esc(resolve('index.html', base))) + '" aria-label="Flloydinn — ' + (home ? 'topo' : 'início') + '">' +
+      '<span class="logo">Fll<span aria-hidden="true">o</span>y<span aria-hidden="true">d</span>inn</span></a>';
 
     el.innerHTML =
       '<header class="site-header' + (home ? ' site-header--home' : '') + '"' + (home ? ' id="topo"' : '') + '>' +
