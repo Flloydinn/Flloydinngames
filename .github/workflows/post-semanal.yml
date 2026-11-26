@@ -1,0 +1,72 @@
+# Publica 1 artigo por semana no blog (games, cinema e cultura geek), direto na master.
+#   - Coleta notícias reais de feeds RSS, escolhe um assunto que ainda não saiu no blog e pede o texto ao Google Gemini.
+#   - O texto só vai ao ar se passar nas checagens do script e em scripts/validar-dados.mjs.
+#   - Sem o segredo GEMINI_API_KEY, sem tema novo ou com qualquer falha, o job falha e NADA é commitado.
+# Segredo necessário: Settings > Secrets and variables > Actions > New repository secret > GEMINI_API_KEY
+# (opcional) Variável GEMINI_MODEL em Settings > Secrets and variables > Actions > Variables. Padrão: gemini-2.5-flash.
+# Para testar sem gastar a API: Actions > "Post semanal do blog" > Run workflow > marque "dry_run".
+name: Post semanal do blog
+
+on:
+  schedule:
+    - cron: "0 12 * * 1"   # toda segunda-feira, 12:00 UTC = 09:00 em Brasília
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Só coleta os feeds e monta o prompt (não chama a IA nem grava nada)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: post-semanal
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Dry-run (feeds e prompt, sem gravar)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: node scripts/gerar-post-semanal.mjs --dry-run
+
+      - name: Gerar o artigo
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: node scripts/gerar-post-semanal.mjs
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+
+      - name: Validar dados e GEO
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: node scripts/validar-dados.mjs
+
+      - name: Commit e push na master (somente se houver alterações)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: |
+          git add -A -- posts llms.txt llms-full.txt '*.html'
+          if git diff --cached --quiet; then
+            echo "Nada mudou."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Blog: post semanal automático"
+          for i in 1 2 3; do
+            git pull --rebase origin master && git push origin HEAD:master && exit 0
+            echo "Push falhou (tentativa $i); tentando de novo..."
+            sleep 5
+          done
+          echo "::error::Não foi possível publicar na master."
+          exit 1

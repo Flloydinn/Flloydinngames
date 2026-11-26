@@ -52,5 +52,27 @@ rode `node scripts/gerar-geo.mjs`: o canal Cortes entra nos arquivos e no JSON-L
 `node scripts/gerar-vapid.mjs` gera as chaves VAPID; a configuração fica em `data/notificacoes.json` e o passo a passo
 (o que já funciona e o que depende de servidor) em `scripts/NOTIFICACOES.md`.
 
+## Post semanal automático (games, cinema e cultura geek)
+```
+node scripts/gerar-post-semanal.mjs --dry-run   # testa os feeds e o prompt, sem IA e sem gravar nada
+node scripts/gerar-post-semanal.mjs             # gera, grava, roda o GEO e valida (precisa de GEMINI_API_KEY)
+```
+- **O que faz:** lê feeds RSS (IGN Brasil, Canaltech Games, Gamerview, Cinema com Rapadura, g1 Cinema, Legião dos Heróis,
+  Canaltech Entretenimento, Papelpop, Meio Bit; Polygon e Nerdist em inglês só como complemento), pega notícias dos últimos
+  7 dias do nicho, descarta promoções e assuntos já publicados (título parecido ou link já citado em `posts/`), escolhe
+  um tema (alternando Games, Cinema e Cultura geek) e pede o texto ao Google Gemini **usando só os fatos das notícias**.
+  O script confere o texto (sem HTML, links ou citações longas; todo número precisa estar nas fontes), acrescenta
+  a seção "Fontes" com os links reais e o aviso de que houve auxílio de IA, grava `posts/<slug>.md` e
+  `posts/index.json` (capa `assets/og-flloydinn.jpg`, `views: 0`), roda `gerar-geo.mjs` e `validar-dados.mjs`.
+  Se algo falhar, tudo é desfeito e o script sai com erro.
+- **Workflow:** `.github/workflows/post-semanal.yml` roda toda segunda às 12:00 UTC (09:00 em Brasília) e faz commit
+  direto na `master` só se houver mudança (com `git pull --rebase` antes do push). Também pode ser disparado à mão.
+- **Cadastrar o segredo no GitHub:** repositório > **Settings** > **Secrets and variables** > **Actions** >
+  aba **Secrets** > **New repository secret** > nome `GEMINI_API_KEY` > cole a chave (criada em
+  https://aistudio.google.com/apikey). Opcional: aba **Variables** > `GEMINI_MODEL` (padrão `gemini-2.5-flash`).
+- **Testar no GitHub:** aba **Actions** > "Post semanal do blog" > **Run workflow** > marque `dry_run`.
+- **Revisão:** o texto é gerado por IA. Confira os posts publicados; para tirar um, apague a entrada em
+  `posts/index.json` e o `.md`, e rode `node scripts/gerar-geo.mjs`.
+
 ## Outros
 `tv-playlist.mjs` atualiza `tv/playlist.json`, `data/videos.json` e `data/canal.json` (veja o cabeçalho do arquivo).
