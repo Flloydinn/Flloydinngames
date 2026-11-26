@@ -44,6 +44,10 @@
     .feature__body{padding:1rem}
     .kicker{font-size:.8rem;font-weight:800;letter-spacing:.08em;color:#fff;background:rgba(255,255,255,.08);display:inline-block;padding:.25rem .5rem;border-radius:.4rem;border:1px solid var(--border)}
     .feature__title{margin:.5rem 0 .3rem;font-size:1.6rem;line-height:1.2}
+    /* espaço reservado para o que o JS preenche (resumo, meta e tags): o destaque não cresce depois do 1º render */
+    .toolbar__tags{min-height:122px}#grid{min-height:80vh}#featTitle{min-height:2.4em}#featMeta{min-height:46px}#featExcerpt{min-height:51px}#featTags{min-height:28px}
+    @media (min-width:501px) and (max-width:1100px){#featTitle{min-height:0}#featMeta{min-height:23px}#featExcerpt{min-height:26px}}
+    @media (min-width:1101px){#featExcerpt{min-height:77px}}
     .meta{display:flex;gap:.6rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
     .side-cards{display:grid;grid-template-columns:1fr;gap:1rem}
     .card-sm{display:grid;grid-template-columns:120px 1fr;gap:.7rem;border:1px solid var(--border);border-radius:.8rem;background:var(--card);overflow:hidden}

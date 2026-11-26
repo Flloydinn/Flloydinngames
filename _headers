@@ -30,6 +30,8 @@
   Cache-Control: public, max-age=0, must-revalidate
 /js/analytics.js
   Cache-Control: public, max-age=0, must-revalidate
+/js/storage.js
+  Cache-Control: public, max-age=0, must-revalidate
 /js/forms.js
   Cache-Control: public, max-age=0, must-revalidate
 /js/img-fallback.js

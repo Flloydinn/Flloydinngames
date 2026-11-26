@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
   <meta charset="utf-8">
   <title>Vídeos do Flloydinn Gameplay — gameplays, lives e shorts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -858,13 +859,13 @@
 
     // vídeos salvos na versão antiga ("Salvar") viram favoritos, uma vez só
     function migrateSaved(){
-      let old; try{ old = JSON.parse(localStorage.getItem('fll_saved_videos') || 'null'); }catch{ old = null; }
+      let old; try{ old = JSON.parse(FlloydStore.get('fll_saved_videos') || 'null'); }catch{ old = null; }
       if(!Array.isArray(old)) return;
       try{
-        const favs = JSON.parse(localStorage.getItem('fll_favs') || '[]');
+        const favs = JSON.parse(FlloydStore.get('fll_favs') || '[]');
         old.forEach(id => { const v = VIDEOS.find(x => x.id === id);
           if(v && !favs.some(f => f.type === 'video' && f.id === id)) favs.push({ type:'video', id, title:v.title, url:`videos.html?v=${id}`, img:v.thumb, at:Date.now() }); });
-        localStorage.setItem('fll_favs', JSON.stringify(favs)); localStorage.removeItem('fll_saved_videos');
+        FlloydStore.set('fll_favs', JSON.stringify(favs)); FlloydStore.remove('fll_saved_videos');
       }catch{}
     }
 

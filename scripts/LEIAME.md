@@ -3,7 +3,7 @@
 ## Estrutura do projeto
 - **Raiz:** páginas `.html` (URLs públicas, canonicals e sitemap dependem delas), `index.html`, `404.html`, `manifest.webmanifest`,
   `sw.js` (precisa estar na raiz para controlar o site todo), `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`, `_headers`, `_redirects`.
-- **`js/`:** `analytics`, `conquistas`, `engage`, `forms`, `img-fallback`, `layout`, `script`. **`css/`:** `styles`, `game-bar`.
+- **`js/`:** `analytics`, `conquistas`, `engage`, `forms`, `img-fallback`, `layout`, `script`, `storage` (helper seguro de localStorage). **`css/`:** `styles`, `game-bar`.
 - **`assets/`, `data/`, `posts/`, `tv/`, `scripts/`:** imagens, dados, artigos, TV e automação (como antes).
 
 Esta pasta não é publicada: o `_redirects` do Netlify devolve 404 para `/scripts/*`.

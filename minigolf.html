@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
 <meta charset="utf-8">
 <title>Galaxy MiniGolf 3D — minigolfe neon grátis | Flloydinn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -548,7 +549,7 @@ let holeIndex = 1, par = 3, strokes = 0;
 const scores = {}; const pars = {};
 let total = 0;
 const bestKey='minigolf_best';
-let best = Number(localStorage.getItem(bestKey) || 0);
+let best = Number(FlloydStore.get(bestKey) || 0);
 HUD.best.textContent = best? best : '—';
 
 function updateScoreUI(){
@@ -570,7 +571,7 @@ function finishHole(skipBall=false){
   total = Object.values(scores).reduce((a,b)=> a + (b||0), 0);
   if(holeIndex >= HOLES){
     // fim do curso
-    if(!best || total<best){ best = total; localStorage.setItem(bestKey, String(best)); HUD.best.textContent=best; window.FlloydConquistas&&FlloydConquistas.record('minigolf', best); }
+    if(!best || total<best){ best = total; FlloydStore.set(bestKey, String(best)); HUD.best.textContent=best; window.FlloydConquistas&&FlloydConquistas.record('minigolf', best); }
     showToast('Curso completo! Total: '+total);
     holeIndex = 0; total = 0;
     for(let k in scores) delete scores[k];

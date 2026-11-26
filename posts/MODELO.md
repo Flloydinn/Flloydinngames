@@ -20,7 +20,7 @@
 >       "game": "Nome do jogo",
 >       "platform": "PC",
 >       "author": "Flloydinn",
->       "cover": "assets/capa-meu-novo-post.jpg",
+>       "cover": "assets/cover-exemplo.jpg",
 >       "file": "meu-novo-post.md"
 >     }
 >

@@ -3,6 +3,7 @@
 <head>
 
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
   
   <meta charset="utf-8">
   <title>Flloydinn TV 24/7 — os vídeos do canal sem parar</title>
@@ -607,10 +608,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       tvWrap.classList.toggle('is-cinema', on);
       btnCinema.setAttribute('aria-pressed', String(on));
       btnCinema.textContent = on ? 'Ajustar à tela' : 'Modo cinema';
-      try{ localStorage.setItem('tv_cinema', on ? '1' : '0'); }catch{}
+      try{ FlloydStore.set('tv_cinema', on ? '1' : '0'); }catch{}
     }
     btnCinema.onclick = () => setCinema(!tvWrap.classList.contains('is-cinema'));
-    try{ setCinema(localStorage.getItem('tv_cinema') === '1'); }catch{ setCinema(false); }
+    try{ setCinema(FlloydStore.get('tv_cinema') === '1'); }catch{ setCinema(false); }
 
     // tela cheia só da área da TV (player + controles + faixa), não da página inteira
     const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;

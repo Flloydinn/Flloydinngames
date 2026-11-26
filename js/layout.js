@@ -50,7 +50,7 @@
   var SECTION_OF = {
     '': 'inicio', 'index.html': 'inicio',
     'videos.html': 'videos', 'tv.html': 'tv',
-    'blog.html': 'blog', 'post.html': 'blog', 'oblog.html': 'blog',
+    'blog.html': 'blog', 'post.html': 'blog',
     'arcade.html': 'jogos', 'loja.html': 'loja', 'agenda.html': 'agenda', 'parcerias.html': 'parcerias'
   };
 

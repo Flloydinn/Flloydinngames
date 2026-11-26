@@ -35,6 +35,12 @@
 html,body{height:100%}
 /* fundo escuro também no <html>: nada abaixo da altura do body fica branco (contraste/overscroll) */
 html{background:#0b0b0c;color-scheme:dark}
+/* fontes de reserva com as métricas do Inter (ajustadas por peso), usadas só onde a troca de fonte (font-display:swap) mexia no layout: veja o body da index.html */
+@font-face{font-family:"Inter Fallback";font-weight:400;src:local("Arial"),local("Helvetica Neue"),local("Helvetica");size-adjust:108%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%}
+@font-face{font-family:"Inter Fallback";font-weight:600;src:local("Arial"),local("Helvetica Neue"),local("Helvetica");size-adjust:108.5%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%}
+@font-face{font-family:"Inter Fallback";font-weight:800;src:local("Arial"),local("Helvetica Neue"),local("Helvetica");size-adjust:110.8%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%}
+/* títulos em CAIXA ALTA (h1 da home): o Inter é proporcionalmente mais estreito */
+@font-face{font-family:"Inter Fallback Caps";font-weight:800;src:local("Arial"),local("Helvetica Neue"),local("Helvetica");size-adjust:102.7%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%}
 body{
   margin:0;
   font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;

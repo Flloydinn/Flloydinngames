@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
 <meta charset="utf-8">
 <title>Desert Drifter 3D — hovercraft grátis no navegador | Flloydinn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -401,8 +402,8 @@ if(/Mobi|Android/i.test(navigator.userAgent)){ $('#mobile').style.display='flex'
 
 /* ====== Save ====== */
 const state = { crystals:0, lap:0, bestLap:null, timeDay:6.0 }; loadSave();
-function save(){ localStorage.setItem('drifter_save', JSON.stringify(state)); }
-function loadSave(){ try{ const s=JSON.parse(localStorage.getItem('drifter_save')||'null'); if(s) Object.assign(state,s); }catch{} }
+function save(){ FlloydStore.set('drifter_save', JSON.stringify(state)); }
+function loadSave(){ try{ const s=JSON.parse(FlloydStore.get('drifter_save')||'null'); if(s) Object.assign(state,s); }catch{} }
 
 /* ====== Audio ====== */
 const AC = window.AudioContext? new AudioContext() : null;
@@ -414,7 +415,7 @@ function togglePause(){ paused=!paused; pauseOverlay.classList.toggle('open', pa
 btnHelp.onclick = ()=>{ paused=true; pauseOverlay.classList.add('open'); };
 btnResume.onclick = ()=> togglePause();
 btnReset.onclick = ()=>{ phys.pos.set(0,3,10); phys.vel.set(0,0,0); phys.yaw=0; state.lap=0; save(); togglePause(); };
-btnClear.onclick = ()=>{ localStorage.removeItem('drifter_save'); location.reload(); };
+btnClear.onclick = ()=>{ FlloydStore.remove('drifter_save'); location.reload(); };
 
 /* ====== Minimap ====== */
 let mapOn=false; function toggleMap(){ mapOn=!mapOn; hud.mapWrap.style.display = mapOn?'block':'none'; }

@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
   <meta charset="utf-8">
   <title>Arcade Flloydinn — mini-games e jogos 3D grátis no navegador</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -818,8 +819,8 @@
     }
 
     // Leaderboard local
-    function loadLB(){ return JSON.parse(localStorage.getItem('arcade_lb')||'[]'); }
-    function saveLB(arr){ localStorage.setItem('arcade_lb', JSON.stringify(arr)); }
+    function loadLB(){ return JSON.parse(FlloydStore.get('arcade_lb')||'[]'); }
+    function saveLB(arr){ FlloydStore.set('arcade_lb', JSON.stringify(arr)); }
     function renderLB(){
       const list = loadLB().sort((a,b)=> b.total - a.total).slice(0,10);
       $('#lb').innerHTML = list.length? list.map((r,i)=>`<div class="item"><span>${i+1}. ${escHTML(r.nick)}</span><strong>${Number(r.total)||0} pts</strong></div>`).join('') : `<div class="item"><span>—</span><strong>Sem registros</strong></div>`;
@@ -926,9 +927,9 @@
 
     // ====== Recordes locais por jogo + controles (hub) ======
     const escHTML = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const lsGet = k => { try{ return localStorage.getItem(k); }catch{ return null; } };
-    const lsSet = (k, v) => { try{ localStorage.setItem(k, v); }catch{} };
-    const lsDel = k => { try{ localStorage.removeItem(k); }catch{} };
+    const lsGet = k => FlloydStore.get(k);
+    const lsSet = (k, v) => FlloydStore.set(k, v);
+    const lsDel = k => FlloydStore.remove(k);
     const BEST_KEY = 'arcade_best';
     const loadBest = () => { try{ return JSON.parse(lsGet(BEST_KEY) || '{}') || {}; }catch{ return {}; } };
     let lastNew = null;

@@ -67,6 +67,7 @@
     /* Comparador */
     .compare{position:relative;aspect-ratio:16/9;border:1px solid var(--border);border-radius:.8rem;overflow:hidden;background:#0e0f12}
     .compare img{position:absolute;inset:0;object-fit:cover;width:100%;height:100%}
+    .compare .before{filter:grayscale(1) contrast(.85) brightness(.9)}
     .compare .after{clip-path:inset(0 0 0 50%)}
     .range{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center}
     .range input{width:80%}
@@ -208,7 +209,7 @@
         </div>
       </div>
       <div class="hero__media">
-        <img src="assets/setup-hero.jpg" alt="Setup do canal" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+        <img src="assets/og-flloydinn.jpg" alt="Setup do canal" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
       </div>
     </div>
   </section>
@@ -245,8 +246,8 @@
       <div class="box">
         <h3 style="margin:.2rem 0 .6rem">Comparador de LUT (Antes/Depois)</h3>
         <div class="compare" id="compare">
-          <img class="before" src="assets/compare-before.jpg" alt="Antes" onerror="this.style.opacity=.15">
-          <img class="after" src="assets/compare-after.jpg" alt="Depois" onerror="this.style.opacity=.15">
+          <img class="before" src="assets/og-flloydinn.jpg" alt="Antes" onerror="this.style.opacity=.15">
+          <img class="after" src="assets/og-flloydinn.jpg" alt="Depois" onerror="this.style.opacity=.15">
           <div class="range"><input id="slider" type="range" min="0" max="100" value="50" aria-label="Comparador"></div>
         </div>
         <div class="inline" style="margin-top:.7rem">
@@ -313,62 +314,62 @@
     const BUILDS = {
       starter:{
         pc:[
-          {t:'CPU Ryzen 5 5600', p:799.90, img:'assets/cpu.jpg', url:'#'},
-          {t:'GPU GTX 1660 Super', p:1299.90, img:'assets/gpu.jpg', url:'#'},
-          {t:'RAM 16GB (2x8) 3200', p:329.90, img:'assets/ram.jpg', url:'#'},
-          {t:'SSD 500GB NVMe', p:299.90, img:'assets/ssd.jpg', url:'#'},
-          {t:'Fonte 550W 80+', p:289.90, img:'assets/psu.jpg', url:'#'}
+          {t:'CPU Ryzen 5 5600', p:799.90, img:'assets/setup/cpu.svg', url:'#'},
+          {t:'GPU GTX 1660 Super', p:1299.90, img:'assets/setup/gpu.svg', url:'#'},
+          {t:'RAM 16GB (2x8) 3200', p:329.90, img:'assets/setup/ram.svg', url:'#'},
+          {t:'SSD 500GB NVMe', p:299.90, img:'assets/setup/ssd.svg', url:'#'},
+          {t:'Fonte 550W 80+', p:289.90, img:'assets/setup/psu.svg', url:'#'}
         ],
         per:[
-          {t:'Headset HyperX Cloud Core', p:349.00, img:'assets/headset.jpg', url:'#'},
-          {t:'Mic BM800 + Interface USB', p:259.00, img:'assets/mic.jpg', url:'#'},
-          {t:'Teclado Mecânico TKL', p:219.00, img:'assets/kb.jpg', url:'#'},
-          {t:'Mouse 12k DPI', p:149.00, img:'assets/mouse.jpg', url:'#'}
+          {t:'Headset HyperX Cloud Core', p:349.00, img:'assets/setup/headset.svg', url:'#'},
+          {t:'Mic BM800 + Interface USB', p:259.00, img:'assets/setup/mic.svg', url:'#'},
+          {t:'Teclado Mecânico TKL', p:219.00, img:'assets/setup/kb.svg', url:'#'},
+          {t:'Mouse 12k DPI', p:149.00, img:'assets/setup/mouse.svg', url:'#'}
         ],
         vid:[
-          {t:'Webcam 1080p30', p:189.00, img:'assets/webcam.jpg', url:'#'},
-          {t:'Luz Softbox (par)', p:299.00, img:'assets/light.jpg', url:'#'},
-          {t:'Captura USB (console)', p:229.00, img:'assets/capture.jpg', url:'#'}
+          {t:'Webcam 1080p30', p:189.00, img:'assets/setup/webcam.svg', url:'#'},
+          {t:'Luz Softbox (par)', p:299.00, img:'assets/setup/light.svg', url:'#'},
+          {t:'Captura USB (console)', p:229.00, img:'assets/setup/capture.svg', url:'#'}
         ]
       },
       mid:{
         pc:[
-          {t:'CPU Ryzen 7 5800X3D', p:1699.90, img:'assets/cpu.jpg', url:'#'},
-          {t:'GPU RTX 3060 Ti', p:1799.90, img:'assets/gpu.jpg', url:'#'},
-          {t:'RAM 32GB (2x16) 3600', p:599.90, img:'assets/ram.jpg', url:'#'},
-          {t:'SSD 1TB NVMe', p:499.90, img:'assets/ssd.jpg', url:'#'},
-          {t:'Fonte 650W 80+ Gold', p:499.90, img:'assets/psu.jpg', url:'#'}
+          {t:'CPU Ryzen 7 5800X3D', p:1699.90, img:'assets/setup/cpu.svg', url:'#'},
+          {t:'GPU RTX 3060 Ti', p:1799.90, img:'assets/setup/gpu.svg', url:'#'},
+          {t:'RAM 32GB (2x16) 3600', p:599.90, img:'assets/setup/ram.svg', url:'#'},
+          {t:'SSD 1TB NVMe', p:499.90, img:'assets/setup/ssd.svg', url:'#'},
+          {t:'Fonte 650W 80+ Gold', p:499.90, img:'assets/setup/psu.svg', url:'#'}
         ],
         per:[
-          {t:'Mic USB Blue Yeti', p:799.00, img:'assets/mic.jpg', url:'#'},
-          {t:'Headset Logitech G Pro X', p:699.00, img:'assets/headset.jpg', url:'#'},
-          {t:'Teclado 75% RGB', p:449.00, img:'assets/kb.jpg', url:'#'},
-          {t:'Mouse 20k DPI', p:349.00, img:'assets/mouse.jpg', url:'#'}
+          {t:'Mic USB Blue Yeti', p:799.00, img:'assets/setup/mic.svg', url:'#'},
+          {t:'Headset Logitech G Pro X', p:699.00, img:'assets/setup/headset.svg', url:'#'},
+          {t:'Teclado 75% RGB', p:449.00, img:'assets/setup/kb.svg', url:'#'},
+          {t:'Mouse 20k DPI', p:349.00, img:'assets/setup/mouse.svg', url:'#'}
         ],
         vid:[
-          {t:'Webcam 1080p60', p:449.00, img:'assets/webcam.jpg', url:'#'},
-          {t:'Luz LED painel (par)', p:599.00, img:'assets/light.jpg', url:'#'},
-          {t:'Captura PCIe 4K30', p:1399.00, img:'assets/capture.jpg', url:'#'}
+          {t:'Webcam 1080p60', p:449.00, img:'assets/setup/webcam.svg', url:'#'},
+          {t:'Luz LED painel (par)', p:599.00, img:'assets/setup/light.svg', url:'#'},
+          {t:'Captura PCIe 4K30', p:1399.00, img:'assets/setup/capture.svg', url:'#'}
         ]
       },
       pro:{
         pc:[
-          {t:'CPU Ryzen 9 7950X3D', p:3699.90, img:'assets/cpu.jpg', url:'#'},
-          {t:'GPU RTX 4080', p:5999.90, img:'assets/gpu.jpg', url:'#'},
-          {t:'RAM 64GB (2x32) 6000', p:1399.90, img:'assets/ram.jpg', url:'#'},
-          {t:'SSD 2TB NVMe', p:999.90, img:'assets/ssd.jpg', url:'#'},
-          {t:'Fonte 850W 80+ Gold', p:899.90, img:'assets/psu.jpg', url:'#'}
+          {t:'CPU Ryzen 9 7950X3D', p:3699.90, img:'assets/setup/cpu.svg', url:'#'},
+          {t:'GPU RTX 4080', p:5999.90, img:'assets/setup/gpu.svg', url:'#'},
+          {t:'RAM 64GB (2x32) 6000', p:1399.90, img:'assets/setup/ram.svg', url:'#'},
+          {t:'SSD 2TB NVMe', p:999.90, img:'assets/setup/ssd.svg', url:'#'},
+          {t:'Fonte 850W 80+ Gold', p:899.90, img:'assets/setup/psu.svg', url:'#'}
         ],
         per:[
-          {t:'Mic XLR + Interface (Scarlett 2i2)', p:1499.00, img:'assets/mic.jpg', url:'#'},
-          {t:'Headset Studio', p:899.00, img:'assets/headset.jpg', url:'#'},
-          {t:'Teclado 65% premium', p:799.00, img:'assets/kb.jpg', url:'#'},
-          {t:'Mouse ultraleve', p:599.00, img:'assets/mouse.jpg', url:'#'}
+          {t:'Mic XLR + Interface (Scarlett 2i2)', p:1499.00, img:'assets/setup/mic.svg', url:'#'},
+          {t:'Headset Studio', p:899.00, img:'assets/setup/headset.svg', url:'#'},
+          {t:'Teclado 65% premium', p:799.00, img:'assets/setup/kb.svg', url:'#'},
+          {t:'Mouse ultraleve', p:599.00, img:'assets/setup/mouse.svg', url:'#'}
         ],
         vid:[
-          {t:'Câmera Mirrorless 4K', p:3899.00, img:'assets/webcam.jpg', url:'#'},
-          {t:'Iluminação key/fill/hair', p:1699.00, img:'assets/light.jpg', url:'#'},
-          {t:'Captura 4K60 HDR', p:1999.00, img:'assets/capture.jpg', url:'#'}
+          {t:'Câmera Mirrorless 4K', p:3899.00, img:'assets/setup/webcam.svg', url:'#'},
+          {t:'Iluminação key/fill/hair', p:1699.00, img:'assets/setup/light.svg', url:'#'},
+          {t:'Captura 4K60 HDR', p:1999.00, img:'assets/setup/capture.svg', url:'#'}
         ]
       }
     };

@@ -76,9 +76,6 @@
     .tile{position:relative;overflow:hidden;border-radius:.8rem;border:1px solid var(--border);background:#0e0f12}
     .tile img{width:100%;height:160px;object-fit:cover;filter:saturate(.95)}
     .tile span{position:absolute;left:.5rem;bottom:.5rem;background:rgba(0,0,0,.5);padding:.2rem .4rem;border-radius:.4rem;font-weight:700}
-    /* Logos carousel */
-    .logos{display:flex;gap:2rem;overflow:auto;white-space:nowrap;padding:.6rem 0}
-    .logos img{height:40px;filter:grayscale(100%);opacity:.8}
     /* Testimonials */
     .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
     .quote{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
@@ -224,7 +221,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="container hero__grid">
       <article class="feature">
         <div class="feature__media">
-          <img src="assets/parcerias-banner.jpg" alt="Parcerias Flloydinn" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
+          <img src="assets/og-flloydinn.jpg" alt="Parcerias Flloydinn" onerror="this.style.opacity=.1;this.parentElement.style.background='radial-gradient(400px 200px at 50% 50%,rgba(233,33,33,.22),transparent 60%)'">
         </div>
         <div class="feature__body">
           <span class="tag">PARCERIAS</span>
@@ -335,23 +332,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="container">
       <h2 style="margin:.2rem 0 .9rem">Vitrine de cases</h2>
       <div class="gallery">
-        <a class="tile" href="#" aria-label="Case 1"><img src="assets/case1.jpg" alt="Case 1" onerror="this.style.opacity=.15"><span>Gameplay Integrado</span></a>
-        <a class="tile" href="#" aria-label="Case 2"><img src="assets/case2.jpg" alt="Case 2" onerror="this.style.opacity=.15"><span>Live com Ativação</span></a>
-        <a class="tile" href="#" aria-label="Case 3"><img src="assets/case3.jpg" alt="Case 3" onerror="this.style.opacity=.15"><span>Série Patrocinada</span></a>
-        <a class="tile" href="#" aria-label="Case 4"><img src="assets/case4.jpg" alt="Case 4" onerror="this.style.opacity=.15"><span>UGC para Ads</span></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Logos -->
-  <section class="section" aria-label="Marcas">
-    <div class="container box">
-      <div class="logos" id="logos">
-        <img src="assets/logo1.png" alt="Marca 1" onerror="this.style.opacity=.2">
-        <img src="assets/logo2.png" alt="Marca 2" onerror="this.style.opacity=.2">
-        <img src="assets/logo3.png" alt="Marca 3" onerror="this.style.opacity=.2">
-        <img src="assets/logo4.png" alt="Marca 4" onerror="this.style.opacity=.2">
-        <img src="assets/logo5.png" alt="Marca 5" onerror="this.style.opacity=.2">
+        <a class="tile" href="#" aria-label="Case 1"><img src="assets/og/arcade.jpg" alt="Case 1" onerror="this.style.opacity=.15"><span>Gameplay Integrado</span></a>
+        <a class="tile" href="#" aria-label="Case 2"><img src="assets/og/neon-runner.jpg" alt="Case 2" onerror="this.style.opacity=.15"><span>Live com Ativação</span></a>
+        <a class="tile" href="#" aria-label="Case 3"><img src="assets/og/space-courier.jpg" alt="Case 3" onerror="this.style.opacity=.15"><span>Série Patrocinada</span></a>
+        <a class="tile" href="#" aria-label="Case 4"><img src="assets/og/desert-drifter.jpg" alt="Case 4" onerror="this.style.opacity=.15"><span>UGC para Ads</span></a>
       </div>
     </div>
   </section>
@@ -441,19 +425,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       })
       .catch(() => {})
       .finally(() => counters.forEach(el => animateCount(el, Number(el.dataset.count))));
-
-    // Logos: auto-scroll leve
-    const logos = document.getElementById('logos');
-    let scrollX = 0; let anim;
-    function autoScroll(){
-      scrollX += 0.5;
-      logos.scrollLeft = scrollX;
-      if(scrollX >= logos.scrollWidth - logos.clientWidth) scrollX = 0;
-      anim = requestAnimationFrame(autoScroll);
-    }
-    autoScroll();
-    logos.addEventListener('mouseenter', ()=> cancelAnimationFrame(anim));
-    logos.addEventListener('mouseleave', ()=> autoScroll());
 
     // Form: validação e envio real ficam em js/forms.js (data-form="parcerias")
     document.getElementById('copyEmail').addEventListener('click', async ()=>{

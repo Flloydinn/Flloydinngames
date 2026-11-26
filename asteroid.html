@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
 <meta charset="utf-8">
 <title>Space Courier 3D — nave no espaço, grátis | Flloydinn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -343,7 +344,7 @@ const state = {
   vel: new THREE.Vector3(0,0,0),
   yaw: 0, pitch: 0,
   boost: .6, shield: 1,
-  score: 0, best: Number(localStorage.getItem('arcade_space_best')||0),
+  score: 0, best: Number(FlloydStore.get('arcade_space_best')||0),
   combo: 1, comboTimer: 0,
   wave: 1, alive: true, paused: false,
   mapOn: false
@@ -432,7 +433,7 @@ function togglePause(){ paused=!paused; state.paused=paused; pauseOverlay.classL
 btnHelp.onclick = ()=>{ paused=true; state.paused=true; pauseOverlay.classList.add('open'); };
 btnResume.onclick = ()=> togglePause();
 btnReset.onclick = ()=> resetGame();
-btnClear.onclick = ()=>{ localStorage.removeItem('arcade_space_best'); hud.best.textContent='—'; }
+btnClear.onclick = ()=>{ FlloydStore.remove('arcade_space_best'); hud.best.textContent='—'; }
 
 // HUD
 function toast(txt){ hud.toast.textContent=txt; hud.toast.style.display='block'; setTimeout(()=> hud.toast.style.display='none', 700); }
@@ -580,7 +581,7 @@ function explode(pos, r=2){
 function gameOver(){
   if(!state.alive) return;
   state.alive=false; toast('Game Over');
-  if(state.score>state.best){ state.best=state.score; localStorage.setItem('arcade_space_best', String(state.best)); hud.best.textContent=state.best; window.FlloydConquistas&&FlloydConquistas.record('space', state.best); }
+  if(state.score>state.best){ state.best=state.score; FlloydStore.set('arcade_space_best', String(state.best)); hud.best.textContent=state.best; window.FlloydConquistas&&FlloydConquistas.record('space', state.best); }
   paused=true; state.paused=true; pauseOverlay.classList.add('open');
 }
 function resetGame(){
@@ -592,7 +593,7 @@ function resetGame(){
 // Buttons in modal
 btnResume.onclick = ()=> togglePause();
 btnReset.onclick = ()=> resetGame();
-btnClear.onclick = ()=> { localStorage.removeItem('arcade_space_best'); state.best=0; hud.best.textContent='—'; };
+btnClear.onclick = ()=> { FlloydStore.remove('arcade_space_best'); state.best=0; hud.best.textContent='—'; };
 </script>
 </body>
 </html>

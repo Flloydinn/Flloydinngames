@@ -3,6 +3,7 @@
 <head>
 
   <script src="js/analytics.js"></script>
+  <script src="js/storage.js"></script>
   
   <meta charset="utf-8">
   <title>Loja Flloydinn — camisetas, canecas e itens do canal</title>
@@ -388,7 +389,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // ======== Estado ========
     const state = {
       q:'', cat:'todas', sort:'recent',
-      cart: JSON.parse(localStorage.getItem('shop_cart')||'[]'), // {id, title, price, qty, opts, img, digital}
+      cart: JSON.parse(FlloydStore.get('shop_cart')||'[]'), // {id, title, price, qty, opts, img, digital}
       cupom:null,
       shipping: 24.90,
       freeAt: 199.00
@@ -484,7 +485,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       persistCart(); updateMini();
       flashBar(`${p.title} adicionado ao carrinho`);
     }
-    function persistCart(){ localStorage.setItem('shop_cart', JSON.stringify(state.cart)); }
+    function persistCart(){ FlloydStore.set('shop_cart', JSON.stringify(state.cart)); }
     function updateMini(){
       const items = state.cart.reduce((s,i)=>s+i.qty,0);
       const subtotal = state.cart.reduce((s,i)=>s+i.price*i.qty,0);
@@ -726,8 +727,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       const btn = $('#finish');
       const tx = lastTx;
       const summary = orderSummary(tx);
-      const orders = JSON.parse(localStorage.getItem('shop_orders')||'[]');
-      orders.push(tx); localStorage.setItem('shop_orders', JSON.stringify(orders));
+      const orders = JSON.parse(FlloydStore.get('shop_orders')||'[]');
+      orders.push(tx); FlloydStore.set('shop_orders', JSON.stringify(orders));
 
       const F = window.FlloydForms;
       const email = F ? F.FALLBACK_EMAIL : 'flloydinn@gmail.com';
