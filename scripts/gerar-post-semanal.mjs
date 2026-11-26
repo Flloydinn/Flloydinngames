@@ -50,7 +50,8 @@ const DRY = args.includes('--dry-run');
 const daysArg = args.indexOf('--days');
 const DAYS = daysArg >= 0 ? Math.max(1, parseInt(args[daysArg + 1], 10) || 7) : 7;
 const log = (...a) => console.log(...a);
-const etapa = (n, txt) => log(`\n[${n}/6] ${txt}`);
+let etapaAtual = '[0/6]';
+const etapa = (n, txt) => { etapaAtual = `[${n}/6]`; log(`\n${etapaAtual} ${txt}`); };
 const gh = process.env.GITHUB_ACTIONS === 'true';
 function fail(msg, code = 1) { console.error((gh ? '::error::' : '✗ ') + msg); process.exit(code); }
 const exists = p => access(path.join(ROOT, p)).then(() => true, () => false);
@@ -193,7 +194,10 @@ export function montarPrompt(tema) {
 }
 
 const GEMINI_TIMEOUT_MS = Math.max(120000, parseInt(process.env.GEMINI_TIMEOUT_MS, 10) || 0);  // no mínimo 120 s
-const THINKING_BUDGET = 1024;                                                                   // limita o "raciocínio" para a resposta chegar rápido
+const GEMINI_TENTATIVAS = 3;                                                                    // 1 chamada + até 2 repetições
+const TRANSITORIOS = new Set([429, 500, 502, 503, 504]);                                        // erros que costumam passar sozinhos
+const RETRY_BASE_S = Math.max(0, parseFloat(process.env.GEMINI_RETRY_BASE_S) || 15);            // espera: 15 s, 30 s (a variável existe só para testes)
+const THINKING_BUDGET = 1024;                                                                  // limita o "raciocínio" para a resposta chegar rápido
 
 async function chamarGemini(prompt, key, model) {
   const url = `${process.env.GEMINI_API_BASE || 'https://generativelanguage.googleapis.com'}/v1beta/models/${encodeURIComponent(model)}:generateContent`;
@@ -205,12 +209,12 @@ async function chamarGemini(prompt, key, model) {
     generationConfig: { temperature: 0.5, maxOutputTokens: 8192, responseMimeType: 'application/json', ...(comThinking ? { thinkingConfig: { thinkingBudget: THINKING_BUDGET } } : {}) }
   });
   let ultimo;
-  for (let t = 1; t <= 3; t++) {
+  for (let t = 1; t <= GEMINI_TENTATIVAS; t++) {
     const ini = Date.now();
     try {
-      log(`  → requisição ${t}/3 ao Gemini (${model}, timeout ${GEMINI_TIMEOUT_MS / 1000}s${comThinking ? `, raciocínio limitado a ${THINKING_BUDGET} tokens` : ', sem limite de raciocínio'})`);
+      log(`  → requisição ${t}/${GEMINI_TENTATIVAS} ao Gemini (${model}, timeout ${GEMINI_TIMEOUT_MS / 1000}s${comThinking ? `, raciocínio limitado a ${THINKING_BUDGET} tokens` : ', sem limite de raciocínio'})`);
       const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: montar(), signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS) });
-      if (r.status === 429 || r.status >= 500) throw new Error('Gemini HTTP ' + r.status);
+      if (TRANSITORIOS.has(r.status)) throw new Error('Gemini retornou HTTP ' + r.status);   // vale tentar de novo
       const j = await r.json();
       if (!r.ok) {
         const msg = String(j.error && j.error.message || '').slice(0, 200);
@@ -226,9 +230,12 @@ async function chamarGemini(prompt, key, model) {
       return JSON.parse(txt);
     } catch (e) {
       if (e.name === 'TimeoutError' || e.name === 'AbortError') e = new Error(`Gemini não respondeu em ${GEMINI_TIMEOUT_MS / 1000}s`);
-      ultimo = e; log(`  ✗ ${e.message}`);
-      if (e.fatal || t === 3) break;
-      await new Promise(r => setTimeout(r, 4000 * t));
+      ultimo = e;
+      if (e.fatal) { log(`  ✗ ${e.message}`); break; }                       // erro definitivo (chave, modelo, bloqueio...): não adianta repetir
+      if (t === GEMINI_TENTATIVAS) { log(`  ✗ ${e.message} — sem mais tentativas (${t}/${GEMINI_TENTATIVAS})`); break; }
+      const espera = RETRY_BASE_S * 2 ** (t - 1);                          // 15 s, depois 30 s
+      log(`  ${etapaAtual} ${/^Gemini/.test(e.message) ? e.message : 'Falha ao falar com o Gemini (' + e.message + ')'} — aguardando ${espera}s para tentar novamente (tentativa ${t + 1}/${GEMINI_TENTATIVAS})...`);
+      await new Promise(r => setTimeout(r, espera * 1000));
     }
   }
   throw ultimo;
