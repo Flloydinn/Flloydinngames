@@ -109,7 +109,8 @@ async function checkSeo() {
     r.status === 200 && /^image\//.test(r.headers.get('content-type') || '') ? ok('og:image', `${url} → 200 ${r.headers.get('content-type')}`) : bad('og:image', `${url} (usada em ${from}) → ${r.status} ${r.headers.get('content-type') || ''}`);
   }
   // capas próprias dos posts (assets/blog/<slug>.png): precisam ser servidas como PNG
-  { const ix = JSON.parse(await (await get('/posts/index.json')).text()).posts || []; const proprias = ix.filter(p => /^assets\/blog\//.test(p.cover || ''));
+  { let ix = []; try { ix = JSON.parse(await (await get('/posts/index.json')).text()).posts || []; } catch { bad('capa', 'posts/index.json indisponível'); }
+     const proprias = ix.filter(p => /^assets\/blog\//.test(p.cover || ''));
     for (const p of proprias) { const r = await get('/' + p.cover); r.status === 200 && /^image\/png/.test(r.headers.get('content-type') || '') ? ok('capa', `/${p.cover} → 200 image/png`) : bad('capa', `/${p.cover} → ${r.status} ${r.headers.get('content-type') || ''}`); }
     if (!proprias.length) ok('capa', 'nenhum post com capa própria ainda (usam a imagem padrão)'); }
   const rob = await get('/robots.txt');
@@ -169,15 +170,59 @@ function lighthouse() {
   console.log('\n' + table.map(r => r.join(' | ')).join('\n'));
 }
 
+// ---------- saída no terminal (só apresentação; a lógica das checagens e o código de saída ficam como estão) ----------
+const COR = process.stdout.isTTY && !('NO_COLOR' in process.env);
+const ESC = String.fromCharCode(27);
+const pint = (cod, t) => (COR ? `${ESC}[${cod}m${t}${ESC}[0m` : t);
+const verde = t => pint('32', t), vermelho = t => pint('31', t), amarelo = t => pint('33', t), cinza = t => pint('90', t), negrito = t => pint('1', t);
+const SECOES = [
+  ['Infraestrutura e Rede', ['status', 'redirects', 'restritos', 'headers', 'cache']],
+  ['SEO e Mídia', ['seo', 'og:image', 'capa']],
+  ['Descoberta e Crawlers', ['robots', 'llms', 'sitemap']],
+];
+const secaoDe = g => { const base = g.startsWith('seo ') ? 'seo' : g; const s = SECOES.find(([, gs]) => gs.includes(base)); return s ? s[0] : 'Outros'; };
+const icone = s => s === '✓' ? verde('✓') : s === '✗' ? vermelho('✗') : s === '!' ? amarelo('!') : cinza('-');
+
 console.log(`Auditando ${base}${local ? ' (servidor local)' : ''}\n`);
 await checkStatus(); await checkHeaders(); await checkSeo();
+
+// agrupa por grupo; as páginas "seo <pagina>.html" viram uma linha só ("seo (N páginas)")
 const groups = new Map();
-for (const [s, g, m] of rows) { if (!groups.has(g)) groups.set(g, []); groups.get(g).push([s, m]); }
-for (const [g, items] of groups) {
-  const f = items.filter(i => i[0] === '✗').length, w = items.filter(i => i[0] === '!').length;
-  console.log(`${f ? '✗' : w ? '!' : items[0][0] === '-' ? '-' : '✓'} ${g}: ${items.length} checagem(ns)${f ? `, ${f} falha(s)` : ''}${w ? `, ${w} aviso(s)` : ''}`);
-  for (const [s, m] of items) if (s !== '✓') console.log(`    ${s} ${m}`);
+for (const [s, g, m] of rows) {
+  const nome = g.startsWith('seo ') ? 'seo (páginas)' : g;
+  if (!groups.has(nome)) groups.set(nome, { itens: [], paginas: new Set() });
+  const e = groups.get(nome); e.itens.push([s, m, g]);
+  if (g.startsWith('seo ')) e.paginas.add(g);
 }
-console.log(`\nResultado: ${fails ? `✗ ${fails} falha(s)` : '✓ sem falhas'}${warns ? `, ${warns} aviso(s)` : ''}`);
+const porSecao = new Map();
+for (const [nome, e] of groups) { const s = secaoDe(nome === 'seo (páginas)' ? 'seo x' : nome); if (!porSecao.has(s)) porSecao.set(s, []); porSecao.get(s).push([nome, e]); }
+const ordem = [...SECOES.map(s => s[0]), 'Outros'].filter(s => porSecao.has(s));
+const larg = Math.max(...[...groups].map(([n, e]) => (n === 'seo (páginas)' ? `seo (${e.paginas.size} páginas)` : n).length));
+const linhaH = cinza('─'.repeat(Math.max(48, larg + 34)));
+let totalChecks = 0;
+
+for (const sec of ordem) {
+  console.log(`${negrito(sec)}\n${linhaH}`);
+  for (const [nome, e] of porSecao.get(sec)) {
+    const f = e.itens.filter(i => i[0] === '✗').length, w = e.itens.filter(i => i[0] === '!').length;
+    const rotulo = nome === 'seo (páginas)' ? `seo (${e.paginas.size} páginas)` : nome;
+    const st = f ? '✗' : w ? '!' : e.itens.every(i => i[0] === '-') ? '-' : '✓';
+    totalChecks += e.itens.length;
+    const extra = [f ? vermelho(`${f} falha(s)`) : '', w ? amarelo(`${w} aviso(s)`) : ''].filter(Boolean).join(', ');
+    console.log(`  ${icone(st)} ${rotulo.padEnd(larg)}  ${String(e.itens.length).padStart(3)} check(s)${extra ? '  ' + extra : ''}`);
+    for (const [s, m] of e.itens) if (s === '-' || s === '!') console.log(`      ${icone(s)} ${cinza(m)}`);
+  }
+  console.log('');
+}
+
+const falhas = rows.filter(r => r[0] === '✗');
+if (falhas.length) {
+  console.log(`${vermelho(negrito(`FALHAS (${falhas.length})`))}\n${linhaH}`);
+  for (const [, g, m] of falhas) console.log(`  ${vermelho('✗')} ${negrito(g)}: ${m}`);
+  console.log('');
+}
+console.log(`${negrito('Resumo')}\n${linhaH}`);
+console.log(`  ${groups.size} grupos · ${totalChecks} checks · ${falhas.length ? vermelho(`${fails} falha(s)`) : verde('0 falhas')}${warns ? ' · ' + amarelo(`${warns} aviso(s)`) : ''}`);
+console.log(`  Resultado: ${fails ? vermelho('✗ reprovado') : verde('✓ aprovado')}`);
 if (flag('--lighthouse')) lighthouse();
 process.exit(fails ? 1 : 0);
