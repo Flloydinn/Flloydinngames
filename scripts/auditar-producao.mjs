@@ -149,11 +149,26 @@ function findChrome() {
     '/usr/bin/google-chrome', '/usr/bin/chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   ].find(existsSync);
 }
+/** quebra uma lista de itens (separados por ", ") em linhas de até `larg` colunas; as seguintes ficam alinhadas ao texto do diagnóstico */
+function quebrarLista(prefixo, itens, larg = 92) {
+  const recuo = ' '.repeat(prefixo.length);
+  const linhas = []; let atual = prefixo, vazia = true;
+  itens.forEach((it, i) => {
+    const pedaco = it + (i < itens.length - 1 ? ',' : '');
+    if (!vazia && atual.length + 1 + pedaco.length > larg) { linhas.push(atual); atual = recuo + pedaco; }
+    else atual += (vazia ? '' : ' ') + pedaco;
+    vazia = false;
+  });
+  linhas.push(atual);
+  return linhas;
+}
+
 function lighthouse() {
   const chrome = findChrome();
   if (!chrome) { warn('lighthouse', 'Chrome/Edge não encontrado (defina CHROME_PATH)'); return; }
   const dir = mkdtempSync(path.join(tmpdir(), 'lh-'));
   console.log(`\nLighthouse em ${base} (${chrome})\n`);
+  const recorrentes = new Map(), execucoes = [];   // código de atenção -> execuções (página/perfil) em que apareceu
   const table = [['Página', 'Perfil', 'Perf', 'A11y', 'Boas práticas', 'SEO', 'LCP', 'CLS', 'TBT']];
   for (const p of LH_PAGES) for (const prof of ['mobile', 'desktop']) {
     const out = path.join(dir, `${p.replace(/\W+/g, '_')}-${prof}.json`);
@@ -165,9 +180,21 @@ function lighthouse() {
     const s = k => Math.round(c[k].score * 100);
     table.push([p, prof, s('performance'), s('accessibility'), s('best-practices'), s('seo'), au['largest-contentful-paint'].displayValue, au['cumulative-layout-shift'].displayValue, au['total-blocking-time'].displayValue]);
     const issues = Object.values(au).filter(x => x.score !== null && x.score < 0.9 && x.scoreDisplayMode !== 'informative' && x.scoreDisplayMode !== 'notApplicable' && x.scoreDisplayMode !== 'manual').map(x => x.id);
-    if (issues.length) console.log(`  ${p} (${prof}) atenção: ${issues.slice(0, 12).join(', ')}`);
+    execucoes.push(`${p} (${prof})`);
+    for (const id of issues) recorrentes.set(id, (recorrentes.get(id) || 0) + 1);
+    if (issues.length) {
+      const prefixo = `  ${p} (${prof}) atenção: `;
+      for (const l of quebrarLista(prefixo, issues.slice(0, 12))) console.log(l.slice(0, prefixo.length) + amarelo(l.slice(prefixo.length)));
+      if (issues.length > 12) console.log(' '.repeat(prefixo.length) + cinza(`(+${issues.length - 12} outros)`));
+    }
   }
   console.log('\n' + table.map(r => r.join(' | ')).join('\n'));
+  if (recorrentes.size) {                                   // diagnósticos mais frequentes: ajuda a priorizar as melhorias
+    const top = [...recorrentes].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const lg = Math.max(...top.map(t => t[0].length)), n = execucoes.length;
+    console.log(`\n${negrito('Diagnósticos mais frequentes')} ${cinza(`(em ${n} execução(ões))`)}\n${cinza('─'.repeat(Math.max(48, lg + 24)))}`);
+    for (const [id, c] of top) console.log(`  ${id.padEnd(lg)}  ${String(c).padStart(2)}/${n}  ${verde('█'.repeat(Math.max(1, Math.round(10 * c / n))))}`);
+  }
 }
 
 // ---------- saída no terminal (só apresentação; a lógica das checagens e o código de saída ficam como estão) ----------
