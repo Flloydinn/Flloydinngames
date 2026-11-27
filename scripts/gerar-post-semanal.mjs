@@ -199,7 +199,21 @@ const TRANSITORIOS = new Set([429, 500, 502, 503, 504]);                        
 const RETRY_BASE_S = Math.max(0, parseFloat(process.env.GEMINI_RETRY_BASE_S) || 15);            // espera: 15 s, 30 s (a variável existe só para testes)
 const THINKING_BUDGET = 1024;                                                                  // limita o "raciocínio" para a resposta chegar rápido
 
+const MODELO_FALLBACK = 'gemini-2.5-flash';   // usado se o modelo principal seguir sobrecarregado
+const TENTATIVAS_FALLBACK = 2;
+
+// Modelo principal (3 tentativas) e, se só houver erro transitório/timeout, uma rodada no modelo de fallback (2 tentativas).
 async function chamarGemini(prompt, key, model) {
+  try {
+    return await chamarModelo(prompt, key, model, GEMINI_TENTATIVAS);
+  } catch (e) {
+    if (e.fatal || model === MODELO_FALLBACK) throw e;               // erro definitivo, ou já é o próprio fallback
+    log(`  ${etapaAtual} Modelo principal indisponível — alternando para fallback ${MODELO_FALLBACK}...`);
+    return await chamarModelo(prompt, key, MODELO_FALLBACK, TENTATIVAS_FALLBACK);
+  }
+}
+
+async function chamarModelo(prompt, key, model, tentativas) {
   const url = `${process.env.GEMINI_API_BASE || 'https://generativelanguage.googleapis.com'}/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   let comThinking = true;
   const montar = () => JSON.stringify({
@@ -209,10 +223,10 @@ async function chamarGemini(prompt, key, model) {
     generationConfig: { temperature: 0.5, maxOutputTokens: 8192, responseMimeType: 'application/json', ...(comThinking ? { thinkingConfig: { thinkingBudget: THINKING_BUDGET } } : {}) }
   });
   let ultimo;
-  for (let t = 1; t <= GEMINI_TENTATIVAS; t++) {
+  for (let t = 1; t <= tentativas; t++) {
     const ini = Date.now();
     try {
-      log(`  → requisição ${t}/${GEMINI_TENTATIVAS} ao Gemini (${model}, timeout ${GEMINI_TIMEOUT_MS / 1000}s${comThinking ? `, raciocínio limitado a ${THINKING_BUDGET} tokens` : ', sem limite de raciocínio'})`);
+      log(`  → requisição ${t}/${tentativas} ao Gemini (${model}, timeout ${GEMINI_TIMEOUT_MS / 1000}s${comThinking ? `, raciocínio limitado a ${THINKING_BUDGET} tokens` : ', sem limite de raciocínio'})`);
       const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: montar(), signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS) });
       if (TRANSITORIOS.has(r.status)) throw new Error('Gemini retornou HTTP ' + r.status);   // vale tentar de novo
       const j = await r.json();
@@ -232,9 +246,9 @@ async function chamarGemini(prompt, key, model) {
       if (e.name === 'TimeoutError' || e.name === 'AbortError') e = new Error(`Gemini não respondeu em ${GEMINI_TIMEOUT_MS / 1000}s`);
       ultimo = e;
       if (e.fatal) { log(`  ✗ ${e.message}`); break; }                       // erro definitivo (chave, modelo, bloqueio...): não adianta repetir
-      if (t === GEMINI_TENTATIVAS) { log(`  ✗ ${e.message} — sem mais tentativas (${t}/${GEMINI_TENTATIVAS})`); break; }
+      if (t === tentativas) { log(`  ✗ ${e.message} — sem mais tentativas (${t}/${tentativas}, ${model})`); break; }
       const espera = RETRY_BASE_S * 2 ** (t - 1);                          // 15 s, depois 30 s
-      log(`  ${etapaAtual} ${/^Gemini/.test(e.message) ? e.message : 'Falha ao falar com o Gemini (' + e.message + ')'} — aguardando ${espera}s para tentar novamente (tentativa ${t + 1}/${GEMINI_TENTATIVAS})...`);
+      log(`  ${etapaAtual} ${/^Gemini/.test(e.message) ? e.message : 'Falha ao falar com o Gemini (' + e.message + ')'} — aguardando ${espera}s para tentar novamente (tentativa ${t + 1}/${tentativas})...`);
       await new Promise(r => setTimeout(r, espera * 1000));
     }
   }
