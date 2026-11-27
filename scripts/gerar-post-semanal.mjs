@@ -6,7 +6,7 @@
  *
  * Variáveis de ambiente: GEMINI_API_KEY (obrigatória fora do --dry-run), GEMINI_MODEL (padrão gemini-3.8-flash),
  * GEMINI_API_BASE (só para testes com um servidor falso; o padrão é a API oficial).
- * Opções: --force (ignora a trava de 1 post por dia), --days N (janela de notícias, padrão 2 = últimas 48 h).
+ * Opções: --gerar-capas-faltantes (cria a capa 1200x630 dos posts que ainda usam a imagem padrão), --force (ignora a trava de 1 post por dia), --days N (janela de notícias, padrão 2 = últimas 48 h).
  *
  * Segurança:
  *  - Sem GEMINI_API_KEY ou com qualquer falha, nada é alterado (e o que foi escrito é desfeito).
@@ -20,6 +20,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, validar } from './validar-dados.mjs';
 import { gerar } from './gerar-geo.mjs';
+import { gerarCapa, formatarData } from './gerar-capa-post.mjs';
 
 // ---------- configuração ----------
 export const FEEDS = [
@@ -59,6 +60,7 @@ const exists = p => access(path.join(ROOT, p)).then(() => true, () => false);
 const readJson = async f => JSON.parse((await readFile(path.join(ROOT, f), 'utf8')).replace(/^﻿/, ''));
 const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); // YYYY-MM-DD em Brasília
 const FORCE = args.includes('--force');
+const CAPAS_FALTANTES = args.includes('--gerar-capas-faltantes');
 const slugify = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 function decode(s) {
@@ -288,8 +290,38 @@ function montarMarkdown(a, tema) {
   return `# ${a.title.trim()}\n\n${a.body.trim()}\n\n## Fontes\n${fontes}\n\n> Este artigo foi redigido com auxílio de inteligência artificial a partir das notícias acima. Os fatos vêm das fontes citadas; confira nelas os detalhes.\n`;
 }
 
+// ---------- capas dos posts ----------
+// Gera a capa própria (assets/blog/<slug>.png) dos posts que ainda usam a imagem padrão; não mexe em capas personalizadas.
+async function capasFaltantes() {
+  const idxPath = path.join(ROOT, 'posts/index.json');
+  const original = await readFile(idxPath, 'utf8');
+  const dados = JSON.parse(original.replace(/^﻿/, ''));
+  const alvo = dados.posts.filter(p => !p.cover || p.cover === COVER);
+  log(`Posts sem capa própria: ${alvo.length} de ${dados.posts.length}${DRY ? ' (--dry-run: nada será gravado)' : ''}`);
+  const criadas = [];
+  for (const p of alvo) {
+    if (DRY) { log(`  - ${p.slug} → assets/blog/${p.slug}.png (simulado)`); continue; }
+    try { p.cover = await gerarCapa({ slug: p.slug, title: p.title, category: p.category, dateFormatted: formatarData(p.dateISO) }); criadas.push(p.cover); log(`  ✓ ${p.cover}`); }
+    catch (e) { log(`  ✗ ${p.slug}: ${e.message} (mantida a capa padrão)`); }
+  }
+  if (DRY || !criadas.length) { log(DRY ? '✓ dry-run concluído: nenhum arquivo foi alterado.' : 'Nada a gravar.'); return; }
+  try {
+    await writeFile(idxPath, JSON.stringify(dados, null, 2) + '\n', 'utf8');
+    await gerar({ write: true });
+    const errs = await validar();
+    if (errs.length) throw new Error('validação falhou:\n  - ' + errs.join('\n  - '));
+  } catch (e) {
+    await writeFile(idxPath, original, 'utf8');
+    for (const c of criadas) await unlink(path.join(ROOT, c)).catch(() => {});
+    await gerar({ write: true }).catch(() => {});
+    fail('Capas canceladas e arquivos restaurados: ' + e.message);
+  }
+  log(`✓ ${criadas.length} capa(s) gerada(s) e posts/index.json atualizado.`);
+}
+
 // ---------- principal ----------
 async function main() {
+  if (CAPAS_FALTANTES) return capasFaltantes();
   log(`Post diário do Flloydinn${DRY ? ' (--dry-run: nada será gravado)' : ''}\n`);
   const key = (process.env.GEMINI_API_KEY || '').trim();
   const model = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
@@ -347,12 +379,20 @@ async function main() {
   if (!(await exists(COVER))) fail(`Capa ${COVER} não existe. Nada foi alterado.`);
 
   const mdPath = path.join(ROOT, 'posts', slug + '.md');
+  let capaPath = null;
   const idxPath = path.join(ROOT, 'posts/index.json');
   const idxOriginal = await readFile(idxPath, 'utf8');
   const md = montarMarkdown(artigo, tema);
   const palavras = md.split(/\s+/).length;
+  // capa própria (og:image 1200x630); se a geração falhar, o post sai com a imagem padrão em vez de ser perdido
+  let cover = COVER;
+  try {
+    etapa(4, 'Gerando a capa do post (assets/blog)...');
+    cover = await gerarCapa({ slug, title: artigo.title.trim(), category: artigo.category, dateFormatted: formatarData(today()) });
+    capaPath = path.join(ROOT, cover); log(`  ✓ ${cover}`);
+  } catch (e) { log(`  ! capa não gerada (${e.message}); usando ${COVER}`); }
   const entrada = { slug, title: artigo.title.trim(), excerpt: artigo.excerpt.trim(), dateISO: today(), readMin: Math.max(1, Math.round(palavras / 200)), views: 0,
-    category: artigo.category, tags: artigo.tags.map(t => t.trim()).slice(0, 5), game: artigo.game.trim(), platform: 'Vários', author: 'Flloydinn', cover: COVER, file: slug + '.md' };
+    category: artigo.category, tags: artigo.tags.map(t => t.trim()).slice(0, 5), game: artigo.game.trim(), platform: 'Vários', author: 'Flloydinn', cover, file: slug + '.md' };
   const novo = JSON.parse(idxOriginal.replace(/^﻿/, '')); novo.posts.unshift(entrada);
 
   try {
@@ -367,6 +407,7 @@ async function main() {
     log('  ✓ validar-dados: tudo certo');
   } catch (e) {
     await unlink(mdPath).catch(() => {});                       // desfaz tudo
+    if (capaPath) await unlink(capaPath).catch(() => {});
     await writeFile(idxPath, idxOriginal, 'utf8');
     await gerar({ write: true }).catch(() => {});
     fail('Publicação cancelada e arquivos restaurados: ' + e.message);

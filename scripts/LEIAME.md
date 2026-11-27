@@ -66,6 +66,13 @@ node scripts/gerar-post-semanal.mjs             # gera, grava, roda o GEO e vali
   `posts/index.json` (capa `assets/og-flloydinn.jpg`, `views: 0`), roda `gerar-geo.mjs` e `validar-dados.mjs`.
   Se algo falhar, tudo é desfeito e o script sai com erro. Se não houver pauta inédita nas últimas 48 h, ele loga
   `Nenhuma pauta inédita hoje — encerrando sem publicar.` e sai com código 0 (o workflow não falha e nada é commitado).
+- **Capa do post (og:image):** `scripts/gerar-capa-post.mjs` desenha um PNG 1200x630 (fundo preto, vermelho da marca,
+  filmstrip, badge da categoria, título com quebra automática e `FLLOYDINN • flloydinn.netlify.app`) em
+  `assets/blog/<slug>.png` e o post usa esse caminho em `cover`. Se a geração falhar, o post sai com `assets/og-flloydinn.jpg`.
+  Precisa do `sharp`: `cd scripts && npm ci` (o `package.json` fica em `scripts/` para o Netlify não instalar nem publicar
+  `node_modules`). `node scripts/gerar-post-semanal.mjs --gerar-capas-faltantes` cria a capa dos posts que ainda usam a
+  imagem padrão (com `--dry-run` só lista). Teste manual: `node scripts/gerar-capa-post.mjs <slug> "Título" "Categoria" "27 nov 2026"`.
+- **Trava de 1 post por dia:** se já existe post com a data de hoje (Brasília), o script encerra com código 0. `--force` ignora; `--dry-run` não é afetado.
 - **Workflow:** `.github/workflows/post-semanal.yml` roda todos os dias às 12:00 UTC (09:00 em Brasília) e faz commit
   direto na `master` só se houver mudança (com `git pull --rebase` antes do push). Também pode ser disparado à mão.
 - **Cadastrar o segredo no GitHub:** repositório > **Settings** > **Secrets and variables** > **Actions** >

@@ -3,7 +3,7 @@
  *   node scripts/validar-dados.mjs
  * Sai com 0 se tudo estiver válido e 1 (listando arquivo + erro) se algo estiver errado.
  * Também é importado por scripts/publicar.mjs. */
-import { readFile, access } from 'node:fs/promises';
+import { readFile, access, open } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { gerar } from './gerar-geo.mjs';
@@ -119,6 +119,13 @@ async function checkProdutos(errs) {
   }
 }
 
+/** lê largura e altura do cabeçalho do PNG (sem dependências); null se não for PNG */
+async function pngSize(rel) {
+  let fh; try { fh = await open(path.join(ROOT, rel), 'r'); const b = Buffer.alloc(24); await fh.read(b, 0, 24, 0);
+    return b.toString('latin1', 1, 4) === 'PNG' && b.toString('latin1', 12, 16) === 'IHDR' ? { w: b.readUInt32BE(16), h: b.readUInt32BE(20) } : null; }
+  catch { return null; } finally { if (fh) await fh.close(); }
+}
+
 async function checkPosts(errs) {
   const f = 'posts/index.json';
   const d = await readJson(f, errs); if (!d) return;
@@ -136,6 +143,10 @@ async function checkPosts(errs) {
     if (!Array.isArray(p.tags) || !p.tags.every(isStr)) errs.push(`${at}: "tags" deve ser lista de textos`);
     if (!isStr(p.cover) || !SAFE_PATH.test(p.cover)) errs.push(`${at}: "cover" deve ser um caminho assets/...`);
     else if (!(await exists(p.cover))) errs.push(`${at}: capa não existe no disco: ${p.cover}`);
+    else if (p.cover.startsWith('assets/blog/')) {          // capa gerada: assets/blog/<slug>.png, PNG de 1200x630
+      if (p.cover !== `assets/blog/${p.slug}.png`) errs.push(`${at}: capa gerada deve ser assets/blog/${p.slug}.png (veio ${p.cover})`);
+      else { const d = await pngSize(p.cover); if (!d) errs.push(`${at}: ${p.cover} não é um PNG válido`); else if (d.w !== 1200 || d.h !== 630) errs.push(`${at}: ${p.cover} deve ter 1200x630 (tem ${d.w}x${d.h})`); }
+    }
     if (!isStr(p.file) || !/^[\w-]+\.md$/.test(p.file)) errs.push(`${at}: "file" deve ser um nome .md simples (veio ${JSON.stringify(p.file)})`);
     else if (!(await exists('posts/' + p.file))) errs.push(`${at}: arquivo não existe no disco: posts/${p.file}`);
   }

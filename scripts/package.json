@@ -1,0 +1,11 @@
+{
+  "name": "flloydinn-scripts",
+  "private": true,
+  "description": "Dependências só dos scripts de automação. Fica em scripts/ (e não na raiz) para o Netlify não instalar nem publicar node_modules.",
+  "engines": {
+    "node": ">=20.9"
+  },
+  "dependencies": {
+    "sharp": "^0.35.5"
+  }
+}

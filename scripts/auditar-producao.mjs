@@ -108,6 +108,10 @@ async function checkSeo() {
     let r; try { r = await fetch(url); } catch (e) { r = { status: 0, headers: new Headers() }; }
     r.status === 200 && /^image\//.test(r.headers.get('content-type') || '') ? ok('og:image', `${url} → 200 ${r.headers.get('content-type')}`) : bad('og:image', `${url} (usada em ${from}) → ${r.status} ${r.headers.get('content-type') || ''}`);
   }
+  // capas próprias dos posts (assets/blog/<slug>.png): precisam ser servidas como PNG
+  { const ix = JSON.parse(await (await get('/posts/index.json')).text()).posts || []; const proprias = ix.filter(p => /^assets\/blog\//.test(p.cover || ''));
+    for (const p of proprias) { const r = await get('/' + p.cover); r.status === 200 && /^image\/png/.test(r.headers.get('content-type') || '') ? ok('capa', `/${p.cover} → 200 image/png`) : bad('capa', `/${p.cover} → ${r.status} ${r.headers.get('content-type') || ''}`); }
+    if (!proprias.length) ok('capa', 'nenhum post com capa própria ainda (usam a imagem padrão)'); }
   const rob = await get('/robots.txt');
   if (rob.status === 200) {
     const t = await rob.text(); ok('seo', 'robots.txt 200');

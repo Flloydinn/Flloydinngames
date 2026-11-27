@@ -286,7 +286,7 @@
     function setOgImage(src){
       setHeadTag('meta[property="og:image"]', 'meta', { property:'og:image', content:src });
       setHeadTag('meta[name="twitter:image"]', 'meta', { name:'twitter:image', content:src });
-      if(src === DEFAULT_OG_IMG){
+      if(src === DEFAULT_OG_IMG || /\/assets\/blog\/[\w-]+\.png$/.test(src)){   // imagem padrão e capas geradas têm 1200x630
         setHeadTag('meta[property="og:image:width"]', 'meta', { property:'og:image:width', content:'1200' });
         setHeadTag('meta[property="og:image:height"]', 'meta', { property:'og:image:height', content:'630' });
       } else {

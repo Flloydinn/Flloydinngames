@@ -16,7 +16,7 @@
       "game": "Site Flloydinn",
       "platform": "Navegador",
       "author": "Flloydinn",
-      "cover": "assets/og-flloydinn.jpg",
+      "cover": "assets/blog/como-funciona-o-site-do-flloydinn.png",
       "file": "como-funciona-o-site-do-flloydinn.md"
     },
     {
@@ -54,7 +54,7 @@
       "game": "TV 24/7",
       "platform": "Navegador",
       "author": "Flloydinn",
-      "cover": "assets/og-flloydinn.jpg",
+      "cover": "assets/blog/tv-24-7-como-funciona.png",
       "file": "tv-24-7-como-funciona.md"
     }
   ]
