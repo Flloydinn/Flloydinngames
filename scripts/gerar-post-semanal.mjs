@@ -194,26 +194,12 @@ export function montarPrompt(tema) {
 }
 
 const GEMINI_TIMEOUT_MS = Math.max(120000, parseInt(process.env.GEMINI_TIMEOUT_MS, 10) || 0);  // no mínimo 120 s
-const GEMINI_TENTATIVAS = 3;                                                                    // 1 chamada + até 2 repetições
+const GEMINI_TENTATIVAS = 5;                                                                    // 1 chamada + até 4 repetições
 const TRANSITORIOS = new Set([429, 500, 502, 503, 504]);                                        // erros que costumam passar sozinhos
-const RETRY_BASE_S = Math.max(0, parseFloat(process.env.GEMINI_RETRY_BASE_S) || 15);            // espera: 15 s, 30 s (a variável existe só para testes)
+const RETRY_BASE_S = Math.max(0, parseFloat(process.env.GEMINI_RETRY_BASE_S) || 15);            // espera: 15 s, 30 s, 45 s, 60 s (a variável existe só para testes)
 const THINKING_BUDGET = 1024;                                                                  // limita o "raciocínio" para a resposta chegar rápido
 
-const MODELO_FALLBACK = 'gemini-2.5-flash';   // usado se o modelo principal seguir sobrecarregado
-const TENTATIVAS_FALLBACK = 2;
-
-// Modelo principal (3 tentativas) e, se só houver erro transitório/timeout, uma rodada no modelo de fallback (2 tentativas).
-async function chamarGemini(prompt, key, model) {
-  try {
-    return await chamarModelo(prompt, key, model, GEMINI_TENTATIVAS);
-  } catch (e) {
-    if (e.fatal || model === MODELO_FALLBACK) throw e;               // erro definitivo, ou já é o próprio fallback
-    log(`  ${etapaAtual} Modelo principal indisponível — alternando para fallback ${MODELO_FALLBACK}...`);
-    return await chamarModelo(prompt, key, MODELO_FALLBACK, TENTATIVAS_FALLBACK);
-  }
-}
-
-async function chamarModelo(prompt, key, model, tentativas) {
+async function chamarGemini(prompt, key, model, tentativas = GEMINI_TENTATIVAS) {
   const url = `${process.env.GEMINI_API_BASE || 'https://generativelanguage.googleapis.com'}/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   let comThinking = true;
   const montar = () => JSON.stringify({
@@ -247,7 +233,7 @@ async function chamarModelo(prompt, key, model, tentativas) {
       ultimo = e;
       if (e.fatal) { log(`  ✗ ${e.message}`); break; }                       // erro definitivo (chave, modelo, bloqueio...): não adianta repetir
       if (t === tentativas) { log(`  ✗ ${e.message} — sem mais tentativas (${t}/${tentativas}, ${model})`); break; }
-      const espera = RETRY_BASE_S * 2 ** (t - 1);                          // 15 s, depois 30 s
+      const espera = RETRY_BASE_S * t;                                      // progressivo: 15 s, 30 s, 45 s, 60 s
       log(`  ${etapaAtual} ${/^Gemini/.test(e.message) ? e.message : 'Falha ao falar com o Gemini (' + e.message + ')'} — aguardando ${espera}s para tentar novamente (tentativa ${t + 1}/${tentativas})...`);
       await new Promise(r => setTimeout(r, espera * 1000));
     }
