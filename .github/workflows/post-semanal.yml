@@ -1,15 +1,15 @@
-# Publica 1 artigo por semana no blog (games, cinema e cultura geek), direto na master.
+# Publica 1 artigo por dia no blog (games, cinema e cultura geek), direto na master.
 #   - Coleta notícias reais de feeds RSS, escolhe um assunto que ainda não saiu no blog e pede o texto ao Google Gemini.
 #   - O texto só vai ao ar se passar nas checagens do script e em scripts/validar-dados.mjs.
 #   - Sem o segredo GEMINI_API_KEY, sem tema novo ou com qualquer falha, o job falha e NADA é commitado.
 # Segredo necessário: Settings > Secrets and variables > Actions > New repository secret > GEMINI_API_KEY
 # (opcional) Variável GEMINI_MODEL em Settings > Secrets and variables > Actions > Variables. Padrão: gemini-3.8-flash.
-# Para testar sem gastar a API: Actions > "Post semanal do blog" > Run workflow > marque "dry_run".
-name: Post semanal do blog
+# Para testar sem gastar a API: Actions > "Post diário do blog" > Run workflow > marque "dry_run".
+name: Post diário do blog
 
 on:
   schedule:
-    - cron: "0 12 * * 1"   # toda segunda-feira, 12:00 UTC = 09:00 em Brasília
+    - cron: "0 12 * * *"   # todos os dias, 12:00 UTC = 09:00 em Brasília
   workflow_dispatch:
     inputs:
       dry_run:
@@ -62,7 +62,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Blog: post semanal automático"
+          git commit -m "Blog: post diário automático"
           for i in 1 2 3; do
             git pull --rebase origin master && git push origin HEAD:master && exit 0
             echo "Push falhou (tentativa $i); tentando de novo..."
